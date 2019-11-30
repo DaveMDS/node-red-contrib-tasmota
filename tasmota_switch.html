@@ -1,5 +1,5 @@
 <script type="text/javascript">
-RED.nodes.registerType('Tasmota', {
+RED.nodes.registerType('Tasmota Switch', {
     category: 'tasmota',
     color: '#28AFB0',
     defaults: {
@@ -18,12 +18,12 @@ RED.nodes.registerType('Tasmota', {
     inputs: 1,
     outputs: 1,
     label: function() {
-        return this.name || this.device;
+        return this.name || this.device || 'Tasmota Switch';
     }
 });
 </script>
 
-<script type="text/x-red" data-template-name="Tasmota">
+<script type="text/x-red" data-template-name="Tasmota Switch">
     <div class="form-row">
         <label for="node-input-device"><i class="icon-tag"></i> Id</label>
         <input type="text" id="node-input-device" placeholder="Device id">
@@ -39,7 +39,7 @@ RED.nodes.registerType('Tasmota', {
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
 
-    <!-- TODO advanced hidden frame -->
+    <hr align="middle">
 
     <div class="form-row">
         <label for="node-input-topicMode"><i class="fa fa-wrench"></i><span> Mode</span></label>

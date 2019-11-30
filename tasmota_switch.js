@@ -1,9 +1,9 @@
 'use strict';
 
 module.exports = function (RED) {
-    const debug = require('debug')('tasmota');
+    const debug = require('debug')('tasmota_switch');
 
-    function TasmotaDevice(user_config) {
+    function TasmotaSwitchDevice(user_config) {
         // Create Node
         RED.nodes.createNode(this, user_config);
 
@@ -130,5 +130,5 @@ module.exports = function (RED) {
         });
     }
 
-    RED.nodes.registerType('Tasmota', TasmotaDevice);
+    RED.nodes.registerType('Tasmota Switch', TasmotaSwitchDevice);
 };

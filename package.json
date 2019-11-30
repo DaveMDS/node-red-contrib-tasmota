@@ -22,7 +22,7 @@
   },
   "node-red": {
     "nodes": {
-      "Tasmota device": "tasmota.js"
+      "Tasmota switch": "tasmota_switch.js"
     }
   }
 }
