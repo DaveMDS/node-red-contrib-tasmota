@@ -85,13 +85,17 @@ module.exports = function (RED) {
             debug('INPUT: %s', JSON.stringify(msg));
             const payload = msg.payload;
 
-            // We handle boolean, the onValue and an integer 1/0
+            // Switch On/Off for: booleans, the onValue or 1/0 integer
             if (payload === true || payload === config.onValue || payload === 1) {
                 brokerConnection.client.publish(topicCmdPower, config.onValue, {qos: 0, retain: false});
             }
-
             if (payload === false || payload === config.offValue || payload === 0) {
                 brokerConnection.client.publish(topicCmdPower, config.offValue, {qos: 0, retain: false});
+            }
+
+            // Switch Toggle for: "toggle" (not case sensitive)
+            if (payload.toLowerCase() === "toggle") {
+                brokerConnection.client.publish(topicCmdPower, config.toggleValue, {qos: 0, retain: false});
             }
         });
 

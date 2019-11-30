@@ -9,6 +9,7 @@ RED.nodes.registerType('Tasmota device', {
         name: { value: ''},
         onValue: { value: 'ON' },
         offValue: { value: 'OFF' },
+        toggleValue: { value: 'TOGGLE' },
         cmdPrefix: { value: 'cmnd' },
         statPrefix: { value: 'stat' },
         telePrefix: { value: 'tele' }
@@ -47,26 +48,31 @@ RED.nodes.registerType('Tasmota device', {
 
     <div class="form-row">
         <label for="node-input-onValue"><i class="fa fa-toggle-on"></i> On</label>
-        <input type="text" id="node-input-onValue" placeholder="onValue (Default: On)">
+        <input type="text" id="node-input-onValue" placeholder="Value for the On command (Default: ON)">
     </div>
 
     <div class="form-row">
         <label for="node-input-offValue"><i class="fa fa-toggle-off"></i> Off</label>
-        <input type="text" id="node-input-offValue" placeholder="offValue (Default: OFF)">
+        <input type="text" id="node-input-offValue" placeholder="Value for the Off command (Default: OFF)">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-toggleValue"><i class="fa fa-exchange"></i> Toggle</label>
+        <input type="text" id="node-input-toggleValue" placeholder="Value for the Toggle command (Default: TOGGLE)">
     </div>
 
     <div class="form-row">
         <label for="node-input-cmdPrefix"><i class="fa fa-comment"></i> cmd</label>
-        <input type="text" id="node-input-cmdPrefix" placeholder="cmdPrefix (Default: cmd)">
+        <input type="text" id="node-input-cmdPrefix" placeholder="Command topic prefix (Default: cmd)">
     </div>
 
     <div class="form-row">
         <label for="node-input-statPrefix"><i class="fa fa-comment"></i> stat</label>
-        <input type="text" id="node-input-statPrefix" placeholder="statPrefix (Default: stat)">
+        <input type="text" id="node-input-statPrefix" placeholder="Stat topic prefix (Default: stat)">
     </div>
 
     <div class="form-row">
         <label for="node-input-telePrefix"><i class="fa fa-comment"></i> tele</label>
-        <input type="text" id="node-input-telePrefix" placeholder="telePrefix (Default: tele)">
+        <input type="text" id="node-input-telePrefix" placeholder="Telemetry topic prefix (Default: tele)">
     </div>
 </script>
