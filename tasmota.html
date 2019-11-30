@@ -1,6 +1,6 @@
 <script type="text/javascript">
-RED.nodes.registerType('Tasmota device', {
-    category: 'Tasmota',
+RED.nodes.registerType('Tasmota', {
+    category: 'tasmota',
     color: '#28AFB0',
     defaults: {
         broker: { type: 'mqtt-broker', required: true },
@@ -23,7 +23,7 @@ RED.nodes.registerType('Tasmota device', {
 });
 </script>
 
-<script type="text/x-red" data-template-name="Tasmota device">
+<script type="text/x-red" data-template-name="Tasmota">
     <div class="form-row">
         <label for="node-input-device"><i class="icon-tag"></i> Id</label>
         <input type="text" id="node-input-device" placeholder="Device id">

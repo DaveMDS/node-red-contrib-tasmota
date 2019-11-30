@@ -14,7 +14,7 @@ module.exports = function (RED) {
             device: user_config.device,
             // advanced
             topicMode: user_config.topicMode || 0,
-            cmdPrefix: user_config.cmdPrefix || 'cmd',
+            cmdPrefix: user_config.cmdPrefix || 'cmnd',
             statPrefix: user_config.statPrefix || 'stat',
             telePrefix: user_config.telePrefix || 'tele',
             onValue: user_config.onValue || 'ON',
@@ -108,9 +108,12 @@ module.exports = function (RED) {
                 brokerConnection.client.publish(topicCmdPower, config.offValue, {qos: 0, retain: false});
             }
 
-            // Switch Toggle for: "toggle" (not case sensitive)
-            if (payload.toLowerCase() === "toggle") {
-                brokerConnection.client.publish(topicCmdPower, config.toggleValue, {qos: 0, retain: false});
+            // string payload (not case sensitive)
+            if (typeof payload === 'string') {
+                // "toggle" => Toggle the switch
+                if(payload.toLowerCase() === "toggle") {
+                    brokerConnection.client.publish(topicCmdPower, config.toggleValue, {qos: 0, retain: false});
+                }
             }
         });
 
@@ -127,5 +130,5 @@ module.exports = function (RED) {
         });
     }
 
-    RED.nodes.registerType('Tasmota device', TasmotaDevice);
+    RED.nodes.registerType('Tasmota', TasmotaDevice);
 };
