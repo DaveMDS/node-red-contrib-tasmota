@@ -3,9 +3,24 @@
 module.exports = function (RED) {
     const debug = require('debug')('tasmota');
 
-    function TasmotaDevice(config) {
+    function TasmotaDevice(user_config) {
         // Create Node
-        RED.nodes.createNode(this, config);
+        RED.nodes.createNode(this, user_config);
+
+        // Setup working defaults
+        var config = {
+            // mandatory
+            broker: user_config.broker,
+            device: user_config.device,
+            // advanced
+            topicMode: user_config.topicMode || 0,
+            cmdPrefix: user_config.cmdPrefix || 'cmd',
+            statPrefix: user_config.statPrefix || 'stat',
+            telePrefix: user_config.telePrefix || 'tele',
+            onValue: user_config.onValue || 'ON',
+            offValue: user_config.offValue || 'OFF',
+            toggleValue: user_config.toggleValue || 'TOGGLE',
+        }
 
         // Setup mqtt broker
         const brokerConnection = RED.nodes.getNode(config.broker);
@@ -26,7 +41,7 @@ module.exports = function (RED) {
         var topicStatsPower = `${config.statPrefix}/${config.device}/POWER`;
         var topicStatsStatus = `${config.statPrefix}/${config.device}/STATUS`;
 
-        if(config.mode == 1){ //Custom (%topic%/%prefix%/)
+        if(config.topicMode == 1){ //Custom (%topic%/%prefix%/)
             topicTeleLWT = `${config.device}/${config.telePrefix}/LWT`;
 
             topicCmdPower = `${config.device}/${config.cmdPrefix}/power`;

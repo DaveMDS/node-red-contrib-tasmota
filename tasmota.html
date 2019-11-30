@@ -3,16 +3,16 @@ RED.nodes.registerType('Tasmota device', {
     category: 'Tasmota',
     color: '#28AFB0',
     defaults: {
-        mode:{ value: '0'},
         broker: { type: 'mqtt-broker', required: true },
-        device: { value: 'tasmota', required: true },
+        device: { value: '', required: true },
         name: { value: ''},
-        onValue: { value: 'ON' },
-        offValue: { value: 'OFF' },
-        toggleValue: { value: 'TOGGLE' },
-        cmdPrefix: { value: 'cmnd' },
-        statPrefix: { value: 'stat' },
-        telePrefix: { value: 'tele' }
+        topicMode:{ value: '0'},
+        onValue: { value: '' },
+        offValue: { value: '' },
+        toggleValue: { value: '' },
+        cmdPrefix: { value: '' },
+        statPrefix: { value: '' },
+        telePrefix: { value: '' }
     },
     icon: 'bridge.png',
     inputs: 1,
@@ -25,15 +25,8 @@ RED.nodes.registerType('Tasmota device', {
 
 <script type="text/x-red" data-template-name="Tasmota device">
     <div class="form-row">
-        <label for="node-input-mode"><i class="fa fa-wrench"></i><span> Mode</span></label>
-        <select type="text" id="node-input-mode" style="width:70%;">
-            <option value="0">%prefix%/%topic%/</option>
-            <option value="1">%topic%/%prefix%/</option>
-        </select>
-    </div>
-    <div class="form-row">
         <label for="node-input-device"><i class="icon-tag"></i> Id</label>
-        <input type="text" id="node-input-device" placeholder="Tasmota id (Default: tasmota)">
+        <input type="text" id="node-input-device" placeholder="Device id">
     </div>
 
     <div class="form-row">
@@ -44,6 +37,16 @@ RED.nodes.registerType('Tasmota device', {
     <div class="form-row">
         <label for="node-input-name"><i class="icon-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+
+    <!-- TODO advanced hidden frame -->
+
+    <div class="form-row">
+        <label for="node-input-topicMode"><i class="fa fa-wrench"></i><span> Mode</span></label>
+        <select type="text" id="node-input-topicMode" style="width:70%;">
+            <option value="0">%prefix%/%topic%/</option>
+            <option value="1">%topic%/%prefix%/</option>
+        </select>
     </div>
 
     <div class="form-row">
