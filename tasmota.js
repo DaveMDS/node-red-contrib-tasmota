@@ -36,7 +36,7 @@ module.exports = function (RED) {
             topicStatsStatus = `${config.device}/${config.statPrefix}/STATUS`;
         }
 
-        // Check if the node is online
+        // Subscribe to device availability changes  tele/<device>/LWT
         brokerConnection.subscribe(topicTeleLWT, 2, (topic, payload) => {
             const stringPayload = payload.toString();
             debug('Topic: %s, Value: %s', topic, stringPayload);
@@ -47,7 +47,7 @@ module.exports = function (RED) {
             }
         });
 
-        // Subscribe to status info  stat/<device>/STATUS
+        // Subscribe to device status changes  stat/<device>/STATUS
         brokerConnection.subscribe(topicStatsStatus, 2, (topic, payload) => {
             const stringPayload = payload.toString();
             debug('Topic: %s, Value: %s', topic, stringPayload);
@@ -88,12 +88,10 @@ module.exports = function (RED) {
             // We handle boolean, the onValue and an integer 1/0
             if (payload === true || payload === config.onValue || payload === 1) {
                 brokerConnection.client.publish(topicCmdPower, config.onValue, {qos: 0, retain: false});
-                this.send({payload: true});
             }
 
             if (payload === false || payload === config.offValue || payload === 0) {
                 brokerConnection.client.publish(topicCmdPower, config.offValue, {qos: 0, retain: false});
-                this.send({payload: false});
             }
         });
 
@@ -101,7 +99,7 @@ module.exports = function (RED) {
         brokerConnection.client.publish(topicCmdStatus);
         this.status({fill: 'yellow', shape: 'ring', text: 'Requesting Status...'});
 
-        // Remove Connections
+        // Remove Connections when node is deleted or restarted
         this.on('close', done => {
             brokerConnection.unsubscribe(topicTeleLWT, this.id);
             brokerConnection.unsubscribe(topicStatsPower, this.id);
