@@ -4,7 +4,7 @@ module.exports = function(RED) {
 
     const DEFAULT_OPTIONS = {
         config: {
-            sensorTelemetryRefresh: 0
+            // node specific confs
         }
     }
 
@@ -25,6 +25,11 @@ module.exports = function(RED) {
             // Publish a start command to get the sensors data  cmnd/<device>/STATUS [8]
             this.MQTTPublish('cmnd', 'STATUS', '8');
             this.status({fill: 'yellow', shape: 'ring', text: 'Requesting values...'});
+        }
+
+        onNodeInput(msg) {
+            // on input we ask a fresh value
+            this.MQTTPublish('cmnd', 'STATUS', '8');
         }
 
         onSensorTelemetry(topic, payload) {
