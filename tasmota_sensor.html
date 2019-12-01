@@ -3,16 +3,19 @@ RED.nodes.registerType('Tasmota Sensor', {
     category: 'tasmota',
     color: '#28AFB0',
     defaults: {
+        // common basic
         broker: { type: 'mqtt-broker', required: true },
         device: { value: '', required: true },
-        name: { value: ''},
-        topicMode:{ value: '0'},
+        name: { value: '' },
+        // common advanced
+        topicMode: { value: '0' },
         cmndPrefix: { value: '' },
         statPrefix: { value: '' },
-        telePrefix: { value: '' }
+        telePrefix: { value: '' },
+        // node specific
     },
     icon: 'bridge.png',
-    inputs: 0,
+    inputs: 1,
     outputs: 1,
     label: function() {
         return this.name || this.device || 'Tasmota Sensor';

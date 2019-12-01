@@ -3,16 +3,19 @@ RED.nodes.registerType('Tasmota Switch', {
     category: 'tasmota',
     color: '#28AFB0',
     defaults: {
+        // common basic
         broker: { type: 'mqtt-broker', required: true },
         device: { value: '', required: true },
-        name: { value: ''},
-        topicMode:{ value: '0'},
+        name: { value: '' },
+        // common advanced
+        topicMode: { value: '0' },
+        cmndPrefix: { value: '' },
+        statPrefix: { value: '' },
+        telePrefix: { value: '' },
+        // node specific
         onValue: { value: '' },
         offValue: { value: '' },
-        toggleValue: { value: '' },
-        cmdPrefix: { value: '' },
-        statPrefix: { value: '' },
-        telePrefix: { value: '' }
+        toggleValue: { value: '' }
     },
     icon: 'bridge.png',
     inputs: 1,
