@@ -53,6 +53,9 @@ class BaseTasmotaNode {
         // Internals
         this._subscribedTopics = [];
 
+        // LastWillTopic status of the device
+        this.statusLWT = 'Offline';
+
         // Merge base and child default options
         this.options = deepMerge({}, COMMON_DEFAULT_OPTIONS, options);
 
@@ -74,11 +77,11 @@ class BaseTasmotaNode {
 
         // Subscribe to device availability changes  tele/<device>/LWT
         this.MQTTSubscribe('tele', 'LWT', (topic, payload) => {
-            const stringPayload = payload.toString();
-            if (stringPayload === 'Online') {
-                this.status({fill: 'green', shape: 'ring', text: 'Online'});
+            this.statusLWT = payload.toString();
+            if (this.statusLWT === 'Online') {
+                this.setNodeStatus('green', this.statusLWT, 'ring')
             } else {
-                this.status({fill: 'red', shape: 'dot', text: 'Offline'});
+                this.setNodeStatus('red', this.statusLWT, 'ring')
             }
         });
 
@@ -99,7 +102,15 @@ class BaseTasmotaNode {
     }
 
     onNodeInput(msg) {
-        // Subclasses can override to receive inputs
+        // Subclasses can override to receive input messagges from NodeRed
+    }
+
+    setNodeStatus(fill, text, shape) {
+        if (this.statusLWT === 'Online') {
+            this.status({fill: fill, shape: shape, text: text})
+        } else {
+            this.status({fill: 'red', shape: 'ring', text: this.statusLWT});
+        }
     }
 
     buildFullTopic(prefix, command) {

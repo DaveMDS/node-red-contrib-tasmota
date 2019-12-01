@@ -24,7 +24,6 @@ module.exports = function(RED) {
 
             // Publish a start command to get the sensors data  cmnd/<device>/STATUS [8]
             this.MQTTPublish('cmnd', 'STATUS', '8');
-            this.status({fill: 'yellow', shape: 'ring', text: 'Requesting values...'});
         }
 
         onNodeInput(msg) {
@@ -37,7 +36,7 @@ module.exports = function(RED) {
                 var data = JSON.parse(payload.toString());
                 this.send({payload: data});
             } catch (e) {
-                this.status({fill: 'red', shape: 'dot', text: 'Error parsing JSON data from device'});
+                this.setNodeStatus('red', 'Error parsing JSON data from device');
                 this.error(err, 'Error parsing JSON data from device');
             }
         }
@@ -47,7 +46,7 @@ module.exports = function(RED) {
                 var data = JSON.parse(payload.toString());
                 this.send({payload: data.StatusSNS});
             } catch (e) {
-                this.status({fill: 'red', shape: 'dot', text: 'Error parsing JSON data from device'});
+                this.setNodeStatus('red', 'Error parsing JSON data from device');
                 this.error(e, 'Error parsing JSON data from device');
             }
         }

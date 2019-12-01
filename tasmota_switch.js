@@ -22,8 +22,6 @@ module.exports = function(RED) {
 
             // Publish a start command to get the status  cmnd/<device>/STATUS
             this.MQTTPublish('cmnd', 'STATUS');
-            this.status({fill: 'yellow', shape: 'ring', text: 'Requesting Status...'});
-
         }
 
         onNodeInput(msg) {
@@ -49,11 +47,11 @@ module.exports = function(RED) {
         onPower(topic, payload) {
             const stringPayload = payload.toString();
             if (stringPayload === this.config.onValue) {
-                this.status({fill: 'green', shape: 'dot', text: 'On'});
+                this.setNodeStatus('green', 'On');
                 this.send({payload: true});
             }
             if (stringPayload === this.config.offValue) {
-                this.status({fill: 'grey', shape: 'dot', text: 'Off'});
+                this.setNodeStatus('grey', 'Off');
                 this.send({payload: false});
             }
         }
@@ -63,14 +61,14 @@ module.exports = function(RED) {
             try {
                 const jsonPayload = JSON.parse(stringPayload);
                 if (jsonPayload.Status.Power === 1) {
-                    this.status({fill: 'green', shape: 'dot', text: 'On'});
+                    this.setNodeStatus('green', 'On');
                     this.send({payload: true});
                 } else {
-                    this.status({fill: 'grey', shape: 'dot', text: 'Off'});
+                    this.setNodeStatus('grey', 'Off');
                     this.send({payload: false});
                 }
             } catch (err) {
-                this.status({fill: 'red', shape: 'dot', text: 'Error processing Status from device'});
+                this.setNodeStatus('red', 'Error processing Status from device');
                 this.error(err, 'Error processing Status from device');
             }
         }
