@@ -1,8 +1,8 @@
-# node-red-contrib-home-assistant-websocket
+# node-red-contrib-tasmota
 
-Tasmota devices for automation using [Node-RED](https://nodered.org/).
+Tasmota devices for building automation inside [Node-RED](https://nodered.org/).
 
-The goal of the project si to support a wide set of features exposed by the Tasmota firmware over MQTT.
+The goal of the project is to support a wide set of features exposed by the Tasmota firmware over MQTT.
 
 ## Getting Started
 
@@ -24,7 +24,7 @@ $ npm install node-red-contrib-tasmota
 
 ## Included Nodes
 
-The installed nodes have more detailed information in the Node-RED info pane shown when the node is selected. Below is a quick summary.
+The installed nodes have more detailed information in the Node-RED info pane, shown when the node is selected. Below is a quick summary
 
 ### Tasmota Smitch
 
@@ -40,4 +40,4 @@ the JSON data received. On any input the sensor data is refreshed.
 
 **[@DaveMDS](https://github.com/DaveMDS)** - [node-red-contrib-tasmota](https://github.com/DaveMDS/node-red-contrib-tasmota)
 
-Inially forked from [contrib-sonoff-tasmota](https://github.com/steffenmllr/node-red-contrib-sonoff-tasmota)
+Initially forked from [contrib-sonoff-tasmota](https://github.com/steffenmllr/node-red-contrib-sonoff-tasmota)
