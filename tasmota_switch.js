@@ -1,71 +1,65 @@
-'use strict';
+module.exports = function(RED) {
+    'use strict';
+    const BaseTasmotaNode = require('./common');
 
-module.exports = function (RED) {
-    const debug = require('debug')('tasmota_switch');
+    const DEFAULT_OPTIONS = {
+        config: {
+            onValue: 'ON',
+            offValue: 'OFF',
+            toggleValue: 'TOGGLE'
+        }
+    }
 
-    function TasmotaSwitchDevice(user_config) {
-        // Create Node
-        RED.nodes.createNode(this, user_config);
+    class TasmotaSwitchNode extends BaseTasmotaNode {
+        constructor(nodeDefinition) {
+            super(nodeDefinition, RED, DEFAULT_OPTIONS);
 
-        // Setup working defaults
-        var config = {
-            // mandatory
-            broker: user_config.broker,
-            device: user_config.device,
-            // advanced
-            topicMode: user_config.topicMode || 0,
-            cmdPrefix: user_config.cmdPrefix || 'cmnd',
-            statPrefix: user_config.statPrefix || 'stat',
-            telePrefix: user_config.telePrefix || 'tele',
-            onValue: user_config.onValue || 'ON',
-            offValue: user_config.offValue || 'OFF',
-            toggleValue: user_config.toggleValue || 'TOGGLE',
+            // Subscribe to device status changes  stat/<device>/STATUS
+            this.MQTTSubscribe('stat', 'STATUS', (t, p) => this.onStatus(t, p));
+
+            // Subscribes to the state of the switch  stat/<device>/POWER
+            this.MQTTSubscribe('stat', 'POWER', (t, p) => this.onPower(t, p));
+
+            // Publish a start command to get the status  cmnd/<device>/STATUS
+            this.MQTTPublish('cmnd', 'STATUS');
+            this.status({fill: 'yellow', shape: 'ring', text: 'Requesting Status...'});
+
         }
 
-        // Setup mqtt broker
-        const brokerConnection = RED.nodes.getNode(config.broker);
-        if (!brokerConnection) {
-            this.status({fill: 'red', shape: 'dot', text: 'Could not connect to mqtt'});
-            this.error(err, 'Could not connect to mqtt');
-            return;
-        }
-        brokerConnection.register(this);
-        this.status({fill: 'yellow', shape: 'dot', text: 'Connecting...'});
+        onNodeInput(msg) {
+            const payload = msg.payload;
 
-        // Topics
-        var topicTeleLWT = `${config.telePrefix}/${config.device}/LWT`;
-
-        var topicCmdPower = `${config.cmdPrefix}/${config.device}/power`;
-        var topicCmdStatus = `${config.cmdPrefix}/${config.device}/status`;
-
-        var topicStatsPower = `${config.statPrefix}/${config.device}/POWER`;
-        var topicStatsStatus = `${config.statPrefix}/${config.device}/STATUS`;
-
-        if(config.topicMode == 1){ //Custom (%topic%/%prefix%/)
-            topicTeleLWT = `${config.device}/${config.telePrefix}/LWT`;
-
-            topicCmdPower = `${config.device}/${config.cmdPrefix}/power`;
-            topicCmdStatus = `${config.device}/${config.cmdPrefix}/status`;
-
-            topicStatsPower = `${config.device}/${config.statPrefix}/POWER`;
-            topicStatsStatus = `${config.device}/${config.statPrefix}/STATUS`;
-        }
-
-        // Subscribe to device availability changes  tele/<device>/LWT
-        brokerConnection.subscribe(topicTeleLWT, 2, (topic, payload) => {
-            const stringPayload = payload.toString();
-            debug('Topic: %s, Value: %s', topic, stringPayload);
-            if (stringPayload === 'Online') {
-                this.status({fill: 'green', shape: 'ring', text: 'Online'});
-            } else {
-                this.status({fill: 'red', shape: 'dot', text: 'Offline'});
+            // Switch On/Off for: booleans, the onValue or 1/0 (int or str)
+            if (payload === true || payload === this.config.onValue || payload === 1 || payload === "1") {
+                this.MQTTPublish('cmnd', 'POWER', this.config.onValue);
             }
-        });
+            if (payload === false || payload === this.config.offValue || payload === 0 || payload === "0") {
+                this.MQTTPublish('cmnd', 'POWER', this.config.offValue);
+            }
 
-        // Subscribe to device status changes  stat/<device>/STATUS
-        brokerConnection.subscribe(topicStatsStatus, 2, (topic, payload) => {
+            // string payload (not case sensitive)
+            if (typeof payload === 'string') {
+                // "toggle" => Toggle the switch
+                if(payload.toLowerCase() === "toggle") {
+                    this.MQTTPublish('cmnd', 'POWER', this.config.toggleValue);
+                }
+            }
+        }
+
+        onPower(topic, payload) {
             const stringPayload = payload.toString();
-            debug('Topic: %s, Value: %s', topic, stringPayload);
+            if (stringPayload === this.config.onValue) {
+                this.status({fill: 'green', shape: 'dot', text: 'On'});
+                this.send({payload: true});
+            }
+            if (stringPayload === this.config.offValue) {
+                this.status({fill: 'grey', shape: 'dot', text: 'Off'});
+                this.send({payload: false});
+            }
+        }
+
+        onStatus(topic, payload) {
+            const stringPayload = payload.toString();
             try {
                 const jsonPayload = JSON.parse(stringPayload);
                 if (jsonPayload.Status.Power === 1) {
@@ -79,56 +73,8 @@ module.exports = function (RED) {
                 this.status({fill: 'red', shape: 'dot', text: 'Error processing Status from device'});
                 this.error(err, 'Error processing Status from device');
             }
-        });
-
-        // Subscribes to the state of the switch  stat/<device>/POWER
-        brokerConnection.subscribe(topicStatsPower, 2, (topic, payload) => {
-            const stringPayload = payload.toString();
-            debug('Topic: %s, Value: %s', topic, stringPayload);
-            if (stringPayload === config.onValue) {
-                this.status({fill: 'green', shape: 'dot', text: 'On'});
-                this.send({payload: true});
-            }
-            if (stringPayload === config.offValue) {
-                this.status({fill: 'grey', shape: 'dot', text: 'Off'});
-                this.send({payload: false});
-            }
-        });
-
-        // On boolean input we publish 'ON' or 'OFF' to cmnd/<device>/POWER
-        this.on('input', msg => {
-            debug('INPUT: %s', JSON.stringify(msg));
-            const payload = msg.payload;
-
-            // Switch On/Off for: booleans, the onValue or 1/0 integer
-            if (payload === true || payload === config.onValue || payload === 1) {
-                brokerConnection.client.publish(topicCmdPower, config.onValue, {qos: 0, retain: false});
-            }
-            if (payload === false || payload === config.offValue || payload === 0) {
-                brokerConnection.client.publish(topicCmdPower, config.offValue, {qos: 0, retain: false});
-            }
-
-            // string payload (not case sensitive)
-            if (typeof payload === 'string') {
-                // "toggle" => Toggle the switch
-                if(payload.toLowerCase() === "toggle") {
-                    brokerConnection.client.publish(topicCmdPower, config.toggleValue, {qos: 0, retain: false});
-                }
-            }
-        });
-
-        // Publish a start command to get the status  cmnd/<device>/status
-        brokerConnection.client.publish(topicCmdStatus);
-        this.status({fill: 'yellow', shape: 'ring', text: 'Requesting Status...'});
-
-        // Remove Connections when node is deleted or restarted
-        this.on('close', done => {
-            brokerConnection.unsubscribe(topicTeleLWT, this.id);
-            brokerConnection.unsubscribe(topicStatsPower, this.id);
-            brokerConnection.unsubscribe(topicStatsStatus, this.id);
-            brokerConnection.deregister(this, done);
-        });
+        }
     }
 
-    RED.nodes.registerType('Tasmota Switch', TasmotaSwitchDevice);
+    RED.nodes.registerType('Tasmota Switch', TasmotaSwitchNode);
 };

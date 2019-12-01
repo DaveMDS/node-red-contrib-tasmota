@@ -7,7 +7,7 @@ RED.nodes.registerType('Tasmota Sensor', {
         device: { value: '', required: true },
         name: { value: ''},
         topicMode:{ value: '0'},
-        cmdPrefix: { value: '' },
+        cmndPrefix: { value: '' },
         statPrefix: { value: '' },
         telePrefix: { value: '' }
     },
@@ -47,8 +47,8 @@ RED.nodes.registerType('Tasmota Sensor', {
     </div>
 
     <div class="form-row">
-        <label for="node-input-cmdPrefix"><i class="fa fa-comment"></i> cmd</label>
-        <input type="text" id="node-input-cmdPrefix" placeholder="Command topic prefix (Default: cmd)">
+        <label for="node-input-cmndPrefix"><i class="fa fa-comment"></i> cmnd</label>
+        <input type="text" id="node-input-cmndPrefix" placeholder="Command topic prefix (Default: cmnd)">
     </div>
 
     <div class="form-row">
