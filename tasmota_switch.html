@@ -43,8 +43,9 @@ RED.nodes.registerType('Tasmota Switch', {
 });
 </script>
 
+
 <!-- Reference
-checkbox, tabs, color_picker:
+checkbox, color_picker:
   https://github.com/Christian-Me/node-red-contrib-homie-convention/blob/master/nodes/homie-device/homie-device.html
 -->
 <script type="text/x-red" data-template-name="Tasmota Switch">
@@ -101,4 +102,31 @@ checkbox, tabs, color_picker:
             </div>
         </div>
     </div>
+</script>
+
+
+<script type="text/x-red" data-help-name="Tasmota Switch">
+    <p>Connect a <b>Switch</b> device running the <b>Tasmota</b> firmware.</p>
+    <p>This node manage the switch functionality of the device.</p>
+    <p>To combine more functionality from the same device (switch, sensor, etc..)
+    use more than one node connected to the same device.</p>
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">boolean | int</span></dt>
+        <dd>send a <code>true</code>/<code>false</code> (or <code>1</code>/<code>0</code>)
+        to turn on/off the switch.</dd>
+        <dt>payload <span class="property-type">string</span></dt>
+        <dd>send <code>toggle</code> to change the status of the switch,
+        not case sensitive.</dd>
+    </dl>
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+       <dt>payload <span class="property-type">boolean</span></dt>
+       <dd>a <code>true</code>/<code>false</code> value is sent on every state
+       change of the switch.</dd>
+    </dl>
+    <h3>Details</h3>
+    <p>In the Avanced tab you can customize the topic format for special cases,
+    the default values should work for a default Tasmota installation.</p>
+    <p>Input messagges are NOT forwarded to the output.</p>
 </script>
