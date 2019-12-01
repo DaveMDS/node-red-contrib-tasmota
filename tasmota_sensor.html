@@ -19,48 +19,75 @@ RED.nodes.registerType('Tasmota Sensor', {
     outputs: 1,
     label: function() {
         return this.name || this.device || 'Tasmota Sensor';
+    },
+    oneditprepare: function () {
+        let tabs = RED.tabs.create({
+            id: "node-input-tasmota-tabs",
+            onchange: function (tab) {
+                $("#node-input-tabs-content").children().hide()
+                $("#" + tab.id).show()
+            }
+        })
+        tabs.addTab({
+            id: "tasmota-settings-tab",
+            label: "Settings"
+        })
+        tabs.addTab({
+            id: "tasmota-advanced-tab",
+            label: "Advanced"
+        })
     }
 });
 </script>
 
 <script type="text/x-red" data-template-name="Tasmota Sensor">
     <div class="form-row">
-        <label for="node-input-device"><i class="icon-tag"></i> Id</label>
-        <input type="text" id="node-input-device" placeholder="Device id">
+        <ul id="node-input-tasmota-tabs"></ul>
     </div>
 
-    <div class="form-row">
-        <label for="node-input-broker"><i class="fa fa-globe"></i> Mqtt</label>
-        <input type="text" id="node-input-broker">
+    <div id="node-input-tabs-content"">
+
+        <div id="tasmota-settings-tab" style="display:none">
+            <div class="form-row">
+                <label for="node-input-broker"><i class="fa fa-globe"></i> Server</label>
+                <input type="text" id="node-input-broker">
+            </div>
+            <div class="form-row">
+                <label for="node-input-device"><i class="fa fa-dot-circle-o"></i> Device</label>
+                <input type="text" id="node-input-device" placeholder="Device id (topic)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+                <input type="text" id="node-input-name" placeholder="Name">
+            </div>
+        </div>
+
+
+        <div id="tasmota-advanced-tab" style="display:none">
+            <div class="form-row">
+                <label for="node-input-topicMode"><i class="fa fa-wrench"></i><span> Mode</span></label>
+                <select type="text" id="node-input-topicMode" style="width:70%;">
+                    <option value="0">%prefix%/%topic%/</option>
+                    <option value="1">%topic%/%prefix%/</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="node-input-cmndPrefix"><i class="fa fa-comment"></i> cmnd</label>
+                <input type="text" id="node-input-cmndPrefix" placeholder="Command topic prefix (Default: cmnd)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-statPrefix"><i class="fa fa-comment"></i> stat</label>
+                <input type="text" id="node-input-statPrefix" placeholder="Stat topic prefix (Default: stat)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-telePrefix"><i class="fa fa-comment"></i> tele</label>
+                <input type="text" id="node-input-telePrefix" placeholder="Telemetry topic prefix (Default: tele)">
+            </div>
+        </div>
+
     </div>
 
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
 
-    <hr align="middle">
 
-    <div class="form-row">
-        <label for="node-input-topicMode"><i class="fa fa-wrench"></i><span> Mode</span></label>
-        <select type="text" id="node-input-topicMode" style="width:70%;">
-            <option value="0">%prefix%/%topic%/</option>
-            <option value="1">%topic%/%prefix%/</option>
-        </select>
-    </div>
 
-    <div class="form-row">
-        <label for="node-input-cmndPrefix"><i class="fa fa-comment"></i> cmnd</label>
-        <input type="text" id="node-input-cmndPrefix" placeholder="Command topic prefix (Default: cmnd)">
-    </div>
-
-    <div class="form-row">
-        <label for="node-input-statPrefix"><i class="fa fa-comment"></i> stat</label>
-        <input type="text" id="node-input-statPrefix" placeholder="Stat topic prefix (Default: stat)">
-    </div>
-
-    <div class="form-row">
-        <label for="node-input-telePrefix"><i class="fa fa-comment"></i> tele</label>
-        <input type="text" id="node-input-telePrefix" placeholder="Telemetry topic prefix (Default: tele)">
-    </div>
 </script>
