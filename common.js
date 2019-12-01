@@ -1,8 +1,10 @@
 'use strict';
 
+
 function isObject(item) {
     return (item && typeof item === 'object' && !Array.isArray(item));
 }
+
 
 function deepMerge(target, ...sources) {
     if (!sources.length) return target;
@@ -45,6 +47,11 @@ const COMMON_DEFAULT_OPTIONS = {
     }
 };
 
+
+const LWT_ONLINE = 'Online';
+const LWT_OFFLINE = 'Offline';
+
+
 class BaseTasmotaNode {
     constructor(nodeDefinition, RED, options = {}) {
         // Create the Red node
@@ -54,7 +61,7 @@ class BaseTasmotaNode {
         this._subscribedTopics = [];
 
         // LastWillTopic status of the device
-        this.statusLWT = 'Offline';
+        this.statusLWT = LWT_OFFLINE;
 
         // Merge base and child default options
         this.options = deepMerge({}, COMMON_DEFAULT_OPTIONS, options);
@@ -68,17 +75,17 @@ class BaseTasmotaNode {
         // Establish MQTT broker connection
         this.brokerConnection = RED.nodes.getNode(this.config.broker);
         if (!this.brokerConnection) {
-            this.status({fill: 'red', shape: 'dot', text: 'No broker connection'});
+            this.setNodeStatus('red', 'No broker connection', 'dot')
             this.error(`Cannot connect to broker: ${this.config.broker}`);
             return;
         }
         this.brokerConnection.register(this);
-        this.status({fill: 'yellow', shape: 'ring', text: 'connecting...'});
+        this.setNodeStatus('yellow', 'connecting...', 'ring')
 
         // Subscribe to device availability changes  tele/<device>/LWT
         this.MQTTSubscribe('tele', 'LWT', (topic, payload) => {
             this.statusLWT = payload.toString();
-            if (this.statusLWT === 'Online') {
+            if (this.statusLWT === LWT_ONLINE) {
                 this.setNodeStatus('green', this.statusLWT, 'ring')
             } else {
                 this.setNodeStatus('red', this.statusLWT, 'ring')
@@ -106,7 +113,7 @@ class BaseTasmotaNode {
     }
 
     setNodeStatus(fill, text, shape) {
-        if (this.statusLWT === 'Online') {
+        if (this.statusLWT === LWT_ONLINE) {
             this.status({fill: fill, shape: shape, text: text})
         } else {
             this.status({fill: 'red', shape: 'ring', text: this.statusLWT});
@@ -142,7 +149,6 @@ class BaseTasmotaNode {
         this.brokerConnection.subscribe(fullTopic, 2, callback, this.id);
         this._subscribedTopics.push(fullTopic);
     }
-
 }
 
 module.exports = BaseTasmotaNode;
