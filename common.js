@@ -139,7 +139,7 @@ class BaseTasmotaNode {
 
     MQTTSubscribe(prefix, command, callback) {
         var fullTopic = this.buildFullTopic(prefix, command);
-        this.brokerConnection.subscribe(fullTopic, 2, callback);
+        this.brokerConnection.subscribe(fullTopic, 2, callback, this.id);
         this._subscribedTopics.push(fullTopic);
     }
 
