@@ -2,15 +2,13 @@ module.exports = function(RED) {
     'use strict';
     const BaseTasmotaNode = require('./base_tasmota.js');
 
-    const DEFAULT_OPTIONS = {
-        config: {
-            // node specific confs
-        }
+    const SENSOR_DEFAULTS = {
+        // node specific defaults
     }
 
     class TasmotaSensorNode extends BaseTasmotaNode {
-        constructor(nodeDefinition) {
-            super(nodeDefinition, RED, DEFAULT_OPTIONS);
+        constructor(user_config) {
+            super(user_config, RED, SENSOR_DEFAULTS);
 
             // Subscribe to device telemetry changes  tele/<device>/SENSOR
             this.MQTTSubscribe('tele', 'SENSOR', (topic, payload) => {

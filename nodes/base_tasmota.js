@@ -1,50 +1,16 @@
 'use strict';
 
 
-function isObject(item) {
-    return (item && typeof item === 'object' && !Array.isArray(item));
-}
-
-
-function deepMerge(target, ...sources) {
-    if (!sources.length) return target;
-    const source = sources.shift();
-
-    if (isObject(target) && isObject(source)) {
-        for (const key in source) {
-          if (isObject(source[key])) {
-            if (!target[key]) Object.assign(target, { [key]: {} });
-                deepMerge(target[key], source[key]);
-            } else {
-                Object.assign(target, { [key]: source[key] });
-            }
-        }
-    }
-
-    return deepMerge(target, ...sources);
-}
-
-
-const COMMON_DEFAULT_OPTIONS = {
-    config: {
-        // basic
-        broker: '',  // mandatory
-        device: '',  // mandatory
-        name: '',
-        // advanced
-        topicMode: 0,
-        cmndPrefix: 'cmnd',
-        statPrefix: 'stat',
-        telePrefix: 'tele',
-    },
-    input: {
-        topic: {
-            messageProp: 'topic'
-        },
-        payload: {
-            messageProp: 'payload'
-        }
-    }
+const TASMOTA_DEFAULTS = {
+    // basic
+    broker: '',  // mandatory
+    device: '',  // mandatory
+    name: '',
+    // advanced
+    topicMode: 0,
+    cmndPrefix: 'cmnd',
+    statPrefix: 'stat',
+    telePrefix: 'tele',
 };
 
 
@@ -53,9 +19,9 @@ const LWT_OFFLINE = 'Offline';
 
 
 class BaseTasmotaNode {
-    constructor(nodeDefinition, RED, options = {}) {
+    constructor(config, RED, more_defaults = {}) {
         // Create the Red node
-        RED.nodes.createNode(this, nodeDefinition);
+        RED.nodes.createNode(this, config);
 
         // Internals
         this._subscribedTopics = [];
@@ -63,13 +29,13 @@ class BaseTasmotaNode {
         // LastWillTopic status of the device
         this.statusLWT = LWT_OFFLINE;
 
-        // Merge base and child default options
-        this.options = deepMerge({}, COMMON_DEFAULT_OPTIONS, options);
+        // Merge base and child defaults
+        var defaults = Object.assign({}, TASMOTA_DEFAULTS, more_defaults);
 
         // Merge user and default config
         this.config = {};
-        for (const key in this.options.config) {
-            this.config[key] = nodeDefinition[key] || this.options.config[key];
+        for (const key in defaults) {
+            this.config[key] = config[key] || defaults[key];
         }
 
         // Establish MQTT broker connection

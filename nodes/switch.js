@@ -2,17 +2,15 @@ module.exports = function(RED) {
     'use strict';
     const BaseTasmotaNode = require('./base_tasmota.js');
 
-    const DEFAULT_OPTIONS = {
-        config: {
-            onValue: 'ON',
-            offValue: 'OFF',
-            toggleValue: 'TOGGLE'
-        }
+    const SWITCH_DEFAULTS = {
+        onValue: 'ON',
+        offValue: 'OFF',
+        toggleValue: 'TOGGLE'
     }
 
     class TasmotaSwitchNode extends BaseTasmotaNode {
-        constructor(nodeDefinition) {
-            super(nodeDefinition, RED, DEFAULT_OPTIONS);
+        constructor(user_config) {
+            super(user_config, RED, SWITCH_DEFAULTS);
 
             // Subscribe to device status changes  stat/<device>/STATUS
             this.MQTTSubscribe('stat', 'STATUS', (t, p) => this.onStatus(t, p));
