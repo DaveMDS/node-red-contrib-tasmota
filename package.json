@@ -22,8 +22,8 @@
   },
   "node-red": {
     "nodes": {
-      "Tasmota switch": "tasmota_switch.js",
-      "Tasmota sensor": "tasmota_sensor.js"
+      "Tasmota switch": "nodes/switch.js",
+      "Tasmota sensor": "nodes/sensor.js"
     }
   }
 }

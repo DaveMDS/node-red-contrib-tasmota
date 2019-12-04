@@ -1,6 +1,6 @@
 module.exports = function(RED) {
     'use strict';
-    const BaseTasmotaNode = require('./common');
+    const BaseTasmotaNode = require('./base_tasmota.js');
 
     const DEFAULT_OPTIONS = {
         config: {

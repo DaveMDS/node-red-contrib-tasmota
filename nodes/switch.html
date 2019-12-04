@@ -1,5 +1,5 @@
 <script type="text/javascript">
-RED.nodes.registerType('Tasmota Sensor', {
+RED.nodes.registerType('Tasmota Switch', {
     category: 'tasmota',
     color: '#28AFB0',
     defaults: {
@@ -13,12 +13,15 @@ RED.nodes.registerType('Tasmota Sensor', {
         statPrefix: { value: '' },
         telePrefix: { value: '' },
         // node specific
+        onValue: { value: '' },
+        offValue: { value: '' },
+        toggleValue: { value: '' }
     },
-    icon: 'tasmota-logo.svg',
+    icon: 'contrib-tasmota-logo.svg',
     inputs: 1,
     outputs: 1,
     label: function() {
-        return this.name || this.device || 'Tasmota Sensor';
+        return this.name || this.device || 'Tasmota Switch';
     },
     oneditprepare: function () {
         let tabs = RED.tabs.create({
@@ -41,11 +44,15 @@ RED.nodes.registerType('Tasmota Sensor', {
 </script>
 
 
-<script type="text/x-red" data-template-name="Tasmota Sensor">
+<!-- Reference
+checkbox, color_picker:
+  https://github.com/Christian-Me/node-red-contrib-homie-convention/blob/master/nodes/homie-device/homie-device.html
+-->
+<script type="text/x-red" data-template-name="Tasmota Switch">
     <div class="form-row">
         <ul id="node-input-tasmota-tabs"></ul>
     </div>
-    <div id="node-input-tabs-content"">
+    <div id="node-input-tabs-content">
         <div id="tasmota-settings-tab" style="display:none">
             <div class="form-row">
                 <label for="node-input-broker"><i class="fa fa-globe"></i> Server</label>
@@ -59,6 +66,19 @@ RED.nodes.registerType('Tasmota Sensor', {
                 <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
                 <input type="text" id="node-input-name" placeholder="Name">
             </div>
+            <hr align="middle">
+            <div class="form-row">
+                <label for="node-input-onValue"><i class="fa fa-toggle-on"></i> On</label>
+                <input type="text" id="node-input-onValue" placeholder="Value for the On command (Default: ON)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-offValue"><i class="fa fa-toggle-off"></i> Off</label>
+                <input type="text" id="node-input-offValue" placeholder="Value for the Off command (Default: OFF)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-toggleValue"><i class="fa fa-exchange"></i> Toggle</label>
+                <input type="text" id="node-input-toggleValue" placeholder="Value for the Toggle command (Default: TOGGLE)">
+            </div>
         </div>
         <div id="tasmota-advanced-tab" style="display:none">
             <div class="form-row">
@@ -69,8 +89,8 @@ RED.nodes.registerType('Tasmota Sensor', {
                 </select>
             </div>
             <div class="form-row">
-                <label for="node-input-cmndPrefix"><i class="fa fa-comment"></i> cmnd</label>
-                <input type="text" id="node-input-cmndPrefix" placeholder="Command topic prefix (Default: cmnd)">
+                <label for="node-input-cmdPrefix"><i class="fa fa-comment"></i> cmd</label>
+                <input type="text" id="node-input-cmdPrefix" placeholder="Command topic prefix (Default: cmd)">
             </div>
             <div class="form-row">
                 <label for="node-input-statPrefix"><i class="fa fa-comment"></i> stat</label>
@@ -84,30 +104,29 @@ RED.nodes.registerType('Tasmota Sensor', {
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="Tasmota Sensor">
-    <p>Connect a <b>Sensor</b> device running the <b>Tasmota</b> firmware.</p>
-    <p>This node can read the sensors data from the device.<p>
-    <p>Values are published as output on every telemetry messagge received from
-    the device.<p>
+
+<script type="text/x-red" data-help-name="Tasmota Switch">
+    <p>Connect a <b>Switch</b> device running the <b>Tasmota</b> firmware.</p>
+    <p>This node manage the switch functionality of the device.</p>
     <p>To combine more functionality from the same device (switch, sensor, etc..)
     use more than one node connected to the same device.</p>
     <h3>Inputs</h3>
     <dl class="message-properties">
-        <dt>payload <span class="property-type">any</span></dt>
-        <dd>any input received will trigger a sensor data request to the device</dd>
+        <dt>payload <span class="property-type">boolean | int</span></dt>
+        <dd>send a <code>true</code>/<code>false</code> (or <code>1</code>/<code>0</code>)
+        to turn on/off the switch.</dd>
+        <dt>payload <span class="property-type">string</span></dt>
+        <dd>send <code>toggle</code> to change the status of the switch,
+        not case sensitive.</dd>
     </dl>
     <h3>Outputs</h3>
     <dl class="message-properties">
-       <dt>payload <span class="property-type">object</span></dt>
-       <dd>the JSON object as received from the Tasmota device.</dd>
+       <dt>payload <span class="property-type">boolean</span></dt>
+       <dd>a <code>true</code>/<code>false</code> value is sent on every state
+       change of the switch.</dd>
     </dl>
     <h3>Details</h3>
-    <p>Any messagge received in input will trigger a fresh-value-request
-    to the device, thus you can easily attach a repeating injection to receive
-    the sensor data at an higher frequency than the normal Tasmota telemetry
-    configuration.</p>
     <p>In the Avanced tab you can customize the topic format for special cases,
     the default values should work for a default Tasmota installation.</p>
     <p>Input messagges are NOT forwarded to the output.</p>
 </script>
-
