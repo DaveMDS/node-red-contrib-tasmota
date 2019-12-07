@@ -6,7 +6,7 @@ module.exports = function(RED) {
         onValue: 'ON',
         offValue: 'OFF',
         toggleValue: 'TOGGLE'
-    }
+    };
 
     class TasmotaSwitchNode extends BaseTasmotaNode {
         constructor(user_config) {
@@ -17,7 +17,9 @@ module.exports = function(RED) {
 
             // Subscribes to the state of the switch  stat/<device>/POWER
             this.MQTTSubscribe('stat', 'POWER', (t, p) => this.onPower(t, p));
+        }
 
+        onDeviceOnline() {
             // Publish a start command to get the status  cmnd/<device>/STATUS
             this.MQTTPublish('cmnd', 'STATUS');
         }

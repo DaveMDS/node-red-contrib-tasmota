@@ -25,6 +25,7 @@ class BaseTasmotaNode {
 
         // Internals
         this._subscribedTopics = [];
+        this._brokerConnection = null;
 
         // LastWillTopic status of the device
         this.statusLWT = LWT_OFFLINE;
@@ -39,13 +40,13 @@ class BaseTasmotaNode {
         }
 
         // Establish MQTT broker connection
-        this.brokerConnection = RED.nodes.getNode(this.config.broker);
-        if (!this.brokerConnection) {
+        this._brokerConnection = RED.nodes.getNode(this.config.broker);
+        if (!this._brokerConnection) {
             this.setNodeStatus('red', 'No broker connection', 'dot')
             this.error(`Cannot connect to broker: ${this.config.broker}`);
             return;
         }
-        this.brokerConnection.register(this);
+        this._brokerConnection.register(this);
         this.setNodeStatus('yellow', 'connecting...', 'ring')
 
         // Subscribe to device availability changes  tele/<device>/LWT
@@ -53,8 +54,10 @@ class BaseTasmotaNode {
             this.statusLWT = payload.toString();
             if (this.statusLWT === LWT_ONLINE) {
                 this.setNodeStatus('green', this.statusLWT, 'ring')
+                this.onDeviceOnline()
             } else {
                 this.setNodeStatus('red', this.statusLWT, 'ring')
+                this.onDeviceOffline()
             }
         });
 
@@ -66,12 +69,20 @@ class BaseTasmotaNode {
         this.on('close', done => {
             // unsubscribe from all registered topics
             for (let fullTopic of this._subscribedTopics) {
-                this.brokerConnection.unsubscribe(fullTopic, this.id);
+                this._brokerConnection.unsubscribe(fullTopic, this.id);
             }
             // close the broker connection
-            this.brokerConnection.deregister(this, done);
+            this._brokerConnection.deregister(this, done);
         });
 
+    }
+
+    onDeviceOnline() {
+        // Subclasses can override to know when the LWT is Online
+    }
+
+    onDeviceOffline() {
+        // Subclasses can override to know when the LWT is Online
     }
 
     onNodeInput(msg) {
@@ -106,13 +117,13 @@ class BaseTasmotaNode {
 
     MQTTPublish(prefix, command, payload) {
         var fullTopic = this.buildFullTopic(prefix, command);
-        this.brokerConnection.client.publish(fullTopic, payload);
+        this._brokerConnection.client.publish(fullTopic, payload);
         // TODO , publish(topic, pl, {qos: 0, retain: false})
     }
 
     MQTTSubscribe(prefix, command, callback) {
         var fullTopic = this.buildFullTopic(prefix, command);
-        this.brokerConnection.subscribe(fullTopic, 2, callback, this.id);
+        this._brokerConnection.subscribe(fullTopic, 2, callback, this.id);
         this._subscribedTopics.push(fullTopic);
     }
 }

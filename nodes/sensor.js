@@ -4,7 +4,7 @@ module.exports = function(RED) {
 
     const SENSOR_DEFAULTS = {
         // node specific defaults
-    }
+    };
 
     class TasmotaSensorNode extends BaseTasmotaNode {
         constructor(user_config) {
@@ -19,7 +19,9 @@ module.exports = function(RED) {
             this.MQTTSubscribe('stat', 'STATUS8', (topic, payload) => {
                 this.onSensorStatus(topic, payload)
             });
+        }
 
+        onDeviceOnline() {
             // Publish a start command to get the sensors data  cmnd/<device>/STATUS [8]
             this.MQTTPublish('cmnd', 'STATUS', '8');
         }
