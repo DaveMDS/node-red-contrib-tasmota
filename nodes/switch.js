@@ -73,9 +73,6 @@ module.exports = function(RED) {
             }
 
             // update status icon and label
-            this.warn(this.cache)
-            this.warn(channel)
-            this.warn("tipoc " + mqttTopic)
             this.setNodeStatus(this.cache[0] === 'On' ? 'green' : 'grey',
                                this.cache.join(' - '));
 
