@@ -89,15 +89,10 @@ RED.nodes.registerType('Tasmota Sensor', {
 
 <script type="text/x-red" data-help-name="Tasmota Sensor">
     <p>Connect a <b>Sensor</b> device running the <b>Tasmota</b> firmware.</p>
-    <p>This node can read the sensors data from the device.<p>
-    <p>Values are published as output on every telemetry messagge received from
-    the device.<p>
-    <p>To combine more functionality from the same device (switch, sensor, etc..)
-    use more than one node connected to the same device.</p>
     <h3>Inputs</h3>
     <dl class="message-properties">
         <dt>payload <span class="property-type">any</span></dt>
-        <dd>any input received will trigger a sensor data request to the device</dd>
+        <dd>any input received will trigger a sensor data request to the device.</dd>
     </dl>
     <h3>Outputs</h3>
     <dl class="message-properties">
@@ -105,6 +100,11 @@ RED.nodes.registerType('Tasmota Sensor', {
        <dd>the JSON object as received from the Tasmota device.</dd>
     </dl>
     <h3>Details</h3>
+    <p>This node can read the sensors data from the device.<p>
+    <p>To combine more functionality from the same device (switch, sensor, etc..)
+    use more than one node connected to the same device.</p>
+    <p>Values are published as output on every telemetry messagge received from
+    the device.<p>
     <p>Any messagge received in input will trigger a fresh-value-request
     to the device, thus you can easily attach a repeating injection to receive
     the sensor data at an higher frequency than the normal Tasmota telemetry
