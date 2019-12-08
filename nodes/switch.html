@@ -13,6 +13,7 @@ RED.nodes.registerType('Tasmota Switch', {
         statPrefix: { value: '' },
         telePrefix: { value: '' },
         // node specific
+        outputs: { value: '1' },
         onValue: { value: '' },
         offValue: { value: '' },
         toggleValue: { value: '' }
@@ -70,6 +71,19 @@ checkbox, color_picker:
                 <input type="text" id="node-input-name" placeholder="Name">
             </div>
             <hr align="middle">
+            <div class="form-row">
+                <label for="node-input-outputs"><i class="fa fa-random"></i> Channels</label>
+                <select id="node-input-outputs">
+                    <option value="1">1 Channel (or all merged)</option>
+                    <option value="2">2 Channels</option>
+                    <option value="3">3 Channels</option>
+                    <option value="4">4 Channels</option>
+                    <option value="5">5 Channels</option>
+                    <option value="6">6 Channels</option>
+                    <option value="7">7 Channels</option>
+                    <option value="8">8 Channels</option>
+                </select>
+            </div>
             <div class="form-row">
                 <label for="node-input-onValue"><i class="fa fa-toggle-on"></i> On</label>
                 <input type="text" id="node-input-onValue" placeholder="Value for the On command (Default: ON)">
