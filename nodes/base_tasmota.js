@@ -7,7 +7,7 @@ const TASMOTA_DEFAULTS = {
     device: '',  // mandatory
     name: '',
     // advanced
-    topicMode: 0,
+    fullTopic: '%prefix%/%topic%/',
     cmndPrefix: 'cmnd',
     statPrefix: 'stat',
     telePrefix: 'tele',
@@ -98,21 +98,21 @@ class BaseTasmotaNode {
     }
 
     buildFullTopic(prefix, command) {
-        if (this.config.topicMode == 1) { //Custom (%topic%/%prefix%/)
-            if (prefix == 'tele')
-                return `${this.config.device}/${this.config.telePrefix}/${command}`;
-            else if (prefix == 'cmnd')
-                return `${this.config.device}/${this.config.cmndPrefix}/${command}`;
-            else if (prefix == 'stat')
-                return `${this.config.device}/${this.config.statPrefix}/${command}`;
-        } else {
-            if (prefix == 'tele')
-                return `${this.config.telePrefix}/${this.config.device}/${command}`;
-            else if (prefix == 'cmnd')
-                return `${this.config.cmndPrefix}/${this.config.device}/${command}`;
-            else if (prefix == 'stat')
-                return `${this.config.statPrefix}/${this.config.device}/${command}`;
-        }
+        var full = this.config.fullTopic;
+
+        full = full.replace('%topic%', this.config.device);
+
+        if (prefix == 'tele')
+            full = full.replace('%prefix%', this.config.telePrefix);
+        else if (prefix == 'cmnd')
+            full = full.replace('%prefix%', this.config.cmndPrefix);
+        else if (prefix == 'stat')
+            full = full.replace('%prefix%', this.config.statPrefix);
+
+        if (full.endsWith('/'))
+            return full + command
+        else
+            return full + '/' + command
     }
 
     MQTTPublish(prefix, command, payload) {
