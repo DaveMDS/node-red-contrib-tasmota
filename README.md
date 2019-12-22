@@ -12,13 +12,13 @@ The goal of the project is to support a wide set of features exposed by the Tasm
 
 This assumes you have [Node-RED](https://nodered.org) already installed and working, if you need to install Node-RED see [here](https://nodered.org/docs/getting-started/installation).
 
-Install via Node-RED Manage Palette interface
+Install via Node-RED Manage Palette interface ([node page](https://flows.nodered.org/node/node-red-contrib-tasmota))
 
 ```
 node-red-contrib-tasmota
 ```
 
-Install via npm
+Install via [npm](https://www.npmjs.com/package/node-red-contrib-tasmota)
 
 ```shell
 $ cd ~/.node-red
