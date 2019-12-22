@@ -1,5 +1,9 @@
 # node-red-contrib-tasmota
 
+![License](https://img.shields.io/github/license/davemds/node-red-contrib-tasmota.svg)
+![Release](https://img.shields.io/npm/v/node-red-contrib-tasmota.svg)
+![NPM](https://img.shields.io/npm/dm/node-red-contrib-tasmota.svg)
+
 Tasmota devices for building automation inside [Node-RED](https://nodered.org/).
 
 The goal of the project is to support a wide set of features exposed by the Tasmota firmware over MQTT.
