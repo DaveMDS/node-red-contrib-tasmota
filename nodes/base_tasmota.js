@@ -93,7 +93,8 @@ class BaseTasmotaNode {
         if (this.statusLWT === LWT_ONLINE) {
             this.status({fill: fill, shape: shape, text: text})
         } else {
-            this.status({fill: 'red', shape: 'ring', text: this.statusLWT});
+            this.status({fill: 'red', shape: 'ring',
+                         text: this.statusLWT || LWT_OFFLINE});
         }
     }
 
