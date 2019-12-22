@@ -30,6 +30,7 @@
   "files": [
     "package.json",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE",
     "nodes/*"
   ]
