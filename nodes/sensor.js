@@ -4,6 +4,7 @@ module.exports = function(RED) {
 
     const SENSOR_DEFAULTS = {
         // node specific defaults
+        rules: [],
     };
 
     class TasmotaSensorNode extends BaseTasmotaNode {
@@ -31,10 +32,31 @@ module.exports = function(RED) {
             this.MQTTPublish('cmnd', 'STATUS', '8');
         }
 
+
+        sendToOutputs(tasmota_data) {
+            if (!this.config.rules || !this.config.rules.length) {
+                this.send({payload: tasmota_data});
+                return;
+            }
+
+            var messages = []
+            for (let i = 0; i < this.config.rules.length; i++) {
+                let rule = this.config.rules[i];
+                if (!rule || rule === 'payload') {
+                    messages.push({payload: tasmota_data})
+                } else {
+                    var expr = RED.util.prepareJSONataExpression(rule, this)
+                    var result = RED.util.evaluateJSONataExpression(expr, tasmota_data)
+                    messages.push({payload: result})
+                }
+            }
+            this.send(messages)
+        }
+
         onSensorTelemetry(topic, payload) {
             try {
                 var data = JSON.parse(payload.toString());
-                this.send({payload: data});
+                this.sendToOutputs(data);
             } catch (e) {
                 this.setNodeStatus('red', 'Error parsing JSON data from device');
                 this.error(err, 'Error parsing JSON data from device');
@@ -44,7 +66,7 @@ module.exports = function(RED) {
         onSensorStatus(topic, payload) {
             try {
                 var data = JSON.parse(payload.toString());
-                this.send({payload: data.StatusSNS});
+                this.sendToOutputs(data.StatusSNS);
             } catch (e) {
                 this.setNodeStatus('red', 'Error parsing JSON data from device');
                 this.error(e, 'Error parsing JSON data from device');

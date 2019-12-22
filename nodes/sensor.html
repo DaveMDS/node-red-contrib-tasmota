@@ -13,6 +13,8 @@ RED.nodes.registerType("Tasmota Sensor", {
         statPrefix: { value: "" },
         telePrefix: { value: "" },
         // node specific
+        outputs: { value: 1 },
+        rules: { value:[] }
     },
     icon: "contrib-tasmota-logo.svg",
     inputs: 1,
@@ -24,6 +26,7 @@ RED.nodes.registerType("Tasmota Sensor", {
         return this.name ? "node_label_italic" : "";
     },
     oneditprepare: function () {
+        // initialize tabs
         let tabs = RED.tabs.create({
             id: "node-input-tasmota-tabs",
             onchange: function (tab) {
@@ -31,14 +34,53 @@ RED.nodes.registerType("Tasmota Sensor", {
                 $("#" + tab.id).show()
             }
         })
-        tabs.addTab({
-            id: "tasmota-settings-tab",
-            label: "Settings"
-        })
-        tabs.addTab({
-            id: "tasmota-advanced-tab",
-            label: "Advanced"
-        })
+        // populate tabs
+        tabs.addTab({ id: "tasmota-settings-tab", label: "Settings" })
+        tabs.addTab({ id: "tasmota-advanced-tab", label: "Advanced" })
+
+        // initialize editable list
+        $("#node-input-rule-container").css('min-height','250px').editableList({
+            sortable: true,
+            removable: true,
+            addItem: function(container, i, opt) {
+                var rule = opt.r;
+                var row = $('<div/>').appendTo(container);
+                var tinput = $('<input/>', {class:"node-input-rule-exp-value",
+                                            type:"text", style:"width:90%;"})
+                            .val(rule).appendTo(row)
+                            .typedInput({default:'jsonata', types:['jsonata']});
+
+                var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
+                finalspan.append(' &#8594; <span class="node-input-rule-index">'+(i+1)+'</span> ');
+            },
+            sortItems: function(rules) {
+                var items = $("#node-input-rule-container").editableList('items');
+                items.each(function(i) {
+                    $(this).find(".node-input-rule-index").html(i + 1);
+                });
+            },
+            removeItem: function(opt) {
+                var items = $("#node-input-rule-container").editableList('items');
+                items.each(function(i) {
+                    $(this).find(".node-input-rule-index").html(i + 1);
+                });
+            },
+        });
+        // populate editable list
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            $("#node-input-rule-container").editableList('addItem', {r: rule, i: i});
+        }
+    },
+    oneditsave: function() {
+        var items = $("#node-input-rule-container").editableList('items');
+        var node = this;
+        node.rules = [];
+        items.each(function(i) {
+            var rule = $(this).find(".node-input-rule-exp-value").typedInput('value');
+            node.rules.push(rule);
+        });
+        $('#node-input-outputs').val(node.rules.length || 1);
     }
 });
 </script>
@@ -62,6 +104,13 @@ RED.nodes.registerType("Tasmota Sensor", {
                 <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
                 <input type="text" id="node-input-name" placeholder="Name">
             </div>
+            <hr align="middle">
+            <label for="node-input-rule-container">Output channels payload:</label>
+            <div class="form-row node-input-rule-container-row">
+                <input type="hidden" id="node-input-outputs">
+                <ol id="node-input-rule-container"></ol>
+            </div>
+
         </div>
         <div id="tasmota-advanced-tab" style="display:none">
             <div class="form-row">
@@ -94,14 +143,19 @@ RED.nodes.registerType("Tasmota Sensor", {
     <h3>Outputs</h3>
     <dl class="message-properties">
        <dt>payload <span class="property-type">object</span></dt>
-       <dd>the JSON object as received from the Tasmota device.</dd>
+       <dd>the complete JSON object as received from the Tasmota device. Unless
+       you changed outputs using expressions.</dd>
     </dl>
     <h3>Details</h3>
     <p>This node can read the sensors data from the device.<p>
     <p>To combine more functionality from the same device (switch, sensor, etc..)
     use more than one node connected to the same device.</p>
     <p>Values are published as output on every telemetry messagge received from
-    the device.<p>
+    the device. </p>
+    <p>Number of outputs can be configured, for each channel an expression
+    must be given and is used to extract a piece of value,
+    ex: <code>AM2301.Temperature</code>, complex objects can also be created
+    using expressions.<p>
     <p>Any messagge received in input will trigger a fresh-value-request
     to the device, thus you can easily attach a repeating injection to receive
     the sensor data at an higher frequency than the normal Tasmota telemetry
