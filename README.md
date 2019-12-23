@@ -1,8 +1,10 @@
 # node-red-contrib-tasmota
 
 ![License](https://img.shields.io/github/license/davemds/node-red-contrib-tasmota.svg)
-![Release](https://img.shields.io/npm/v/node-red-contrib-tasmota.svg)
-![NPM](https://img.shields.io/npm/dm/node-red-contrib-tasmota.svg)
+[![npm version](https://img.shields.io/npm/v/node-red-contrib-tasmota.svg)](https://www.npmjs.com/package/node-red-contrib-tasmota)
+[![npm montly](https://img.shields.io/npm/dm/node-red-contrib-tasmota.svg)](https://www.npmjs.com/package/node-red-contrib-tasmota)
+[![node tasmota](https://img.shields.io/badge/Node--RED-contrib--tasmota-ee0077.svg)](https://flows.nodered.org/node/node-red-contrib-tasmota)
+
 
 Tasmota devices for building automation inside [Node-RED](https://nodered.org/).
 
@@ -12,13 +14,13 @@ The goal of the project is to support a wide set of features exposed by the Tasm
 
 This assumes you have [Node-RED](https://nodered.org) already installed and working, if you need to install Node-RED see [here](https://nodered.org/docs/getting-started/installation).
 
-Install via Node-RED Manage Palette interface ([node page](https://flows.nodered.org/node/node-red-contrib-tasmota))
+Install via Node-RED Manage Palette interface
 
 ```
 node-red-contrib-tasmota
 ```
 
-Install via [npm](https://www.npmjs.com/package/node-red-contrib-tasmota)
+Install via npm
 
 ```shell
 $ cd ~/.node-red
