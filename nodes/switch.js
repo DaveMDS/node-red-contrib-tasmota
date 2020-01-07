@@ -21,9 +21,8 @@ module.exports = function(RED) {
             super(user_config, RED, SWITCH_DEFAULTS);
             this.cache = []; // switch status cache, es: [1=>'On', 2=>'Off']
 
-            // Subscribes to state change of all the switch  stat/<device>/POWER*
-            this.MQTTSubscribe('stat', 'POWER', (t, p) => this.onPower(t, p));
-            this.MQTTSubscribe('stat', 'POWER+', (t, p) => this.onPower(t, p));
+            // Subscribes to state change of all the switch  stat/<device>/+
+            this.MQTTSubscribe('stat', '+', (t, p) => this.onStat(t, p));
         }
 
         onDeviceOnline() {
@@ -59,18 +58,24 @@ module.exports = function(RED) {
             }
         }
 
-        onPower(mqttTopic, mqttPayloadBuf) {
-            const mqttPayload = mqttPayloadBuf.toString(),
-                  channel = extractChannel(mqttTopic);
-
-            // check payload is valid and save in cache
-            if (mqttPayload === this.config.onValue) {
-                var status = this.cache[channel-1] = 'On';
-            } else if (mqttPayload === this.config.offValue) {
-                var status = this.cache[channel-1] = 'Off';
-            } else {
+        onStat(mqttTopic, mqttPayloadBuf) {
+            // last part of the topic must be POWER or POWERx (ignore any others)
+            const lastTopic = mqttTopic.split('/').pop();
+            if (!lastTopic.startsWith('POWER'))
                 return;
-            }
+
+            // check payload is valid
+            const mqttPayload = mqttPayloadBuf.toString();
+            if (mqttPayload === this.config.onValue)
+                var status = 'On';
+            else if (mqttPayload === this.config.offValue)
+                var status = 'Off';
+            else
+                return;
+
+            // extract channel number and save in cache
+            const channel = extractChannel(lastTopic);
+            this.cache[channel-1] = status;
 
             // update status icon and label
             this.setNodeStatus(this.cache[0] === 'On' ? 'green' : 'grey',
