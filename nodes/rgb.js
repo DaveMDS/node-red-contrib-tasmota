@@ -51,15 +51,13 @@ module.exports = function (RED) {
                 }
             }
 
-            // json color payload
-            if (typeof payload === 'string') {
-                var JSONpayload = JSON.parse(payload);
-                // "toggle" => Toggle the switch (not case sensitive)
-                if (JSONpayload.POWER) {
-                    this.MQTTPublish('cmnd', 'POWER', JSONpayload.POWER);
+            // combined hsv and power payload object
+            if (typeof payload === 'object') {
+                if (payload.POWER) {
+                    this.MQTTPublish('cmnd', 'POWER', payload.POWER);
                 }
-                if (JSONpayload.HSBColor) {
-                    this.MQTTPublish('cmnd', 'HsbColor', JSONpayload.HSBColor);
+                if (payload.HSBColor) {
+                    this.MQTTPublish('cmnd', 'HsbColor', payload.HSBColor);
                 }
             }
         }
