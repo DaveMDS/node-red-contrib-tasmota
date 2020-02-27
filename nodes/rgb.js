@@ -87,6 +87,8 @@ module.exports = function (RED) {
                 payload: mqttPayload
             }
 
+            msg.payload = JSON.parse(msg.payload);
+
             // everything to the same (single) output
             this.send(msg);
         }

@@ -120,38 +120,29 @@ checkbox, color_picker:
 
 
 <script type="text/x-red" data-help-name="Tasmota RGB">
-    <p>Connect a <b>Switch</b> device running the <b>Tasmota</b> firmware.</p>
+    <p>Connect a <b>RBG Controller</b> device running the <b>Tasmota</b> firmware.</p>
 
     <h3>Inputs</h3>
     <dl class="message-properties">
-        <dt>payload <span class="property-type">boolean | int | string</span></dt>
-        <dd>send a <code>true</code>/<code>false</code> (or <code>1</code>/<code>0</code>)
+        <dt>payload <span class="property-type">boolean | int | string | object</span></dt>
+        <dd>to control power state send <code>true</code>/<code>false</code> (or <code>1</code>/<code>0</code>)
         to turn On or Off the switch, <code>"toggle"</code> to change the
         state of the switch.</dd>
-        <dt>topic <span class="property-type">string</span></dt>
-        <dd>The topic is used to control a specific switch in a multi channels
-        device. <code>switchN</code> to act on the Nth channel, <code>switch0</code>
-        to act all the switch toghether, an empty topic will default to the
-        first channel.</dd>
+        <dd> or to control color and state send an object format <code>{"HSBColor":"0,0,100"}</code>
+            to turn On or Off the switch using HSBColor set the brightness value to <code>0</code> for off or <code>1-100</code>
+            for on at various levels of brightness, you do not need to send additional power commands if you use HSB control.</dd>
     </dl>
 
     <h3>Outputs</h3>
     <dl class="message-properties">
-       <dt>payload <span class="property-type">boolean</span></dt>
-       <dd>a <code>true</code>/<code>false</code> value is sent on every state
+       <dt>payload <span class="property-type">object</span></dt>
+       <dd>an object in the format <code>{"POWER":"ON","Dimmer":62,"Color":"737A9E","HSBColor":"230,27,62","Channel":[45,48,62]}</code> OR <code>{"POWER":"OFF"}</code> value is sent on every state
        change of the switch.</dd>
-       <dt>topic <span class="property-type">string</span></dt>
-       <dd>is used to identify the switch in a multi channels device,
-       es: <code>switch2</code> is the second channel.</dd>
     </dl>
     <h3>Details</h3>
     <p>This node manage the switch functionality of the device.</p>
     <p>To combine more functionality from the same device (switch, sensor, etc..)
-    use more than one node on the same device.</p>
-    <p>Multi channels device can work in two different modes: if the number of
-    channels is given in configuration then the node will have N outputs and
-    will send state changes to the correct output, otherwise (channels=1) all
-    messages will be sent to the single output with different topics.</p>
+    use more than one node on the same device.</p>>
     <p>In the Avanced tab you can customize the topic format for special cases,
     the default values should work for a default Tasmota installation.</p>
     <p>Input messagges are NOT forwarded to the output.</p>
