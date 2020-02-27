@@ -53,9 +53,6 @@ module.exports = function (RED) {
 
             // combined hsv and power payload object
             if (typeof payload === 'object') {
-                if (payload.POWER) {
-                    this.MQTTPublish('cmnd', 'POWER', payload.POWER);
-                }
                 if (payload.HSBColor) {
                     this.MQTTPublish('cmnd', 'HsbColor', payload.HSBColor);
                 }
