@@ -1,0 +1,149 @@
+<script type="text/javascript">
+RED.nodes.registerType("Tasmota RGB", {
+    category: "tasmota",
+    color: "#28AFB0",
+    defaults: {
+        // common basic
+        broker: { type: "mqtt-broker", required: true },
+        device: { value: "", required: true },
+        name: { value: "" },
+        // common advanced
+        fullTopic: { value: "" },
+        cmndPrefix: { value: "" },
+        statPrefix: { value: "" },
+        telePrefix: { value: "" },
+        // node specific
+        outputs: { value: "1" },
+        onValue: { value: "" },
+        offValue: { value: "" },
+        toggleValue: { value: "" }
+    },
+    icon: "contrib-tasmota-logo.svg",
+    inputs: 1,
+    outputs: 1,
+    label: function() {
+        return this.name || this.device || "Tasmota RGB";
+    },
+    labelStyle: function() {
+        return this.name ? "node_label_italic" : "";
+    },
+    oneditprepare: function () {
+        let tabs = RED.tabs.create({
+            id: "node-input-tasmota-tabs",
+            onchange: function (tab) {
+                $("#node-input-tabs-content").children().hide()
+                $("#" + tab.id).show()
+            }
+        })
+        tabs.addTab({
+            id: "tasmota-settings-tab",
+            label: "Settings"
+        })
+        tabs.addTab({
+            id: "tasmota-advanced-tab",
+            label: "Advanced"
+        })
+    }
+});
+</script>
+
+
+<!-- Reference
+checkbox, color_picker:
+  https://github.com/Christian-Me/node-red-contrib-homie-convention/blob/master/nodes/homie-device/homie-device.html
+-->
+<script type="text/x-red" data-template-name="Tasmota RGB">
+    <div class="form-row">
+        <ul id="node-input-tasmota-tabs"></ul>
+    </div>
+    <div id="node-input-tabs-content">
+        <div id="tasmota-settings-tab" style="display:none">
+            <div class="form-row">
+                <label for="node-input-broker"><i class="fa fa-globe"></i> Server</label>
+                <input type="text" id="node-input-broker">
+            </div>
+            <div class="form-row">
+                <label for="node-input-device"><i class="fa fa-dot-circle-o"></i> Device</label>
+                <input type="text" id="node-input-device" placeholder="Device id (topic)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+                <input type="text" id="node-input-name" placeholder="Name">
+            </div>
+            <hr align="middle">
+            <div class="form-row">
+                <label for="node-input-outputs"><i class="fa fa-random"></i> Channels</label>
+                <select id="node-input-outputs">
+                    <option value="1">1 Channel (or all merged)</option>
+                    <option value="2">2 Channels</option>
+                    <option value="3">3 Channels</option>
+                    <option value="4">4 Channels</option>
+                    <option value="5">5 Channels</option>
+                    <option value="6">6 Channels</option>
+                    <option value="7">7 Channels</option>
+                    <option value="8">8 Channels</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="node-input-onValue"><i class="fa fa-toggle-on"></i> On</label>
+                <input type="text" id="node-input-onValue" placeholder="Value for the On command (Default: ON)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-offValue"><i class="fa fa-toggle-off"></i> Off</label>
+                <input type="text" id="node-input-offValue" placeholder="Value for the Off command (Default: OFF)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-toggleValue"><i class="fa fa-exchange"></i> Toggle</label>
+                <input type="text" id="node-input-toggleValue" placeholder="Value for the Toggle command (Default: TOGGLE)">
+            </div>
+        </div>
+        <div id="tasmota-advanced-tab" style="display:none">
+            <div class="form-row">
+                <label for="node-input-fullTopic"><i class="fa fa-wrench"></i> Full topic</label>
+                <input type="text" id="node-input-fullTopic" placeholder="Full topic (Default: %prefix%/%topic%/)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-cmndPrefix"><i class="fa fa-comment"></i> cmnd</label>
+                <input type="text" id="node-input-cmndPrefix" placeholder="Command topic prefix (Default: cmnd)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-statPrefix"><i class="fa fa-comment"></i> stat</label>
+                <input type="text" id="node-input-statPrefix" placeholder="Stat topic prefix (Default: stat)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-telePrefix"><i class="fa fa-comment"></i> tele</label>
+                <input type="text" id="node-input-telePrefix" placeholder="Telemetry topic prefix (Default: tele)">
+            </div>
+        </div>
+    </div>
+</script>
+
+
+<script type="text/x-red" data-help-name="Tasmota RGB">
+    <p>Connect a <b>RBG Controller</b> device running the <b>Tasmota</b> firmware.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">boolean | int | string | object</span></dt>
+        <dd>to control power state send <code>true</code>/<code>false</code> (or <code>1</code>/<code>0</code>)
+        to turn On or Off the switch, <code>"toggle"</code> to change the
+        state of the switch.</dd>
+        <dd> or to control color and state send an object format <code>{"HSBColor":"0,0,100"}</code>
+            to turn On or Off the switch using HSBColor set the brightness value to <code>0</code> for off or <code>1-100</code>
+            for on at various levels of brightness, you do not need to send additional power commands if you use HSB control.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+       <dt>payload <span class="property-type">object</span></dt>
+       <dd>an object in the format <code>{"POWER":"ON","Dimmer":62,"Color":"737A9E","HSBColor":"230,27,62","Channel":[45,48,62]}</code> OR <code>{"POWER":"OFF"}</code> value is sent on every state
+       change of the switch.</dd>
+    </dl>
+    <h3>Details</h3>
+    <p>This node manage the switch functionality of the device.</p>
+    <p>To combine more functionality from the same device (switch, sensor, etc..)
+    use more than one node on the same device.</p>>
+    <p>In the Avanced tab you can customize the topic format for special cases,
+    the default values should work for a default Tasmota installation.</p>
+    <p>Input messagges are NOT forwarded to the output.</p>
+</script>
