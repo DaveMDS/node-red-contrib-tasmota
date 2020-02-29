@@ -41,13 +41,7 @@ class BaseTasmotaNode {
 
         // Establish MQTT broker connection
         this._brokerConnection = RED.nodes.getNode(this.config.broker);
-        if (!this._brokerConnection) {
-            this.setNodeStatus('red', 'No broker connection', 'dot')
-            this.error(`Cannot connect to broker: ${this.config.broker}`);
-            return;
-        }
         this._brokerConnection.register(this);
-        this.setNodeStatus('yellow', 'connecting...', 'ring')
 
         // Subscribe to device availability changes  tele/<device>/LWT
         this.MQTTSubscribe('tele', 'LWT', (topic, payload) => {

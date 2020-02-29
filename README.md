@@ -46,13 +46,13 @@ the JSON data received. On any input the sensor data is refreshed.
 
 ![Sensor Flow](/media/sensor.png?raw=true)
 
-### Tasmota RGB
+### Tasmota Light
 
-Lets you control your tasmota rgb controller, and of course give you messagges on state changes.
+Lets you control your tasmota light controller, and of course give you messagges on state changes.
 The value is also requested on startup, so the state should always be accurate.
-This node works identically to the switch node with the addition of the HSBColor input and Object output for RGB data.
+This node works identically to the switch node with the addition of the HSBColor input and object output for light status.
 
-![Sensor Flow](/media/rgb.png?raw=true)
+![Sensor Flow](/media/light.png?raw=true)
 
 ## Authors
 
