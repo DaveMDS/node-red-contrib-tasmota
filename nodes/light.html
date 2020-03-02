@@ -1,5 +1,5 @@
 <script type="text/javascript">
-RED.nodes.registerType("Tasmota RGB", {
+RED.nodes.registerType("Tasmota Light", {
     category: "tasmota",
     color: "#28AFB0",
     defaults: {
@@ -22,7 +22,7 @@ RED.nodes.registerType("Tasmota RGB", {
     inputs: 1,
     outputs: 1,
     label: function() {
-        return this.name || this.device || "Tasmota RGB";
+        return this.name || this.device || "Tasmota Light";
     },
     labelStyle: function() {
         return this.name ? "node_label_italic" : "";
@@ -52,7 +52,7 @@ RED.nodes.registerType("Tasmota RGB", {
 checkbox, color_picker:
   https://github.com/Christian-Me/node-red-contrib-homie-convention/blob/master/nodes/homie-device/homie-device.html
 -->
-<script type="text/x-red" data-template-name="Tasmota RGB">
+<script type="text/x-red" data-template-name="Tasmota Light">
     <div class="form-row">
         <ul id="node-input-tasmota-tabs"></ul>
     </div>
@@ -71,19 +71,6 @@ checkbox, color_picker:
                 <input type="text" id="node-input-name" placeholder="Name">
             </div>
             <hr align="middle">
-            <div class="form-row">
-                <label for="node-input-outputs"><i class="fa fa-random"></i> Channels</label>
-                <select id="node-input-outputs">
-                    <option value="1">1 Channel (or all merged)</option>
-                    <option value="2">2 Channels</option>
-                    <option value="3">3 Channels</option>
-                    <option value="4">4 Channels</option>
-                    <option value="5">5 Channels</option>
-                    <option value="6">6 Channels</option>
-                    <option value="7">7 Channels</option>
-                    <option value="8">8 Channels</option>
-                </select>
-            </div>
             <div class="form-row">
                 <label for="node-input-onValue"><i class="fa fa-toggle-on"></i> On</label>
                 <input type="text" id="node-input-onValue" placeholder="Value for the On command (Default: ON)">
@@ -119,8 +106,8 @@ checkbox, color_picker:
 </script>
 
 
-<script type="text/x-red" data-help-name="Tasmota RGB">
-    <p>Connect a <b>RBG Controller</b> device running the <b>Tasmota</b> firmware.</p>
+<script type="text/x-red" data-help-name="Tasmota Light">
+    <p>Connect a <b>Light Controller</b> device running the <b>Tasmota</b> firmware.</p>
 
     <h3>Inputs</h3>
     <dl class="message-properties">
@@ -128,16 +115,21 @@ checkbox, color_picker:
         <dd>to control power state send <code>true</code>/<code>false</code> (or <code>1</code>/<code>0</code>)
         to turn On or Off the switch, <code>"toggle"</code> to change the
         state of the switch.</dd>
-        <dd> or to control color and state send an object format <code>{"HSBColor":"0,0,100"}</code>
-            to turn On or Off the switch using HSBColor set the brightness value to <code>0</code> for off or <code>1-100</code>
-            for on at various levels of brightness, you do not need to send additional power commands if you use HSB control.</dd>
+
+        <dd> to control color and state you can send an object ocontaining 1 or more of the below values, most recent value will be used, if you send power off followed by Dimmer or HSB that is not 0 the light will turn back on.
+            <code>{"POWER":"On/Off"}</code> power
+            <code>{"Dimmer":"0-100"}</code> 0 = Off
+            <code>{"Color":"RRGGBB"}</code> <code>CWWW</code> for 2 channels <code>RRGGBBWW</code> for 4 channels or <code>RRGGBBCWWW</code> for 5
+            <code>{"HSBColor":"0-360, 0-100, 0-100"}</code> hue,saturation,brightness string
+            <code>{"CT":"153-500"}</code> color temp
+            </dd>
     </dl>
 
     <h3>Outputs</h3>
     <dl class="message-properties">
        <dt>payload <span class="property-type">object</span></dt>
-       <dd>an object in the format <code>{"POWER":"ON","Dimmer":62,"Color":"737A9E","HSBColor":"230,27,62","Channel":[45,48,62]}</code> OR <code>{"POWER":"OFF"}</code> value is sent on every state
-       change of the switch.</dd>
+       <dd>the node will return an object in the format <code>{"POWER":"ON","Dimmer":62,"Color":"737A9E","HSBColor":"230,27,62","Channel":[45,48,62],"CT":"153"}</code> OR <code>{"POWER":"OFF"}</code> on every state
+       change of the light.</dd>
     </dl>
     <h3>Details</h3>
     <p>This node manage the switch functionality of the device.</p>

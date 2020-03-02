@@ -25,7 +25,7 @@
     "nodes": {
       "Tasmota switch": "nodes/switch.js",
       "Tasmota sensor": "nodes/sensor.js",
-      "Tasmota rgb": "nodes/rgb.js"
+      "Tasmota light": "nodes/light.js"
     }
   },
   "files": [

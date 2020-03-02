@@ -2,23 +2,16 @@ module.exports = function (RED) {
     'use strict';
     const BaseTasmotaNode = require('./base_tasmota.js');
 
-    const RGB_DEFAULTS = {
+    const LIGHT_DEFAULTS = {
         outputs: 1,
         onValue: 'ON',
         offValue: 'OFF',
         toggleValue: 'TOGGLE'
     };
 
-    /* Return the integer number at the end of the given string,
-       default to 1 if no number found. */
-    function extractChannel(str) {
-        const numberRegexp = /\d+$/;
-        return Number(str.match(numberRegexp) || 1);
-    }
-
-    class TasmotaRGBNode extends BaseTasmotaNode {
+    class TasmotaLightNode extends BaseTasmotaNode {
         constructor(user_config) {
-            super(user_config, RED, RGB_DEFAULTS);
+            super(user_config, RED, LIGHT_DEFAULTS);
             this.cache = []; // switch status cache, es: [1=>'On', 2=>'Off']
 
             // Subscribes to state change of all the switch  stat/<device>/+
@@ -53,8 +46,20 @@ module.exports = function (RED) {
 
             // combined hsv and power payload object
             if (typeof payload === 'object') {
+                if (payload.POWER) {
+                    this.MQTTPublish('cmnd', 'Power', payload.POWER.toString());
+                }
+                if (payload.Dimmer) {
+                    this.MQTTPublish('cmnd', 'Dimmer', payload.Dimmer.toString());
+                }
+                if (payload.Color) {
+                    this.MQTTPublish('cmnd', 'Color1', payload.Color.toString());
+                }
                 if (payload.HSBColor) {
-                    this.MQTTPublish('cmnd', 'HsbColor', payload.HSBColor);
+                    this.MQTTPublish('cmnd', 'HsbColor', payload.HSBColor.toString());
+                }
+                if (payload.CT) {
+                    this.MQTTPublish('cmnd', 'CT', payload.CT.toString());
                 }
             }
         }
@@ -94,5 +99,5 @@ module.exports = function (RED) {
         }
     }
 
-    RED.nodes.registerType('Tasmota RGB', TasmotaRGBNode);
+    RED.nodes.registerType('Tasmota Light', TasmotaLightNode);
 };
