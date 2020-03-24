@@ -52,10 +52,12 @@ Lets you control your tasmota light controller, and of course give you messagges
 The value is also requested on startup, so the state should always be accurate.
 This node works identically to the switch node with the addition of the HSBColor input and object output for light status.
 
-![Sensor Flow](/media/light.png?raw=true)
+![Light Flow](/media/light.png?raw=true)
 
 ## Authors
 
-**[@DaveMDS](https://github.com/DaveMDS)** - [node-red-contrib-tasmota](https://github.com/DaveMDS/node-red-contrib-tasmota)
+**[@DaveMDS](https://github.com/DaveMDS)**
+**[@josephdouce](https://github.com/josephdouce)**
+
 
 Initially forked from [contrib-sonoff-tasmota](https://github.com/steffenmllr/node-red-contrib-sonoff-tasmota)
