@@ -57,6 +57,7 @@ This node works identically to the switch node with the addition of the HSBColor
 ## Authors
 
 **[@DaveMDS](https://github.com/DaveMDS)**
+
 **[@josephdouce](https://github.com/josephdouce)**
 
 
