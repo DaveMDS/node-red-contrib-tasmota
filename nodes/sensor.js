@@ -3,7 +3,6 @@ module.exports = function(RED) {
     const BaseTasmotaNode = require('./base_tasmota.js');
 
     const SENSOR_DEFAULTS = {
-        // node specific defaults
         rules: [],
     };
 

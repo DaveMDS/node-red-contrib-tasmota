@@ -7,13 +7,14 @@ RED.nodes.registerType("Tasmota Sensor", {
         broker: { type: "mqtt-broker", required: true },
         device: { value: "", required: true },
         name: { value: "" },
+        outputs: { value: 1 },
+        uidisabler: { value: false },
         // common advanced
         fullTopic: { value: "" },
         cmndPrefix: { value: "" },
         statPrefix: { value: "" },
         telePrefix: { value: "" },
         // node specific
-        outputs: { value: 1 },
         rules: { value:[] }
     },
     icon: "contrib-tasmota-logo.svg",
@@ -104,6 +105,12 @@ RED.nodes.registerType("Tasmota Sensor", {
             <div class="form-row">
                 <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
                 <input type="text" id="node-input-name" placeholder="Name">
+            </div>
+            <div class="form-row">
+                <label for="node-input-uidisabler"><i class="fa fa-bar-chart"></i> Dashboard</label>
+                <label for="node-input-uidisabler" style="width:70%">
+                    <input type="checkbox" id="node-input-uidisabler" style="display:inline-block; width:22px; vertical-align:baseline;">Send enable/disable message</span>
+                </label>
             </div>
             <hr align="middle">
             <label for="node-input-rule-container">Output channels payload:</label>

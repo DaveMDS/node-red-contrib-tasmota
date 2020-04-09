@@ -3,7 +3,6 @@ module.exports = function (RED) {
     const BaseTasmotaNode = require('./base_tasmota.js');
 
     const LIGHT_DEFAULTS = {
-        outputs: 1,
         onValue: 'ON',
         offValue: 'OFF',
         toggleValue: 'TOGGLE'

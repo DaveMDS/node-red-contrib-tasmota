@@ -7,6 +7,8 @@ const TASMOTA_DEFAULTS = {
     broker: '',  // mandatory
     device: '',  // mandatory
     name: '',
+    outputs: 1,
+    uidisabler: false,
     // advanced
     fullTopic: '%prefix%/%topic%/',
     cmndPrefix: 'cmnd',
@@ -49,9 +51,11 @@ class BaseTasmotaNode {
             this.statusLWT = payload.toString();
             if (this.statusLWT === LWT_ONLINE) {
                 this.setNodeStatus('green', this.statusLWT, 'ring')
+                this._sendEnableUI(true);
                 this.onDeviceOnline()
             } else {
                 this.setNodeStatus('red', this.statusLWT, 'ring')
+                this._sendEnableUI(false);
                 this.onDeviceOffline()
             }
         });
@@ -68,6 +72,21 @@ class BaseTasmotaNode {
 
     }
 
+    _sendEnableUI(enabled) {
+        if (this.config.uidisabler) {
+            this.sendToAllOutputs({enabled: enabled})
+        }
+    }
+
+    sendToAllOutputs(msg) {
+        var count = Number(this.config.outputs) || 1
+        if (count === 1) {
+            this.send(msg)
+        } else {
+            this.send(new Array(count).fill(msg))
+        }
+    }
+
     onBrokerOnline() {
         // probably this is never shown, as the LWT sould be Offline
         // at this point. But we need to update the status.
@@ -79,6 +98,7 @@ class BaseTasmotaNode {
             // force the status, regardless the LWT
             this.status({fill: 'red', shape: 'ring',
                          text: 'Broker disconnected'});
+            this._sendEnableUI(false);
             this.onDeviceOffline();
         }
     }

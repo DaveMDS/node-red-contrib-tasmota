@@ -3,7 +3,6 @@ module.exports = function(RED) {
     const BaseTasmotaNode = require('./base_tasmota.js');
 
     const SWITCH_DEFAULTS = {
-        outputs: 1,
         onValue: 'ON',
         offValue: 'OFF',
         toggleValue: 'TOGGLE'
