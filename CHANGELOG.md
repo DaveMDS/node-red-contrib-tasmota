@@ -2,6 +2,7 @@
  - Implemented a custom mqtt client, the node-red one is not for public usage
  - Fixed node status label in case of errors, fix issue #4
  - Shortened palette labels to be consistent with other nodes
+ - standardjs
 
 #### 0.9.3
  - Add Light node, by josephdouce
@@ -16,4 +17,3 @@
 
 #### 0.9.0
  - First release
- 
