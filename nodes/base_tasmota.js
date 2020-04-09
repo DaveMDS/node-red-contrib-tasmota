@@ -1,5 +1,6 @@
 'use strict';
 
+const TasmotaMqttClient = require('./tasmota_mqtt_client.js')
 
 const TASMOTA_DEFAULTS = {
     // basic
@@ -24,8 +25,8 @@ class BaseTasmotaNode {
         RED.nodes.createNode(this, config);
 
         // Internals
-        this._subscribedTopics = [];
-        this._brokerConnection = null;
+        this.mqttClient = null;
+        this.closing = false;
 
         // LastWillTopic status of the device
         this.statusLWT = LWT_OFFLINE;
@@ -40,8 +41,8 @@ class BaseTasmotaNode {
         }
 
         // Establish MQTT broker connection
-        this._brokerConnection = RED.nodes.getNode(this.config.broker);
-        this._brokerConnection.register(this);
+        var broker_node = RED.nodes.getNode(this.config.broker);
+        this.mqttClient = new TasmotaMqttClient(this, broker_node)
 
         // Subscribe to device availability changes  tele/<device>/LWT
         this.MQTTSubscribe('tele', 'LWT', (topic, payload) => {
@@ -61,14 +62,25 @@ class BaseTasmotaNode {
 
         // Remove all connections when node is deleted or restarted
         this.on('close', done => {
-            // unsubscribe from all registered topics
-            for (let fullTopic of this._subscribedTopics) {
-                this._brokerConnection.unsubscribe(fullTopic, this.id);
-            }
-            // close the broker connection
-            this._brokerConnection.deregister(this, done);
+            this.closing = true;
+            this.mqttClient.disconnect(done);
         });
 
+    }
+
+    onBrokerOnline() {
+        // probably this is never shown, as the LWT sould be Offline
+        // at this point. But we need to update the status.
+        this.setNodeStatus('yellow', 'Broker connected', 'ring');
+    }
+
+    onBrokerOffline() {
+        if (!this.closing) {
+            // force the status, regardless the LWT
+            this.status({fill: 'red', shape: 'ring',
+                         text: 'Broker disconnected'});
+            this.onDeviceOffline();
+        }
     }
 
     onDeviceOnline() {
@@ -85,7 +97,8 @@ class BaseTasmotaNode {
 
     setNodeStatus(fill, text, shape) {
         if (this.statusLWT === LWT_ONLINE) {
-            this.status({fill: fill, shape: shape, text: text})
+            this.status({fill: fill, text: text,
+                         shape: shape || 'dot'})
         } else {
             this.status({fill: 'red', shape: 'ring',
                          text: this.statusLWT || LWT_OFFLINE});
@@ -112,14 +125,13 @@ class BaseTasmotaNode {
 
     MQTTPublish(prefix, command, payload) {
         var fullTopic = this.buildFullTopic(prefix, command);
-        this._brokerConnection.client.publish(fullTopic, payload);
-        // TODO , publish(topic, pl, {qos: 0, retain: false})
+        this.mqttClient.publish(fullTopic, payload);
+        // TODO  qos and retain options
     }
 
     MQTTSubscribe(prefix, command, callback) {
         var fullTopic = this.buildFullTopic(prefix, command);
-        this._brokerConnection.subscribe(fullTopic, 2, callback, this.id);
-        this._subscribedTopics.push(fullTopic);
+        this.mqttClient.subscribe(fullTopic, 2, callback);
     }
 }
 

@@ -28,6 +28,9 @@
       "Tasmota light": "nodes/light.js"
     }
   },
+  "dependencies": {
+    "mqtt": "2.18.8"
+  },
   "files": [
     "package.json",
     "README.md",
