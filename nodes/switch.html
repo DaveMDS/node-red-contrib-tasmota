@@ -129,11 +129,12 @@ RED.nodes.registerType("Tasmota Switch", {
     <h3>Inputs</h3>
     <dl class="message-properties">
         <dt>payload <span class="property-type">boolean | int | string</span></dt>
-        <dd>send a <code>true</code>/<code>false</code> (or <code>1</code>/<code>0</code>)
-        to turn On or Off the switch, <code>"toggle"</code> to change the
-        state of the switch.</dd>
+        <dd><code>true</code>/<code>false</code>, <code>1</code>/<code>0</code>
+        or <code>"on"</code>/<code>"off"</code> will turn On or Off the switch,
+        <code>"toggle"</code> will change the state of the switch.</dd>
+
         <dt>topic <span class="property-type">string</span></dt>
-        <dd>The topic is used to control a specific switch in a multi channels
+        <dd>topic is used to control a specific switch in a multi channels
         device. <code>switchN</code> to act on the Nth channel, <code>switch0</code>
         to act all the switch toghether, an empty topic will default to the
         first channel.</dd>

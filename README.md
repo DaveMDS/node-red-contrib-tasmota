@@ -36,8 +36,13 @@ The installed nodes have more detailed information in the Node-RED info pane, sh
 
 Lets you control your tasmota switch, and of course give you messagges on state changes.
 The value is also requested on startup, so the state should always be accurate.
+Support up to 8 channals devices, the node can be configured to send all the
+status changes to a single output (in this case the topic is used to distinguish channels)
+or can be configured to have N outputs (one for each channel).
+
 
 ![Switch Flow](/media/switch.png?raw=true)
+![Switch2 Flow](/media/switch2.png?raw=true)
 
 ### Tasmota Sensor
 
