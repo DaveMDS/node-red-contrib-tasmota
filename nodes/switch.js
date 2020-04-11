@@ -38,19 +38,26 @@ module.exports = function (RED) {
 
       // Switch On/Off for: booleans, the onValue or 1/0 (int or str)
       if (payload === true || payload === this.config.onValue ||
-        payload === 1 || payload === '1') {
+          payload === 1 || payload === '1') {
         this.MQTTPublish('cmnd', command, this.config.onValue)
       }
       if (payload === false || payload === this.config.offValue ||
-        payload === 0 || payload === '0') {
+          payload === 0 || payload === '0') {
         this.MQTTPublish('cmnd', command, this.config.offValue)
       }
 
-      // string payload
+      // String payload: on, off, toggle (not case sensitive)
       if (typeof payload === 'string') {
-        // "toggle" => Toggle the switch (not case sensitive)
-        if (payload.toLowerCase() === 'toggle') {
-          this.MQTTPublish('cmnd', command, this.config.toggleValue)
+        switch (payload.toLowerCase()) {
+          case 'on':
+            this.MQTTPublish('cmnd', command, this.config.onValue)
+            break
+          case 'off':
+            this.MQTTPublish('cmnd', command, this.config.offValue)
+            break
+          case 'toggle':
+            this.MQTTPublish('cmnd', command, this.config.toggleValue)
+            break
         }
       }
     }

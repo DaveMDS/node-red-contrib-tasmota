@@ -3,6 +3,7 @@
  - Fixed node status label in case of errors, fix issue #4
  - Shortened palette labels to be consistent with other nodes
  - New icons for all different nodes
+ - Switch and Light: always accept 'on' and 'off' (not case sensitive)
  - standardjs
 
 #### 0.9.3
