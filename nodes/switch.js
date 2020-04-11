@@ -40,10 +40,12 @@ module.exports = function (RED) {
       if (payload === true || payload === this.config.onValue ||
           payload === 1 || payload === '1') {
         this.MQTTPublish('cmnd', command, this.config.onValue)
+        return
       }
       if (payload === false || payload === this.config.offValue ||
           payload === 0 || payload === '0') {
         this.MQTTPublish('cmnd', command, this.config.offValue)
+        return
       }
 
       // String payload: on, off, toggle (not case sensitive)
@@ -51,13 +53,13 @@ module.exports = function (RED) {
         switch (payload.toLowerCase()) {
           case 'on':
             this.MQTTPublish('cmnd', command, this.config.onValue)
-            break
+            return
           case 'off':
             this.MQTTPublish('cmnd', command, this.config.offValue)
-            break
+            return
           case 'toggle':
             this.MQTTPublish('cmnd', command, this.config.toggleValue)
-            break
+            return
         }
       }
     }
