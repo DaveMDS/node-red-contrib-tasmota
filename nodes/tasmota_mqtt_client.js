@@ -49,17 +49,17 @@ function mqttSingleDisconnect (brokerUrl, done) {
   }
 }
 
-function matchTopic (ts, t) {
+function matchTopic (subscription, topic) {
   // ...blindly copied from nodes/core/network/10-mqtt.js
-  if (ts === '#') {
+  if (subscription === '#' || subscription === topic) {
     return true
-  } else if (ts.startsWith('$share')) {
-    ts = ts.replace(/^\$share\/[^#+/]+\/(.*)/g, '$1')
+  } else if (subscription.startsWith('$share')) {
+    subscription = subscription.replace(/^\$share\/[^#+/]+\/(.*)/g, '$1')
   }
   /* eslint-disable no-useless-escape */
-  var re = new RegExp('^' + ts.replace(/([\[\]\?\(\)\\\\$\^\*\.|])/g, '\\$1').replace(/\+/g, '[^/]+').replace(/\/#$/, '(\/.*)?') + '$')
+  var re = new RegExp('^' + subscription.replace(/([\[\]\?\(\)\\\\$\^\*\.|])/g, '\\$1').replace(/\+/g, '[^/]+').replace(/\/#$/, '(\/.*)?') + '$')
   /* eslint-enable no-useless-escape */
-  return re.test(t)
+  return re.test(topic)
 }
 
 class TasmotaMqttClient {
