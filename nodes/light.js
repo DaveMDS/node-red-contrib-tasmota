@@ -13,8 +13,8 @@ module.exports = function (RED) {
       super(userConfig, RED, LIGHT_DEFAULTS)
       this.cache = [] // switch status cache, es: [1=>'On', 2=>'Off']
 
-      // Subscribes to state change of all the switch  stat/<device>/+
-      this.MQTTSubscribe('stat', '+', (t, p) => this.onStat(t, p))
+      // Subscribes to state changes
+      this.MQTTSubscribe('stat', 'RESULT', (t, p) => this.onStat(t, p))
     }
 
     onDeviceOnline () {
@@ -74,11 +74,6 @@ module.exports = function (RED) {
 
     onStat (mqttTopic, mqttPayloadBuf) {
       const mqttPayload = mqttPayloadBuf.toString()
-      // last part of the topic must be POWER or POWERx (ignore any others)
-      const lastTopic = mqttTopic.split('/').pop()
-      if (!lastTopic.startsWith('RESULT')) {
-        return
-      }
 
       // check payload is valid
       var status

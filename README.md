@@ -34,7 +34,7 @@ The installed nodes have more detailed information in the Node-RED info pane,
 shown when the node is selected. Below is a quick summary.
 
 
-### Tasmota Switch
+### Tasmota Switch node
 
 Lets you control your tasmota switch, and of course give you messagges on state changes.
 The value is also requested on startup, so the state should always be accurate.
@@ -48,7 +48,7 @@ or can be configured to have N outputs (one for each channel).
 ![Switch2 Flow](/media/switch2.png?raw=true)
 
 
-### Tasmota Sensor
+### Tasmota Sensor node
 
 This node listen for telemetry from the tasmota device and fire a messagge with
 the JSON data received. On any input messagge fresh data is requested.
@@ -61,7 +61,7 @@ each output channel.
 ![Sensor2 Flow](/media/sensor2.png?raw=true)
 
 
-### Tasmota Light
+### Tasmota Light node
 
 Lets you control your tasmota light controller, and of course give you messagges on state changes.
 The value is also requested on startup, so the state should always be accurate.
