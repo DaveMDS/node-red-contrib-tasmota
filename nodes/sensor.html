@@ -152,18 +152,18 @@ RED.nodes.registerType("Tasmota Sensor", {
     <dl class="message-properties">
        <dt>payload <span class="property-type">object</span></dt>
        <dd>the complete JSON object as received from the Tasmota device. Unless
-       you changed outputs using expressions.</dd>
+       you have configured outputs using JSONata expressions.</dd>
     </dl>
     <h3>Details</h3>
-    <p>This node can read the sensors data from the device.<p>
+    <p>This node read sensors data from the device.<p>
     <p>To combine more functionality from the same device (switch, sensor, etc..)
     use more than one node connected to the same device.</p>
     <p>Values are published as output on every telemetry messagge received from
     the device. </p>
     <p>Number of outputs can be configured, for each channel an expression
     must be given and is used to extract a piece of value,
-    ex: <code>AM2301.Temperature</code>, complex objects can also be created
-    using expressions.<p>
+    ex: <code>AM2301.Temperature</code>. Complex objects can also be created
+    using JSONata expressions.<p>
     <p>Any messagge received in input will trigger a fresh-value-request
     to the device, thus you can easily attach a repeating injection to receive
     the sensor data at an higher frequency than the normal Tasmota telemetry

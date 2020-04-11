@@ -30,26 +30,36 @@ $ npm install node-red-contrib-tasmota
 
 ## Included Nodes
 
-The installed nodes have more detailed information in the Node-RED info pane, shown when the node is selected. Below is a quick summary
+The installed nodes have more detailed information in the Node-RED info pane, 
+shown when the node is selected. Below is a quick summary.
+
 
 ### Tasmota Switch
 
 Lets you control your tasmota switch, and of course give you messagges on state changes.
 The value is also requested on startup, so the state should always be accurate.
+
 Support up to 8 channals devices, the node can be configured to send all the
 status changes to a single output (in this case the topic is used to distinguish channels)
 or can be configured to have N outputs (one for each channel).
 
 
-![Switch Flow](/media/switch.png?raw=true)
+![Switch1 Flow](/media/switch1.png?raw=true)
 ![Switch2 Flow](/media/switch2.png?raw=true)
+
 
 ### Tasmota Sensor
 
-This simple node listen for telemetry from the tasmota and fire a messagge with
-the JSON data received. On any input the sensor data is refreshed.
+This node listen for telemetry from the tasmota device and fire a messagge with
+the JSON data received. On any input messagge fresh data is requested.
 
-![Sensor Flow](/media/sensor.png?raw=true)
+Outputs can be freely configured to extract only the data you are intrested in,
+you can configure as many output as you like, giving a JSONata expression for
+each output channel. 
+
+![Sensor1 Flow](/media/sensor1.png?raw=true)
+![Sensor2 Flow](/media/sensor2.png?raw=true)
+
 
 ### Tasmota Light
 
@@ -58,6 +68,7 @@ The value is also requested on startup, so the state should always be accurate.
 This node works identically to the switch node with the addition of the HSBColor input and object output for light status.
 
 ![Light Flow](/media/light.png?raw=true)
+
 
 ## Authors
 
