@@ -66,7 +66,7 @@ module.exports = function (RED) {
         }
       }
 
-      this.error('Invalid payload received on input')
+      this.warn('Invalid payload received on input')
     }
 
     onStat (mqttTopic, mqttPayloadBuf) {
