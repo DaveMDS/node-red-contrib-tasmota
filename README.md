@@ -80,16 +80,15 @@ device  configuration or to send specific commands not supported by the node its
 The list of all the commands supported by Tasmota is available on this
 [documentation](https://tasmota.github.io/docs/Commands/) page.
 
-To send Tasmota commands you just have to send a message to the node with
-the `command` topic and the Tasmota command you want to send as payload. 
+To send commands to the device just send a message to the node with `command`
+as topic and the Tasmota command as payload. 
 
 Three payload formats are supported:
+1. string payload: `'CMD <param>'`
+2. string list payload: `['CMD <param>', 'CMD <param>', ...]`
+3. object payload: {'CMD': 'param', 'CMD': 'param', ...}
 
-    1. string payload: `'CMD <param>'`
-    2. string list payload: `['CMD <param>', 'CMD <param>', ...]`
-    3. object payload: {'CMD': 'param', 'CMD': 'param', ...}
-
-Note that the object format does not guarantee the order of delivered messagge,
+Note that the object format does not guarantee the order of delivered messagges,
 thus if commands order is important you must use the list format.
 
 
