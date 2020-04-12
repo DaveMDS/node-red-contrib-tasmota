@@ -3,10 +3,13 @@ module.exports = function (RED) {
   const BaseTasmotaNode = require('./base_tasmota.js')
 
   const LIGHT_DEFAULTS = {
-    onValue: 'ON',
-    offValue: 'OFF',
-    toggleValue: 'TOGGLE'
+    // no specific options for this node
   }
+
+  // values for the tasmota POWER command
+  const onValue = 'ON'
+  const offValue = 'OFF'
+  const toggleValue = 'TOGGLE'
 
   class TasmotaLightNode extends BaseTasmotaNode {
     constructor (userConfig) {
@@ -25,29 +28,29 @@ module.exports = function (RED) {
     onNodeInput (msg) {
       const payload = msg.payload
 
-      // Switch On/Off for: booleans, the onValue or 1/0 (int or str)
-      if (payload === true || payload === this.config.onValue ||
-          payload === 1 || payload === '1') {
-        this.MQTTPublish('cmnd', 'POWER', this.config.onValue)
+      // Switch On/Off for booleans and 1/0 (int or str)
+      if (payload === true || payload === 1 || payload === '1') {
+        this.MQTTPublish('cmnd', 'POWER', onValue)
         return
       }
-      if (payload === false || payload === this.config.offValue ||
-          payload === 0 || payload === '0') {
-        this.MQTTPublish('cmnd', 'POWER', this.config.offValue)
+      if (payload === false || payload === 0 || payload === '0') {
+        this.MQTTPublish('cmnd', 'POWER', offValue)
         return
       }
 
-      // String payload: on, off, toggle (not case sensitive)
+      // String payload: on/off, true/false, toggle (not case sensitive)
       if (typeof payload === 'string') {
         switch (payload.toLowerCase()) {
           case 'on':
-            this.MQTTPublish('cmnd', 'POWER', this.config.onValue)
+          case 'true':
+            this.MQTTPublish('cmnd', 'POWER', onValue)
             return
           case 'off':
-            this.MQTTPublish('cmnd', 'POWER', this.config.offValue)
+          case 'false':
+            this.MQTTPublish('cmnd', 'POWER', offValue)
             return
           case 'toggle':
-            this.MQTTPublish('cmnd', 'POWER', this.config.toggleValue)
+            this.MQTTPublish('cmnd', 'POWER', toggleValue)
             return
         }
       }
@@ -69,7 +72,10 @@ module.exports = function (RED) {
         if (payload.CT) {
           this.MQTTPublish('cmnd', 'CT', payload.CT.toString())
         }
+        return
       }
+
+      this.error('Invalid payload received on input')
     }
 
     onStat (mqttTopic, mqttPayloadBuf) {

@@ -13,11 +13,8 @@ RED.nodes.registerType("Tasmota Light", {
         fullTopic: { value: "" },
         cmndPrefix: { value: "" },
         statPrefix: { value: "" },
-        telePrefix: { value: "" },
+        telePrefix: { value: "" }
         // node specific
-        onValue: { value: "" },
-        offValue: { value: "" },
-        toggleValue: { value: "" }
     },
     icon: "contrib-tasmota-light.svg",
     paletteLabel: 'light',
@@ -78,19 +75,7 @@ checkbox, color_picker:
                     <input type="checkbox" id="node-input-uidisabler" style="display:inline-block; width:22px; vertical-align:baseline;">Send enable/disable message</span>
                 </label>
             </div>
-            <hr align="middle">
-            <div class="form-row">
-                <label for="node-input-onValue"><i class="fa fa-toggle-on"></i> On</label>
-                <input type="text" id="node-input-onValue" placeholder="Value for the On command (Default: ON)">
-            </div>
-            <div class="form-row">
-                <label for="node-input-offValue"><i class="fa fa-toggle-off"></i> Off</label>
-                <input type="text" id="node-input-offValue" placeholder="Value for the Off command (Default: OFF)">
-            </div>
-            <div class="form-row">
-                <label for="node-input-toggleValue"><i class="fa fa-exchange"></i> Toggle</label>
-                <input type="text" id="node-input-toggleValue" placeholder="Value for the Toggle command (Default: TOGGLE)">
-            </div>
+            <!-- <hr align="middle"> -->
         </div>
         <div id="tasmota-advanced-tab" style="display:none">
             <div class="form-row">
@@ -120,11 +105,11 @@ checkbox, color_picker:
     <h3>Inputs</h3>
     <dl class="message-properties">
         <dt>payload <span class="property-type">boolean | int | string | object</span></dt>
-        <dd>to control power state send <code>true</code>/<code>false</code> (or <code>1</code>/<code>0</code>)
-        to turn On or Off the switch, <code>"toggle"</code> to change the
-        state of the switch.</dd>
+        <dd><code>true</code>/<code>false</code>, <code>1</code>/<code>0</code>
+        or <code>on</code>/<code>off</code> will turn On or Off the light,
+        <code>toggle</code> will change the on/off state of the light.</dd>
 
-        <dd> to control color and state you can send an object ocontaining 1 or more of the below values, most recent value will be used, if you send power off followed by Dimmer or HSB that is not 0 the light will turn back on.
+        <dd> To control color and state you can send an object ocontaining 1 or more of the below values, most recent value will be used, if you send power off followed by Dimmer or HSB that is not 0 the light will turn back on.
             <code>{"POWER":"On/Off"}</code> power
             <code>{"Dimmer":"0-100"}</code> 0 = Off
             <code>{"Color":"RRGGBB"}</code> <code>CWWW</code> for 2 channels <code>RRGGBBWW</code> for 4 channels or <code>RRGGBBCWWW</code> for 5

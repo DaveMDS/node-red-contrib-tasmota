@@ -4,6 +4,7 @@
  - Shortened palette labels to be consistent with other nodes
  - New icons for all different nodes
  - Switch and Light: always accept 'on' and 'off' (not case sensitive)
+ - Removed on/off/toggle config from Switch and Light (Tasmota does not support this)
  - standardjs
 
 #### 0.9.3
