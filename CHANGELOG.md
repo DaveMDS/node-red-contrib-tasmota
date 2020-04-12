@@ -5,6 +5,7 @@
  - New icons for all different nodes
  - Switch and Light: always accept 'on' and 'off' (not case sensitive)
  - Removed on/off/toggle config from Switch and Light (Tasmota does not support this)
+ - New raw/custom tasmota command can be sent using the 'command' topic (all nodes)
  - standardjs
 
 #### 0.9.3

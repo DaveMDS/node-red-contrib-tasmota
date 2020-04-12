@@ -70,6 +70,29 @@ This node works identically to the switch node with the addition of the HSBColor
 ![Light Flow](/media/light.png?raw=true)
 
 
+### Send any Tasmota command
+
+All the nodes support an additional mode where you can sand one or more Tasmota 
+commands to the device, using this feature you can send ANY command, not just
+the ones supported by the specific node, this can be used for example to change 
+device  configuration or to send specific commands not supported by the node itself. 
+
+The list of all the commands supported by Tasmota is available on this
+[documentation](https://tasmota.github.io/docs/Commands/) page.
+
+To send Tasmota commands you just have to send a message to the node with
+the `command` topic and the Tasmota command you want to send as payload. 
+
+Three payload formats are supported:
+
+    1. string payload: `'CMD <param>'`
+    2. string list payload: `['CMD <param>', 'CMD <param>', ...]`
+    3. object payload: {'CMD': 'param', 'CMD': 'param', ...}
+
+Note that the object format does not guarantee the order of delivered messagge,
+thus if commands order is important you must use the list format.
+
+
 ## Authors
 
 **[@DaveMDS](https://github.com/DaveMDS)**
