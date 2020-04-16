@@ -11,10 +11,29 @@ module.exports = function (RED) {
   const offValue = 'OFF'
   const toggleValue = 'TOGGLE'
 
+  // named colors supported by the color command
+  const TASMOTA_COLORS = {
+    red: '1',
+    green: '2',
+    blue: '3',
+    orange: '4',
+    lightgreen: '5',
+    lightblue: '6',
+    amber: '7',
+    cyan: '8',
+    purple: '9',
+    yellow: '10',
+    pink: '11',
+    white: '12',
+    '+': '+',
+    '-': '-'
+  }
+
   class TasmotaLightNode extends BaseTasmotaNode {
     constructor (userConfig) {
       super(userConfig, RED, LIGHT_DEFAULTS)
       this.cache = [] // switch status cache, es: [1=>'On', 2=>'Off']
+      this.colorCmnd = 'Color1' // TODO make Color1/2 configurable
 
       // Subscribes to state changes
       this.MQTTSubscribe('stat', 'RESULT', (t, p) => this.onStat(t, p))
@@ -27,6 +46,7 @@ module.exports = function (RED) {
 
     onNodeInput (msg) {
       var on, bright, ct
+      var rgb, hsb, hex, color
 
       // MODE 1: simple on/off/toggle (without topic)
       if (!msg.topic &&
@@ -40,7 +60,8 @@ module.exports = function (RED) {
       if (msg.topic &&
           (typeof msg.payload === 'boolean' ||
            typeof msg.payload === 'number' ||
-           typeof msg.payload === 'string')) {
+           typeof msg.payload === 'string' ||
+           Array.isArray(msg.payload))) {
         if (msg.topic === 'on' || msg.topic === 'state') {
           on = msg.payload
         }
@@ -49,6 +70,18 @@ module.exports = function (RED) {
         }
         if (msg.topic === 'ct' || msg.topic === 'colorTemp') {
           ct = msg.payload
+        }
+        if (msg.topic === 'rgb') {
+          rgb = msg.payload
+        }
+        if (msg.topic === 'hsb') {
+          hsb = msg.payload
+        }
+        if (msg.topic === 'hex') {
+          hex = msg.payload
+        }
+        if (msg.topic === 'color') {
+          color = msg.payload
         }
       }
 
@@ -78,10 +111,24 @@ module.exports = function (RED) {
         if (typeof msg.payload.colorTemp !== 'undefined') {
           ct = msg.payload.colorTemp
         }
+        // rgb, hsb, hex, color
+        if (typeof msg.payload.rgb !== 'undefined') {
+          rgb = msg.payload.rgb
+        }
+        if (typeof msg.payload.hsb !== 'undefined') {
+          hsb = msg.payload.hsb
+        }
+        if (typeof msg.payload.hex !== 'undefined') {
+          hex = msg.payload.hex
+        }
+        if (typeof msg.payload.color !== 'undefined') {
+          color = msg.payload.color
+        }
       }
 
       // did we found something usefull?
-      if (on === undefined && bright === undefined && ct === undefined) {
+      if (on === undefined && bright === undefined && ct === undefined &&
+          rgb === undefined && hsb === undefined && hex === undefined && color === undefined) {
         this.warn('Invalid message received on input')
         return
       }
@@ -133,6 +180,56 @@ module.exports = function (RED) {
           this.MQTTPublish('cmnd', 'CT', ct.toString())
         } else {
           this.warn('Invalid value for the \'ct\' command (should be: 0-100, 2000-6500 or 500-153)')
+        }
+      }
+
+      // rgb: array[r,g,b] or string "r,g,b" (0-255, 0-255, 0-255)
+      if (rgb !== undefined) {
+        if (typeof rgb === 'string') {
+          this.MQTTPublish('cmnd', this.colorCmnd, rgb)
+        } else if (Array.isArray(rgb) && rgb.length === 3) {
+          this.MQTTPublish('cmnd', this.colorCmnd, rgb.toString())
+        } else {
+          this.warn('Invalid value for the \'rgb\' command (should be: [r,g,b] [0-255, 0-255, 0-255])')
+        }
+      }
+
+      // hsb: array[h,s,b] or string "h,s,b" (0-360, 0-100, 0-100)
+      if (hsb !== undefined) {
+        if (typeof hsb === 'string') {
+          this.MQTTPublish('cmnd', 'HsbColor', hsb)
+        } else if (Array.isArray(hsb) && hsb.length === 3) {
+          this.MQTTPublish('cmnd', 'HsbColor', hsb.toString())
+        } else {
+          this.warn('Invalid value for the \'hsb\' command (should be: [h,s,b] [0-360, 0-100, 0-100])')
+        }
+      }
+
+      // hex: #CWWW, #RRGGBB, #RRGGBBWW or #RRGGBBCWWW (with or without #)
+      if (hex !== undefined) {
+        if (typeof hex === 'string') {
+          hex = (hex[0] === '#') ? hex : '#' + hex
+          if (hex.length === 5 || hex.length === 7 || hex.length === 9 || hex.length === 11) {
+            this.MQTTPublish('cmnd', this.colorCmnd, hex)
+          } else {
+            this.warn('Invalid length for the \'hex\' command (should be: #CWWW, #RRGGBB, #RRGGBBWW or #RRGGBBCWWW)')
+          }
+        } else {
+          this.warn('Invalid type for the \'hex\' command (should be: #CWWW, #RRGGBB, #RRGGBBWW or #RRGGBBCWWW)')
+        }
+      }
+
+      // color: ColorName or +/- (next/prev color)
+      if (color !== undefined) {
+        if (typeof color === 'string') {
+          const colorCode = TASMOTA_COLORS[color.replace(/\s/g, '').toLowerCase()]
+          if (colorCode !== undefined) {
+            this.MQTTPublish('cmnd', this.colorCmnd, colorCode)
+          } else {
+            this.warn('Invalid value for the \'color\' command (should be a color name or +/-)')
+          }
+        } else {
+          this.warn('Invalid type for the \'color\' command (should be a string)')
         }
       }
 
