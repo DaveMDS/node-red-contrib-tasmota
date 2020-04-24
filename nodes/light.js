@@ -32,7 +32,7 @@ module.exports = function (RED) {
   class TasmotaLightNode extends BaseTasmotaNode {
     constructor (userConfig) {
       super(userConfig, RED, LIGHT_DEFAULTS)
-      this.cache = [] // switch status cache, es: [1=>'On', 2=>'Off']
+      this.cache = {} // light status cache, es: {on: true, bright:55}
       this.colorCmnd = 'Color1' // TODO make Color1/2 configurable
 
       // Subscribes to state changes
@@ -232,57 +232,50 @@ module.exports = function (RED) {
           this.warn('Invalid type for the \'color\' command (should be a string)')
         }
       }
-
-      /*
-      // combined hsv and power payload object
-      if (typeof payload === 'object') {
-        if (payload.POWER) {
-          this.MQTTPublish('cmnd', 'Power', payload.POWER.toString())
-        }
-        if (payload.Dimmer) {
-          this.MQTTPublish('cmnd', 'Dimmer', payload.Dimmer.toString())
-        }
-        if (payload.Color) {
-          this.MQTTPublish('cmnd', 'Color1', payload.Color.toString())
-        }
-        if (payload.HSBColor) {
-          this.MQTTPublish('cmnd', 'HsbColor', payload.HSBColor.toString())
-        }
-        if (payload.CT) {
-          this.MQTTPublish('cmnd', 'CT', payload.CT.toString())
-        }
-        return
-      }
-      */
     }
 
     onStat (mqttTopic, mqttPayloadBuf) {
-      const mqttPayload = mqttPayloadBuf.toString()
-
-      // check payload is valid
-      var status
-      if (mqttPayload.includes('"POWER":"ON"')) {
-        status = 'On'
-      } else if (mqttPayload.includes('"POWER":"OFF"')) {
-        status = 'Off'
-      } else {
+      try {
+        var data = JSON.parse(mqttPayloadBuf.toString())
+      } catch (err) {
+        this.setNodeStatus('red', 'Error parsing JSON data from device')
+        this.error(err, 'Error parsing JSON data from device')
         return
       }
 
-      // extract channel number and save in cache
-      this.cache[0] = status
-
-      // update status icon and label
-      this.setNodeStatus(this.cache[0] === 'On' ? 'green' : 'grey', this.cache[0])
-
-      // build and send the new boolen message for topic 'switchX'
-      var msg = {
-        payload: mqttPayload
+      // build the msg to send on output
+      var msg = { payload: {} }
+      if (data.POWER !== undefined) {
+        msg.payload.on = data.POWER === 'ON' ? true : false
+        this.cache.on = msg.payload.on
+      }
+      if (data.Dimmer !== undefined) {
+        msg.payload.bright = data.Dimmer
+        this.cache.bright = msg.payload.bright
+      }
+      if (data.Color !== undefined) {
+        msg.payload.hex = data.Color
+      }
+      if (data.HSBColor !== undefined) {
+        msg.payload.hsb = data.HSBColor.split(',').map(Number)
+        // TODO also populate msg.payload.rgb (with proper conversion from hsb)
+      }
+      if (data.CT !== undefined) {
+        // TODO convert to K or % (based on user conf)
+        msg.payload.ct = data.ct
       }
 
-      msg.payload = JSON.parse(msg.payload)
+      // update node status label
+      var status
+      if (this.cache.on !== undefined) {
+        status = this.cache.on ? 'On' : 'Off'
+      }
+      if (this.cache.bright !== undefined) {
+        status += ` (${this.cache.bright}%)`
+      }
+      this.setNodeStatus(this.cache.on ? 'green' : 'grey', status)
 
-      // everything to the same (single) output
+      // send the built msg
       this.send(msg)
     }
   }
