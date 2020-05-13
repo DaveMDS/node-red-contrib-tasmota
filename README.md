@@ -72,16 +72,12 @@ This node works identically to the switch node with the addition of the HSBColor
 
 ### Send any Tasmota command
 
-All the nodes support an additional mode where you can sand one or more Tasmota 
-commands to the device, using this feature you can send ANY command, not just
-the ones supported by the specific node, this can be used for example to change 
-device  configuration or to send specific commands not supported by the node itself. 
+All the nodes support an additional mode where you can send anyTasmota 
+command or a list of commands to the device. This can be used for example to change 
+device configuration or to send specific commands not supported by the node itself. 
 
 The list of all the commands supported by Tasmota is available on this
 [documentation](https://tasmota.github.io/docs/Commands/) page.
-
-To send commands to the device just send a message to the node with `command`
-as topic and the Tasmota command as payload. 
 
 Three payload formats are supported:
 1. string payload: `'CMD <param>'`
@@ -90,6 +86,12 @@ Three payload formats are supported:
 
 Note that the object format does not guarantee the order of delivered messagges,
 thus if commands order is important you must use the list format.
+
+Example:
+To send the command "BlinkCount 12" to a tasmota switch device, create a tasmota-swich node and set the device id(topic) to the correct value for your device. Then add an inject node and connect it. In the Inject node settings, set the topic to 'command' (without quotes). Set the payload type to JSON and the payload to  "BlinkCount 3" (with quotes). 
+
+To send a list of commands, the same as above applies. An example of a command list syntax is:
+["BlinkCount 12", "BlinkTime 3", "Power 3"]
 
 
 ## Authors
