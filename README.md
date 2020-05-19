@@ -81,8 +81,8 @@ The list of all the commands supported by Tasmota is available on this
 
 Three payload formats are supported:
 1. string payload: `CMD <param>`
-2. string list payload: `["CMD <param>", "CMD <param>", ...]`
-3. object payload: {"CMD": "param", "CMD": "param", ...}
+2. JSON list payload: `["CMD <param>", "CMD <param>", ...]`
+3. JSON object payload: `{"CMD": "param", "CMD": "param", ...}`
 
 Note that the object format does not guarantee the order of delivered messagges,
 thus if commands order is important you must use the list format.
@@ -91,7 +91,7 @@ Example:
 To send the command "BlinkCount 12" to a tasmota switch device, create a tasmota-swich node and set the device id(topic) to the correct value for your device. Then add an inject node and connect it. In the Inject node settings, set the topic to `command`. Set the payload type to string and the payload to `BlinkCount 3`. 
 
 To send a list of commands set the payload type to JSON. An example of a command list syntax is:
-["BlinkCount 12", "BlinkTime 3", "Power blink"]
+`["BlinkCount 12", "BlinkTime 3", "Power blink"]`
 
 
 ## Authors
