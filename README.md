@@ -70,9 +70,9 @@ This node works identically to the switch node with the addition of the HSBColor
 ![Light Flow](/media/light.png?raw=true)
 
 
-### Send any Tasmota command
+### Send custom Tasmota commands
 
-All the nodes support an additional mode where you can send anyTasmota 
+All the nodes support an additional mode where you can send any Tasmota 
 command or a list of commands to the device. This can be used for example to change 
 device configuration or to send specific commands not supported by the node itself. 
 
@@ -80,18 +80,18 @@ The list of all the commands supported by Tasmota is available on this
 [documentation](https://tasmota.github.io/docs/Commands/) page.
 
 Three payload formats are supported:
-1. string payload: `'CMD <param>'`
-2. string list payload: `['CMD <param>', 'CMD <param>', ...]`
-3. object payload: {'CMD': 'param', 'CMD': 'param', ...}
+1. string payload: `CMD <param>`
+2. string list payload: `["CMD <param>", "CMD <param>", ...]`
+3. object payload: {"CMD": "param", "CMD": "param", ...}
 
 Note that the object format does not guarantee the order of delivered messagges,
 thus if commands order is important you must use the list format.
 
 Example:
-To send the command "BlinkCount 12" to a tasmota switch device, create a tasmota-swich node and set the device id(topic) to the correct value for your device. Then add an inject node and connect it. In the Inject node settings, set the topic to 'command' (without quotes). Set the payload type to JSON and the payload to  "BlinkCount 3" (with quotes). 
+To send the command "BlinkCount 12" to a tasmota switch device, create a tasmota-swich node and set the device id(topic) to the correct value for your device. Then add an inject node and connect it. In the Inject node settings, set the topic to `command`. Set the payload type to string and the payload to `BlinkCount 3`. 
 
-To send a list of commands, the same as above applies. An example of a command list syntax is:
-["BlinkCount 12", "BlinkTime 3", "Power 3"]
+To send a list of commands set the payload type to JSON. An example of a command list syntax is:
+["BlinkCount 12", "BlinkTime 3", "Power blink"]
 
 
 ## Authors
