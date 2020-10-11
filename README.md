@@ -70,6 +70,21 @@ This node works identically to the switch node with the addition of the HSBColor
 ![Light Flow](/media/light.png?raw=true)
 
 
+### Tasmota Button node
+
+This node receive button presses from a tasmota button device, it support all the tasmota button actions (SINGLE, DOUBLE, TRIPLE, HOLD, etc...)
+and support multi buttons devices. The action is sent as a simple string on the node output.
+The node can be configured to send all button presses to a single output (in this case the topic is used to distinguish channels) 
+or can be configured to have N outputs (one for each channel).
+
+NOTE: The inputs in the tasmota device MUST be set as `Button` not as `Switch`, see the [documentation](https://tasmota.github.io/docs/Buttons-and-Switches/)
+page for all the info. Also look at [SetOption73](https://tasmota.github.io/docs/Commands/#setoption73), [SetOption1](https://tasmota.github.io/docs/Commands/#setoption1), [SetOption13](https://tasmota.github.io/docs/Commands/#setoption13) and [SetOption32](https://tasmota.github.io/docs/Commands/#setoption32) to
+configure the tasmota device as you need.
+
+
+![Button Flow](/media/button1.png?raw=true)
+
+
 ### Send custom Tasmota commands
 
 All the nodes support an additional mode where you can send any Tasmota 
