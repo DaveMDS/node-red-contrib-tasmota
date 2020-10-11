@@ -8,7 +8,9 @@ This project respect the standard.js format
  * Update the version in package.json
  * Add a new entry in CHANGELOG.md
  * Create the git tag vX.X.X
- * push everything
+ * git-push everything
+ * npm publish
+ * request a refresh on flows.nodered.org
 
 
 ###  NPM CheatSheet
