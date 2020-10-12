@@ -37,7 +37,11 @@ class BaseTasmotaNode {
     // Merge user and default config
     this.config = {}
     for (const key in defaults) {
-      this.config[key] = config[key] || defaults[key]
+      if (config[key] !== undefined && config[key] !== '') {
+        this.config[key] = config[key]
+      } else {
+        this.config[key] = defaults[key]
+      }
     }
 
     // Establish MQTT broker connection

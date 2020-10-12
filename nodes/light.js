@@ -3,7 +3,9 @@ module.exports = function (RED) {
   const BaseTasmotaNode = require('./base_tasmota.js')
 
   const LIGHT_DEFAULTS = {
-    // no specific options for this node
+    havedimmer: true,
+    havetemp: false,
+    havecolors: false
   }
 
   // values for the tasmota POWER command
@@ -40,8 +42,8 @@ module.exports = function (RED) {
     }
 
     onDeviceOnline () {
-      // Publish a start command to get the state of all the switches
-      this.MQTTPublish('cmnd', 'POWER0')
+      // Publish a start command to get the current state of the device
+      this.MQTTPublish('cmnd', 'State')
     }
 
     onNodeInput (msg) {
@@ -243,27 +245,27 @@ module.exports = function (RED) {
         return
       }
 
-      // build the msg to send on output
-      var msg = { payload: {} }
+      // update cache with the received data
       if (data.POWER !== undefined) {
-        msg.payload.on = data.POWER === 'ON' ? true : false
-        this.cache.on = msg.payload.on
+        this.cache.on = (data.POWER === onValue)
       }
-      if (data.Dimmer !== undefined) {
-        msg.payload.bright = data.Dimmer
-        this.cache.bright = msg.payload.bright
+      if (this.config.havedimmer && data.Dimmer !== undefined) {
+        this.cache.bright = data.Dimmer
       }
-      if (data.Color !== undefined) {
-        msg.payload.hex = data.Color
-      }
-      if (data.HSBColor !== undefined) {
-        msg.payload.hsb = data.HSBColor.split(',').map(Number)
-        // TODO also populate msg.payload.rgb (with proper conversion from hsb)
-      }
-      if (data.CT !== undefined) {
+      if (this.config.havetemp && data.CT !== undefined) {
         // TODO convert to K or % (based on user conf)
-        msg.payload.ct = data.ct
+        this.cache.ct = data.CT
       }
+      if (this.config.havecolors && data.Color !== undefined) {
+        this.cache.hex = data.Color
+      }
+      if (this.config.havecolors && data.HSBColor !== undefined) {
+        // TODO also populate msg.payload.rgb (with proper conversion from hsb)
+        this.cache.hsb = data.HSBColor.split(',').map(Number)
+      }
+
+      // send all the cached data to the node output
+      this.send({ payload: this.cache })
 
       // update node status label
       var status
@@ -274,9 +276,6 @@ module.exports = function (RED) {
         status += ` (${this.cache.bright}%)`
       }
       this.setNodeStatus(this.cache.on ? 'green' : 'grey', status)
-
-      // send the built msg
-      this.send(msg)
     }
   }
 

@@ -13,8 +13,11 @@ RED.nodes.registerType("Tasmota Light", {
         fullTopic: { value: "" },
         cmndPrefix: { value: "" },
         statPrefix: { value: "" },
-        telePrefix: { value: "" }
+        telePrefix: { value: "" },
         // node specific
+        havedimmer: { value: true },
+        havetemp: { value: false },
+        havecolors: { value: false }
     },
     icon: "contrib-tasmota-light.svg",
     paletteLabel: 'light',
@@ -46,11 +49,6 @@ RED.nodes.registerType("Tasmota Light", {
 });
 </script>
 
-
-<!-- Reference
-checkbox, color_picker:
-  https://github.com/Christian-Me/node-red-contrib-homie-convention/blob/master/nodes/homie-device/homie-device.html
--->
 <script type="text/x-red" data-template-name="Tasmota Light">
     <div class="form-row">
         <ul id="node-input-tasmota-tabs"></ul>
@@ -75,7 +73,25 @@ checkbox, color_picker:
                     <input type="checkbox" id="node-input-uidisabler" style="display:inline-block; width:22px; vertical-align:baseline;">Send enable/disable message</span>
                 </label>
             </div>
-            <!-- <hr align="middle"> -->
+            <hr align="middle">
+            <div class="form-row">
+                <label for="node-input-havedimmer"><i class="fa fa-lightbulb-o"></i> Light features</label>
+                <label for="node-input-havedimmer" style="width:70%">
+                    <input type="checkbox" id="node-input-havedimmer" style="display:inline-block; width:22px; vertical-align:baseline;">Dimmerable</span>
+                </label>
+            </div>
+            <div class="form-row">
+                <label for="node-input-havetemp"> </label>
+                <label for="node-input-havetemp" style="width:70%">
+                    <input type="checkbox" id="node-input-havetemp" style="display:inline-block; width:22px; vertical-align:baseline;">Color Temperature</span>
+                </label>
+            </div>
+            <div class="form-row">
+                <label for="node-input-havecolors"> </label>
+                <label for="node-input-havecolors" style="width:70%">
+                    <input type="checkbox" id="node-input-havecolors" style="display:inline-block; width:22px; vertical-align:baseline;">RGB Colors</span>
+                </label>
+            </div>
         </div>
         <div id="tasmota-advanced-tab" style="display:none">
             <div class="form-row">
