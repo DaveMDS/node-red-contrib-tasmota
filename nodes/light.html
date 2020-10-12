@@ -29,6 +29,16 @@ RED.nodes.registerType("Tasmota Light", {
     labelStyle: function() {
         return this.name ? "node_label_italic" : "";
     },
+    outputLabels: function(index) {
+        if (this.outputs > 1) {
+            switch (index) {
+                case 0: return 'On/Off state'
+                case 1: return 'Brightness'
+                case 2: return 'Temperature'
+                case 3: return 'Color'
+            }
+        }
+    },
     oneditprepare: function () {
         let tabs = RED.tabs.create({
             id: "node-input-tasmota-tabs",
@@ -91,6 +101,15 @@ RED.nodes.registerType("Tasmota Light", {
                 <label for="node-input-havecolors" style="width:70%">
                     <input type="checkbox" id="node-input-havecolors" style="display:inline-block; width:22px; vertical-align:baseline;">RGB Colors</span>
                 </label>
+            </div>
+            <div class="form-row">
+                <label for="node-input-outputs"><i class="fa fa-random"></i> Outputs</label>
+                <select id="node-input-outputs">
+                    <option value="1">Single output (json object)</option>
+                    <option value="2">State, Dimmer</option>
+                    <option value="3">State, Dimmer, Temp</option>
+                    <option value="4">State, Dimmer, Temp, Color</option>
+                </select>
             </div>
         </div>
         <div id="tasmota-advanced-tab" style="display:none">

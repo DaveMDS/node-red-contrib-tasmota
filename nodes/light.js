@@ -264,8 +264,30 @@ module.exports = function (RED) {
         this.cache.hsb = data.HSBColor.split(',').map(Number)
       }
 
-      // send all the cached data to the node output
-      this.send({ payload: this.cache })
+      // send all the cached data to the node output(s)
+      // or send each value to the correct output
+      if (this.config.outputs === 1 || this.config.outputs === '1') {
+        // everything to the same (single) output, as a JSON dict object
+        this.send({ payload: this.cache })
+      } else if (this.config.outputs === 2 || this.config.outputs === '2') {
+        this.send([
+          { payload: this.cache.on }, // Output 1: on/off status
+          { payload: this.cache.bright } // Output 2: brightness
+        ])
+      } else if (this.config.outputs === 3 || this.config.outputs === '3') {
+        this.send([
+          { payload: this.cache.on }, // Output 1: on/off status
+          { payload: this.cache.bright }, // Output 2: brightness
+          { payload: this.cache.ct } // Output 3: temperature
+        ])
+      } else if (this.config.outputs === 4 || this.config.outputs === '4') {
+        this.send([
+          { payload: this.cache.on }, // Output 1: on/off status
+          { payload: this.cache.bright }, // Output 2: brightness
+          { payload: this.cache.ct }, // Output 3: temperature
+          { payload: this.cache.hex } // Output 4: color
+        ])
+      }
 
       // update node status label
       var status
