@@ -1,0 +1,136 @@
+<script type="text/javascript">
+RED.nodes.registerType("Tasmota Button", {
+    category: "tasmota",
+    color: "#28AFB0",
+    defaults: {
+        // common basic
+        broker: { type: "mqtt-broker", required: true },
+        device: { value: "", required: true },
+        name: { value: "" },
+        outputs: { value: 1 },
+        uidisabler: { value: false },
+        // common advanced
+        fullTopic: { value: "" },
+        cmndPrefix: { value: "" },
+        statPrefix: { value: "" },
+        telePrefix: { value: "" }
+        // node specific
+    },
+    icon: "contrib-tasmota-button.svg",
+    paletteLabel: 'button',
+    inputs: 0,
+    outputs: 1,
+    label: function() {
+        return this.name || this.device || "Tasmota Button";
+    },
+    labelStyle: function() {
+        return this.name ? "node_label_italic" : "";
+    },
+    oneditprepare: function () {
+        let tabs = RED.tabs.create({
+            id: "node-input-tasmota-tabs",
+            onchange: function (tab) {
+                $("#node-input-tabs-content").children().hide()
+                $("#" + tab.id).show()
+            }
+        })
+        tabs.addTab({
+            id: "tasmota-settings-tab",
+            label: "Settings"
+        })
+        tabs.addTab({
+            id: "tasmota-advanced-tab",
+            label: "Advanced"
+        })
+    }
+});
+</script>
+
+
+<script type="text/x-red" data-template-name="Tasmota Button">
+    <div class="form-row">
+        <ul id="node-input-tasmota-tabs"></ul>
+    </div>
+    <div id="node-input-tabs-content">
+        <div id="tasmota-settings-tab" style="display:none">
+            <div class="form-row">
+                <label for="node-input-broker"><i class="fa fa-globe"></i> Server</label>
+                <input type="text" id="node-input-broker">
+            </div>
+            <div class="form-row">
+                <label for="node-input-device"><i class="fa fa-dot-circle-o"></i> Device</label>
+                <input type="text" id="node-input-device" placeholder="Device id (topic)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+                <input type="text" id="node-input-name" placeholder="Name">
+            </div>
+            <!--
+            <div class="form-row">
+                <label for="node-input-uidisabler"><i class="fa fa-bar-chart"></i> Dashboard</label>
+                <label for="node-input-uidisabler" style="width:70%">
+                    <input type="checkbox" id="node-input-uidisabler" style="display:inline-block; width:22px; vertical-align:baseline;">Send enable/disable message</span>
+                </label>
+            </div>
+            -->
+            <hr align="middle">
+            <div class="form-row">
+                <label for="node-input-outputs"><i class="fa fa-random"></i> Channels</label>
+                <select id="node-input-outputs">
+                    <option value="1">1 Channel (or all merged)</option>
+                    <option value="2">2 Channels</option>
+                    <option value="3">3 Channels</option>
+                    <option value="4">4 Channels</option>
+                    <option value="5">5 Channels</option>
+                    <option value="6">6 Channels</option>
+                    <option value="7">7 Channels</option>
+                    <option value="8">8 Channels</option>
+                </select>
+            </div>
+        </div>
+        <div id="tasmota-advanced-tab" style="display:none">
+            <div class="form-row">
+                <label for="node-input-fullTopic"><i class="fa fa-wrench"></i> Full topic</label>
+                <input type="text" id="node-input-fullTopic" placeholder="Full topic (Default: %prefix%/%topic%/)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-cmndPrefix"><i class="fa fa-comment"></i> cmnd</label>
+                <input type="text" id="node-input-cmndPrefix" placeholder="Command topic prefix (Default: cmnd)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-statPrefix"><i class="fa fa-comment"></i> stat</label>
+                <input type="text" id="node-input-statPrefix" placeholder="Stat topic prefix (Default: stat)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-telePrefix"><i class="fa fa-comment"></i> tele</label>
+                <input type="text" id="node-input-telePrefix" placeholder="Telemetry topic prefix (Default: tele)">
+            </div>
+        </div>
+    </div>
+</script>
+
+
+<script type="text/x-red" data-help-name="Tasmota Button">
+    <p>Connect a <b>Button</b> device running the <b>Tasmota</b> firmware.</p>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+       <dt>payload <span class="property-type">string</span></dt>
+       <dd>the action performed by the button, <code>SINGLE</code>,
+       <code>DOUBLE</code>, <code>HOLD</code>, etc...</dd>
+       <dt>topic <span class="property-type">string</span></dt>
+       <dd>is used to identify the pressed button in a multi channels device,
+       es: <code>button2</code> is the second button.</dd>
+    </dl>
+    <h3>Details</h3>
+    <p>This node manage the button functionality of the device. NOTE: The input
+    channels in Tasmota must be set as Button, not Switch.</p>
+    <p>To combine more functionality from the same device (switch, sensor, etc..)
+    use more than one node on the same device.</p>
+    <p>Multi channels device can work in two different modes: if the number of
+    channels is given in configuration then the node will have N outputs and
+    will send button actions to the correct output, otherwise (channels=1) all
+    messages will be sent to the single output with different topics.</p>
+    <p>In the Avanced tab you can customize the topic format for special cases,
+    the default values should work for a default Tasmota installation.</p>
+</script>

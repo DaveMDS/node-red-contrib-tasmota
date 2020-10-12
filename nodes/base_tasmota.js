@@ -133,7 +133,7 @@ class BaseTasmotaNode {
   }
 
   onDeviceOffline () {
-    // Subclasses can override to know when the LWT is Online
+    // Subclasses can override to know when the LWT is Offline
   }
 
   onNodeInput (msg) {
@@ -185,6 +185,13 @@ class BaseTasmotaNode {
   MQTTSubscribe (prefix, command, callback) {
     var fullTopic = this.buildFullTopic(prefix, command)
     this.mqttClient.subscribe(fullTopic, 2, callback)
+  }
+
+  /* Return the integer number at the end of the given string,
+     default to 1 if no number found. */
+  extractChannelNum (str) {
+    const numberRegexp = /\d+$/
+    return Number(str.match(numberRegexp) || 1)
   }
 }
 

@@ -11,13 +11,6 @@ module.exports = function (RED) {
   const offValue = 'OFF'
   const toggleValue = 'TOGGLE'
 
-  /* Return the integer number at the end of the given string,
-     default to 1 if no number found. */
-  function extractChannel (str) {
-    const numberRegexp = /\d+$/
-    return Number(str.match(numberRegexp) || 1)
-  }
-
   class TasmotaSwitchNode extends BaseTasmotaNode {
     constructor (userConfig) {
       super(userConfig, RED, SWITCH_DEFAULTS)
@@ -36,7 +29,7 @@ module.exports = function (RED) {
       const payload = msg.payload
       const topic = msg.topic || 'switch1'
 
-      var channel = topic.toLowerCase().startsWith('switch') ? extractChannel(topic) : 1
+      var channel = topic.toLowerCase().startsWith('switch') ? this.extractChannelNum(topic) : 1
       var command = 'POWER' + channel
 
       // Switch On/Off for booleans and 1/0 (int or str)
@@ -88,7 +81,7 @@ module.exports = function (RED) {
       }
 
       // extract channel number and save in cache
-      const channel = extractChannel(lastTopic)
+      const channel = this.extractChannelNum(lastTopic)
       this.cache[channel - 1] = status
 
       // update status icon and label
