@@ -5,7 +5,8 @@ module.exports = function (RED) {
   const LIGHT_DEFAULTS = {
     havedimmer: true,
     havetemp: false,
-    havecolors: false
+    havecolors: false,
+    tempformat: 'K'
   }
 
   // values for the tasmota POWER command
@@ -31,10 +32,26 @@ module.exports = function (RED) {
     '-': '-'
   }
 
+  function mired2percent (mired) {
+    return 100 - Math.round(((mired - 153) / (500 - 153)) * 100)
+  }
+
+  function percent2mired (percent) {
+    return Math.floor((((100 - percent) / 100) * (500 - 153)) + 153)
+  }
+
+  function mired2kelvin (mired) {
+    return Math.floor(1000000 / mired)
+  }
+
+  function kelvin2mired (kelvin) {
+    return Math.floor(1000000 / kelvin)
+  }
+
   class TasmotaLightNode extends BaseTasmotaNode {
     constructor (userConfig) {
       super(userConfig, RED, LIGHT_DEFAULTS)
-      this.cache = {} // light status cache, es: {on: true, bright:55}
+      this.cache = {} // light status cache, es: {on: true, bright:55, ct:153, ...}
       this.colorCmnd = 'Color1' // TODO make Color1/2 configurable
 
       // Subscribes to state changes
@@ -174,11 +191,10 @@ module.exports = function (RED) {
         } else if (ct >= 153 && ct <= 500) { // ct in mired (cold to warm)
           this.MQTTPublish('cmnd', 'CT', ct.toString())
         } else if (ct >= 0 && ct <= 100) { // ct in percent (warm to cold)
-          ct = 100 - ct
-          ct = Math.floor(((ct / 100) * (500 - 153)) + 153)
+          ct = percent2mired(ct)
           this.MQTTPublish('cmnd', 'CT', ct.toString())
         } else if (ct >= 2000 && ct <= 6500) { // ct in kelvin (warm to cold)
-          ct = Math.floor(1000000 / ct)
+          ct = kelvin2mired(ct)
           this.MQTTPublish('cmnd', 'CT', ct.toString())
         } else {
           this.warn('Invalid value for the \'ct\' command (should be: 0-100, 2000-6500 or 500-153)')
@@ -253,8 +269,13 @@ module.exports = function (RED) {
         this.cache.bright = data.Dimmer
       }
       if (this.config.havetemp && data.CT !== undefined) {
-        // TODO convert to K or % (based on user conf)
-        this.cache.ct = data.CT
+        if (this.config.tempformat === 'K') {
+          this.cache.ct = mired2kelvin(data.CT)
+        } else if (this.config.tempformat === 'P') {
+          this.cache.ct = mired2percent(data.CT)
+        } else {
+          this.cache.ct = data.CT
+        }
       }
       if (this.config.havecolors && data.Color !== undefined) {
         this.cache.hex = data.Color

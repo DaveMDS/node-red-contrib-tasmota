@@ -17,7 +17,8 @@ RED.nodes.registerType("Tasmota Light", {
         // node specific
         havedimmer: { value: true },
         havetemp: { value: false },
-        havecolors: { value: false }
+        havecolors: { value: false },
+        tempformat: { value: "K" }
     },
     icon: "contrib-tasmota-light.svg",
     paletteLabel: 'light',
@@ -109,6 +110,15 @@ RED.nodes.registerType("Tasmota Light", {
                     <option value="2">State, Dimmer</option>
                     <option value="3">State, Dimmer, Temp</option>
                     <option value="4">State, Dimmer, Temp, Color</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="node-input-tempformat"><i class="fa fa-thermometer-half"></i> Temperature</label>
+                <select id="node-input-tempformat">
+                    <option value="" selected disabled hidden>Kelvin (2000-6500)</option>
+                    <option value="K">Kelvin (2000-6500)</option>
+                    <option value="M">Mired (500-153)</option>
+                    <option value="P">Percent (0-100)</option>
                 </select>
             </div>
         </div>
