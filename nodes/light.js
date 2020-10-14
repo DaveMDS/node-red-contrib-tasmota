@@ -343,7 +343,10 @@ module.exports = function (RED) {
         status = this.cache.on ? 'On' : 'Off'
       }
       if (this.cache.bright !== undefined) {
-        status += ` (${this.cache.bright}%)`
+        status += ` bri:${this.cache.bright}%`
+      }
+      if (this.cache.ct !== undefined) {
+        status += ` ct:${this.cache.ct}`
       }
       this.setNodeStatus(this.cache.on ? 'green' : 'grey', status)
     }
