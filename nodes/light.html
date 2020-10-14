@@ -18,7 +18,8 @@ RED.nodes.registerType("Tasmota Light", {
         havedimmer: { value: true },
         havetemp: { value: false },
         havecolors: { value: false },
-        tempformat: { value: "K" }
+        tempformat: { value: "K" },
+        colorsformat: { value: "HSB" }
     },
     icon: "contrib-tasmota-light.svg",
     paletteLabel: 'light',
@@ -36,7 +37,7 @@ RED.nodes.registerType("Tasmota Light", {
                 case 0: return 'On/Off state'
                 case 1: return 'Brightness'
                 case 2: return 'Temperature'
-                case 3: return 'Color'
+                case 3: return 'Colors'
             }
         }
     },
@@ -100,7 +101,7 @@ RED.nodes.registerType("Tasmota Light", {
             <div class="form-row">
                 <label for="node-input-havecolors"> </label>
                 <label for="node-input-havecolors" style="width:70%">
-                    <input type="checkbox" id="node-input-havecolors" style="display:inline-block; width:22px; vertical-align:baseline;">RGB Colors</span>
+                    <input type="checkbox" id="node-input-havecolors" style="display:inline-block; width:22px; vertical-align:baseline;">Colors</span>
                 </label>
             </div>
             <div class="form-row">
@@ -109,7 +110,7 @@ RED.nodes.registerType("Tasmota Light", {
                     <option value="1">Single output (json object)</option>
                     <option value="2">State, Dimmer</option>
                     <option value="3">State, Dimmer, Temp</option>
-                    <option value="4">State, Dimmer, Temp, Color</option>
+                    <option value="4">State, Dimmer, Temp, Colors</option>
                 </select>
             </div>
             <div class="form-row">
@@ -119,6 +120,15 @@ RED.nodes.registerType("Tasmota Light", {
                     <option value="K">Kelvin (2000-6500)</option>
                     <option value="M">Mired (500-153)</option>
                     <option value="P">Percent (0-100)</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="node-input-colorsformat"><i class="fa fa-sliders"></i> Colors</label>
+                <select id="node-input-colorsformat">
+                    <option value="" selected disabled hidden>HSB</option>
+                    <option value="HSB">HSB [0-360, 0-100, 0-100]</option>
+                    <option value="RGB">RGB [0-255, 0-255, 0-255]</option>
+                    <option value="CHS">Channels [0-100, 0-100, 0-100]</option>
                 </select>
             </div>
         </div>

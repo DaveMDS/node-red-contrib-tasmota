@@ -6,7 +6,8 @@ module.exports = function (RED) {
     havedimmer: true,
     havetemp: false,
     havecolors: false,
-    tempformat: 'K'
+    tempformat: 'K',
+    colorsformat: 'HSB'
   }
 
   // values for the tasmota POWER command
@@ -48,10 +49,33 @@ module.exports = function (RED) {
     return Math.floor(1000000 / kelvin)
   }
 
+  function hsb2rgb (h, s, v) {
+    h = (h % 360 + 360) % 360  // normalize angle
+    h = (h === 360) ? 1 : (h % 360 / parseFloat(360) * 6)
+    s = (s === 100) ? 1 : (s % 100 / parseFloat(100))
+    v = (v === 100) ? 1 : (v % 100 / parseFloat(100))
+
+    var i = Math.floor(h)
+    var f = h - i
+    var p = v * (1 - s)
+    var q = v * (1 - f * s)
+    var t = v * (1 - (1 - f) * s)
+    var mod = i % 6
+    var r = [v, q, p, p, t, v][mod]
+    var g = [t, v, v, q, p, p][mod]
+    var b = [p, p, t, v, v, q][mod]
+
+    return [
+      Math.floor(r * 255),
+      Math.floor(g * 255),
+      Math.floor(b * 255),
+    ]
+  }
+
   class TasmotaLightNode extends BaseTasmotaNode {
     constructor (userConfig) {
       super(userConfig, RED, LIGHT_DEFAULTS)
-      this.cache = {} // light status cache, es: {on: true, bright:55, ct:153, ...}
+      this.cache = {} // light status cache, es: {on: true, bright:55, ct:153, colors:...}
       this.colorCmnd = 'Color1' // TODO make Color1/2 configurable
 
       // Subscribes to state changes
@@ -273,16 +297,19 @@ module.exports = function (RED) {
           this.cache.ct = mired2kelvin(data.CT)
         } else if (this.config.tempformat === 'P') {
           this.cache.ct = mired2percent(data.CT)
-        } else {
+        } else { // mired
           this.cache.ct = data.CT
         }
       }
-      if (this.config.havecolors && data.Color !== undefined) {
-        this.cache.hex = data.Color
-      }
       if (this.config.havecolors && data.HSBColor !== undefined) {
-        // TODO also populate msg.payload.rgb (with proper conversion from hsb)
-        this.cache.hsb = data.HSBColor.split(',').map(Number)
+        const hsb = data.HSBColor.split(',').map(Number)
+        if (this.config.colorsformat === 'HSB') {
+          this.cache.colors = hsb
+        } else if (this.config.colorsformat === 'RGB') {
+          this.cache.colors = hsb2rgb(hsb[0], hsb[1], hsb[2])
+        } else { // Channels
+          this.cache.colors = data.Channel
+        }
       }
 
       // send all the cached data to the node output(s)
@@ -306,7 +333,7 @@ module.exports = function (RED) {
           { payload: this.cache.on }, // Output 1: on/off status
           { payload: this.cache.bright }, // Output 2: brightness
           { payload: this.cache.ct }, // Output 3: temperature
-          { payload: this.cache.hex } // Output 4: color
+          { payload: this.cache.colors } // Output 4: colors
         ])
       }
 
