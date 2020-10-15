@@ -205,17 +205,17 @@ RED.nodes.registerType("Tasmota Light", {
 
     <h3>Input formats</h3>
     <dl class="message-properties">
-        <dt>on<span class="property-type">boolean | int | string</span></dt>
+        <dt>on/state/power<span class="property-type">boolean | int | string</span></dt>
         <dd>
             <code>true</code>/<code>false</code>, <code>1</code>/<code>0</code>,
             <code>on</code>/<code>off</code> will turn On or Off the light,
             <code>toggle</code> will change the on/off state of the light.
         </dd>
-        <dt>bright<span class="property-type">int</span></dt>
+        <dt>bright|brightness|dimmer<span class="property-type">int</span></dt>
         <dd>
             Change the light brightness, range from 0 to 100.
         </dd>
-        <dt>ct<span class="property-type">int</span></dt>
+        <dt>ct|colorTemp<span class="property-type">int</span></dt>
         <dd>
             Color temperature, values (from warm to cold) can be expressed
             in Mired (500-153), Kelvin(2000-6500) or percent(0-100).
