@@ -157,32 +157,108 @@ RED.nodes.registerType("Tasmota Light", {
 <script type="text/x-red" data-help-name="Tasmota Light">
     <p>Connect a <b>Light Controller</b> device running the <b>Tasmota</b> firmware.</p>
 
-    <h3>Inputs</h3>
+    <h3>Input (simple mode)</h3>
     <dl class="message-properties">
-        <dt>payload <span class="property-type">boolean | int | string | object</span></dt>
-        <dd><code>true</code>/<code>false</code>, <code>1</code>/<code>0</code>
-        or <code>on</code>/<code>off</code> will turn On or Off the light,
-        <code>toggle</code> will change the on/off state of the light.</dd>
+        <dt>topic <span class="property-type">null</span></dt>
+        <dd>
+            topic must be empty in simple mode.
+        </dd>
+        <dt>payload <span class="property-type">boolean | int | string</span></dt>
+        <dd>
+            <code>true</code>/<code>false</code>, <code>1</code>/<code>0</code>,
+            <code>on</code>/<code>off</code> will turn On or Off the light,
+            <code>toggle</code> will change the on/off state of the light.
+        </dd>
+    </dl>
 
-        <dd> To control color and state you can send an object ocontaining 1 or more of the below values, most recent value will be used, if you send power off followed by Dimmer or HSB that is not 0 the light will turn back on.
-            <code>{"POWER":"On/Off"}</code> power
-            <code>{"Dimmer":"0-100"}</code> 0 = Off
-            <code>{"Color":"RRGGBB"}</code> <code>CWWW</code> for 2 channels <code>RRGGBBWW</code> for 4 channels or <code>RRGGBBCWWW</code> for 5
-            <code>{"HSBColor":"0-360, 0-100, 0-100"}</code> hue,saturation,brightness string
-            <code>{"CT":"153-500"}</code> color temp
-            </dd>
+    <h3>Input (topic mode)</h3>
+    To change a single light attribute send a msg with the attribute you want
+    to change as topic and the new value as payload.
+    <dl class="message-properties">
+        <dt>topic<span class="property-type">string</span></dt>
+        <dd>
+            can be one of the following: <code>on</code>, <code>bright</code>, <code>ct</code>,
+            <code>rgb</code>, <code>hsb</code>, <code>hex</code>, <code>color</code>.
+        </dd>
+        <dt>payload <span class="property-type">Any</span></dt>
+        <dd>
+            Each attribute accept different types of value, follow the table below
+            to see all the supported formats.
+        </dd>
+    </dl>
+
+    <h3>Input (object mode)</h3>
+    To change more than one attribute at the same time you can send a msg
+    with a js object as payload, object keys are the same as the topics in the
+    topic mode above.
+    <dl class="message-properties">
+        <dt>topic <span class="property-type">null</span></dt>
+        <dd>
+            topic must be empty in object mode.
+        </dd>
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>
+            es: {"on": true, "bright": 75, "color": "red"}
+            follow the table below to see all the supported formats.
+        </dd>
+    </dl>
+
+    <h3>Input formats</h3>
+    <dl class="message-properties">
+        <dt>on<span class="property-type">boolean | int | string</span></dt>
+        <dd>
+            <code>true</code>/<code>false</code>, <code>1</code>/<code>0</code>,
+            <code>on</code>/<code>off</code> will turn On or Off the light,
+            <code>toggle</code> will change the on/off state of the light.
+        </dd>
+        <dt>bright<span class="property-type">int</span></dt>
+        <dd>
+            Change the light brightness, range from 0 to 100.
+        </dd>
+        <dt>ct<span class="property-type">int</span></dt>
+        <dd>
+            Color temperature, values (from warm to cold) can be expressed
+            in Mired (500-153), Kelvin(2000-6500) or percent(0-100).
+        </dd>
+        <dt>rgb<span class="property-type">int array | string</span></dt>
+        <dd>
+            Change the RGB colors of the light, can be a string: "255,0,0" (for red)
+            or an array of int: [255, 0, 0]
+        </dd>
+        <dt>hsb<span class="property-type">int array | string</span></dt>
+        <dd>
+            Change the HSB values, like rgb can be a string or an array.
+            Ranges are: 0-360, 0-100, 0-100.
+        </dd>
+        <dt>hex<span class="property-type">string</span></dt>
+        <dd>
+            Hexadecimal color notation: <code>#CWWW</code>, <code>#RRGGBB</code>,
+            <code>#RRGGBBWW</code> or <code>#RRGGBBCWWW</code> (with or without the starting <code>#</code>).
+        </dd>
+        <dt>color<span class="property-type">string</span></dt>
+        <dd>
+            Can be <code>red</code>, <code>green</code>, <code>blue</code>, <code>orange</code>, <code>lightgreen</code>,
+            <code>lightblue</code>, <code>amber</code>, <code>cyan</code>, <code>purple</code>, <code>yellow</code>,
+            <code>pink</code>, <code>white</code>, or <code>+</code>/<code>-</code> to switch to next/previous color.
+        </dd>
     </dl>
 
     <h3>Outputs</h3>
     <dl class="message-properties">
-       <dt>payload <span class="property-type">object</span></dt>
-       <dd>the node will return an object in the format <code>{"POWER":"ON","Dimmer":62,"Color":"737A9E","HSBColor":"230,27,62","Channel":[45,48,62],"CT":"153"}</code> OR <code>{"POWER":"OFF"}</code> on every state
-       change of the light.</dd>
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>
+            the node will send an object in the format:
+            {"on":true/false, "bright":62, "ct": ..., "color": ...}.
+            <code>ct</code> and <code>color</code> can be configured to the format you like.
+            You can also configure the node to have up to 4 outputs, one for each
+            of the values.
+       </dd>
     </dl>
+
     <h3>Details</h3>
-    <p>This node manage the switch functionality of the device.</p>
+    <p>This node manage the light functionality of the device.</p>
     <p>To combine more functionality from the same device (switch, sensor, etc..)
-    use more than one node on the same device.</p>>
+    use more than one node on the same device.</p>
     <p>In the Avanced tab you can customize the topic format for special cases,
     the default values should work for a default Tasmota installation.</p>
     <p>Input messagges are NOT forwarded to the output.</p>
