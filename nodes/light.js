@@ -76,7 +76,7 @@ module.exports = function (RED) {
     constructor (userConfig) {
       super(userConfig, RED, LIGHT_DEFAULTS)
       this.cache = {} // light status cache, es: {on: true, bright:55, ct:153, colors:...}
-      this.colorCmnd = 'Color1' // TODO make Color1/2 configurable
+      this.colorCmnd = 'Color1' // TODO make Color1/2 configurable ?
 
       // Subscribes to state changes
       this.MQTTSubscribe('stat', 'RESULT', (t, p) => this.onStat(t, p))
@@ -105,7 +105,7 @@ module.exports = function (RED) {
            typeof msg.payload === 'number' ||
            typeof msg.payload === 'string' ||
            Array.isArray(msg.payload))) {
-        if (msg.topic === 'on' || msg.topic === 'state') {
+        if (msg.topic === 'on' || msg.topic === 'state' || msg.topic === 'power') {
           on = msg.payload
         }
         if (msg.topic === 'bright' || msg.topic === 'brightness' || msg.topic === 'dimmer') {
@@ -130,12 +130,15 @@ module.exports = function (RED) {
 
       // MODE 3: object payload (without topic)
       if (!msg.topic && typeof msg.payload === 'object') {
-        // on (aliases: state)
+        // on (aliases: state, power)
         if (typeof msg.payload.on !== 'undefined') {
           on = msg.payload.on
         }
         if (typeof msg.payload.state !== 'undefined') {
           on = msg.payload.state
+        }
+        if (typeof msg.payload.power !== 'undefined') {
+          on = msg.payload.power
         }
         // bright (aliases: brightness, dimmer)
         if (typeof msg.payload.bright !== 'undefined') {

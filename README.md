@@ -124,7 +124,7 @@ a set of aliases is provided for the commands. Aliases can be used in both topic
 
 | Command | Aliases              |
 |:-------:|:--------------------:|
-| on      | state                |
+| on      | state, power         |
 | bright  | brightness, dimmer   |
 | ct      | colorTemp            |
 
