@@ -220,17 +220,17 @@ RED.nodes.registerType("Tasmota Light", {
             Color temperature, values (from warm to cold) can be expressed
             in Mired (500-153), Kelvin(2000-6500) or percent(0-100).
         </dd>
-        <dt>rgb<span class="property-type">int array | string</span></dt>
+        <dt>rgb|rgbColor<span class="property-type">int array | string</span></dt>
         <dd>
             Change the RGB colors of the light, can be a string: "255,0,0" (for red)
             or an array of int: [255, 0, 0]
         </dd>
-        <dt>hsb<span class="property-type">int array | string</span></dt>
+        <dt>hsb|hsbColor<span class="property-type">int array | string</span></dt>
         <dd>
             Change the HSB values, like rgb can be a string or an array.
             Ranges are: 0-360, 0-100, 0-100.
         </dd>
-        <dt>hex<span class="property-type">string</span></dt>
+        <dt>hex|hexcolor<span class="property-type">string</span></dt>
         <dd>
             Hexadecimal color notation: <code>#CWWW</code>, <code>#RRGGBB</code>,
             <code>#RRGGBBWW</code> or <code>#RRGGBBCWWW</code> (with or without the starting <code>#</code>).

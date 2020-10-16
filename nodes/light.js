@@ -114,13 +114,13 @@ module.exports = function (RED) {
         if (msg.topic === 'ct' || msg.topic === 'colorTemp') {
           ct = msg.payload
         }
-        if (msg.topic === 'rgb') {
+        if (msg.topic === 'rgb' || msg.topic === 'rgbColor' ) {
           rgb = msg.payload
         }
-        if (msg.topic === 'hsb') {
+        if (msg.topic === 'hsb' || msg.topic === 'hsbColor') {
           hsb = msg.payload
         }
-        if (msg.topic === 'hex') {
+        if (msg.topic === 'hex' || msg.topic === 'hexColor') {
           hex = msg.payload
         }
         if (msg.topic === 'color') {
@@ -150,23 +150,35 @@ module.exports = function (RED) {
         if (typeof msg.payload.dimmer !== 'undefined') {
           bright = msg.payload.dimmer
         }
-        // ct (aliases: colorTemp)
+        // ct (aliases: colortemp)
         if (typeof msg.payload.ct !== 'undefined') {
           ct = msg.payload.ct
         }
         if (typeof msg.payload.colorTemp !== 'undefined') {
           ct = msg.payload.colorTemp
         }
-        // rgb, hsb, hex, color
-        if (typeof msg.payload.rgb !== 'undefined') {
-          rgb = msg.payload.rgb
-        }
+        // hsb (alias: hsbcolor)
         if (typeof msg.payload.hsb !== 'undefined') {
           hsb = msg.payload.hsb
         }
+        if (typeof msg.payload.hsbcolor !== 'undefined') {
+          hsb = msg.payload.hsbcolor
+        }
+        // rgb (alias: rgbcolor)
+        if (typeof msg.payload.rgb !== 'undefined') {
+          rgb = msg.payload.rgb
+        }
+        if (typeof msg.payload.rgbcolor !== 'undefined') {
+          rgb = msg.payload.rgbcolor
+        }
+        // hex (alias: hexcolor)
         if (typeof msg.payload.hex !== 'undefined') {
           hex = msg.payload.hex
         }
+        if (typeof msg.payload.hexcolor !== 'undefined') {
+          hex = msg.payload.hexcolor
+        }
+        // color
         if (typeof msg.payload.color !== 'undefined') {
           color = msg.payload.color
         }

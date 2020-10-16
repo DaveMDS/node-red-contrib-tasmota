@@ -127,6 +127,9 @@ a set of aliases is provided for the commands. Aliases can be used in both topic
 | on      | state, power         |
 | bright  | brightness, dimmer   |
 | ct      | colorTemp            |
+| hsb     | hsbColor             |
+| rgb     | rgbColor             |
+| hex     | hexColor             |
 
 #### Node output(s)
 The light node output can be configured to suite your need, there are two main modes:
