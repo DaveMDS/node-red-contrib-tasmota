@@ -1,4 +1,15 @@
 
+[v0.9.6](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.5...v0.9.6) (2020-10-17)
+--------------------------------------------------------------------------------------------------
+**!!! WARNING !!!** 
+The outpuf format of the Light node is changed in this release, to make it
+simpler, more consistent and more configurable.
+Sorry for the inconvenience.
+
+### Features
+ - Lots of new features for the Light node
+ 
+
 [v0.9.5](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.4...v0.9.5) (2020-10-11)
 --------------------------------------------------------------------------------------------------
 
