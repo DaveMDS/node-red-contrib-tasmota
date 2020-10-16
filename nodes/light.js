@@ -100,87 +100,48 @@ module.exports = function (RED) {
       }
 
       // MODE 2: topic mode (with simple-typed payload)
-      if (msg.topic &&
+      if (msg.topic && typeof msg.topic === 'string' &&
           (typeof msg.payload === 'boolean' ||
            typeof msg.payload === 'number' ||
            typeof msg.payload === 'string' ||
            Array.isArray(msg.payload))) {
-        if (msg.topic === 'on' || msg.topic === 'state' || msg.topic === 'power') {
+        const cmd = msg.topic.toLowerCase()
+        if (cmd === 'on' || cmd === 'state' || cmd === 'power') {
           on = msg.payload
-        }
-        if (msg.topic === 'bright' || msg.topic === 'brightness' || msg.topic === 'dimmer') {
+        } else if (cmd === 'bright' || cmd === 'brightness' || cmd === 'dimmer') {
           bright = msg.payload
-        }
-        if (msg.topic === 'ct' || msg.topic === 'colorTemp') {
+        } else if (cmd === 'ct' || cmd === 'colortemp') {
           ct = msg.payload
-        }
-        if (msg.topic === 'rgb' || msg.topic === 'rgbColor' ) {
+        } else if (cmd === 'rgb' || cmd === 'rgbcolor' ) {
           rgb = msg.payload
-        }
-        if (msg.topic === 'hsb' || msg.topic === 'hsbColor') {
+        } else if (cmd === 'hsb' || cmd === 'hsbcolor') {
           hsb = msg.payload
-        }
-        if (msg.topic === 'hex' || msg.topic === 'hexColor') {
+        } else if (cmd === 'hex' || cmd === 'hexcolor') {
           hex = msg.payload
-        }
-        if (msg.topic === 'color') {
+        } else if (cmd === 'color') {
           color = msg.payload
         }
       }
 
       // MODE 3: object payload (without topic)
       if (!msg.topic && typeof msg.payload === 'object') {
-        // on (aliases: state, power)
-        if (typeof msg.payload.on !== 'undefined') {
-          on = msg.payload.on
-        }
-        if (typeof msg.payload.state !== 'undefined') {
-          on = msg.payload.state
-        }
-        if (typeof msg.payload.power !== 'undefined') {
-          on = msg.payload.power
-        }
-        // bright (aliases: brightness, dimmer)
-        if (typeof msg.payload.bright !== 'undefined') {
-          bright = msg.payload.bright
-        }
-        if (typeof msg.payload.brightness !== 'undefined') {
-          bright = msg.payload.brightness
-        }
-        if (typeof msg.payload.dimmer !== 'undefined') {
-          bright = msg.payload.dimmer
-        }
-        // ct (aliases: colortemp)
-        if (typeof msg.payload.ct !== 'undefined') {
-          ct = msg.payload.ct
-        }
-        if (typeof msg.payload.colorTemp !== 'undefined') {
-          ct = msg.payload.colorTemp
-        }
-        // hsb (alias: hsbcolor)
-        if (typeof msg.payload.hsb !== 'undefined') {
-          hsb = msg.payload.hsb
-        }
-        if (typeof msg.payload.hsbcolor !== 'undefined') {
-          hsb = msg.payload.hsbcolor
-        }
-        // rgb (alias: rgbcolor)
-        if (typeof msg.payload.rgb !== 'undefined') {
-          rgb = msg.payload.rgb
-        }
-        if (typeof msg.payload.rgbcolor !== 'undefined') {
-          rgb = msg.payload.rgbcolor
-        }
-        // hex (alias: hexcolor)
-        if (typeof msg.payload.hex !== 'undefined') {
-          hex = msg.payload.hex
-        }
-        if (typeof msg.payload.hexcolor !== 'undefined') {
-          hex = msg.payload.hexcolor
-        }
-        // color
-        if (typeof msg.payload.color !== 'undefined') {
-          color = msg.payload.color
+        for (const [key, value] of Object.entries(msg.payload)) {
+          const cmd = key.toLowerCase()
+          if (cmd === 'on' || cmd === 'state' || cmd === 'power') {
+            on = value
+          } else if (cmd === 'bright' || cmd === 'brightness' || cmd === 'dimmer') {
+            bright = value
+          } else if (cmd === 'ct' || cmd === 'colortemp') {
+            ct = value
+          } else if (cmd === 'rgb' || cmd === 'rgbcolor' ) {
+            rgb = value
+          } else if (cmd === 'hsb' || cmd === 'hsbcolor') {
+            hsb = value
+          } else if (cmd === 'hex' || cmd === 'hexcolor') {
+            hex = value
+          } else if (cmd === 'color') {
+            color = value
+          }
         }
       }
 
