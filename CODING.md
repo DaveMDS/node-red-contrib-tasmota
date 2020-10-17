@@ -7,6 +7,7 @@ This project respect the standard.js format
  * run "npm test" and fix all the issues
  * Update the version in package.json
  * Add a new entry in CHANGELOG.md
+ * git-commit
  * Create the git tag vX.X.X
  * git-push everything
  * npm publish
