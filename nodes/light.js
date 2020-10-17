@@ -50,7 +50,7 @@ module.exports = function (RED) {
   }
 
   function hsb2rgb (h, s, v) {
-    h = (h % 360 + 360) % 360  // normalize angle
+    h = (h % 360 + 360) % 360 // normalize angle
     h = (h === 360) ? 1 : (h % 360 / parseFloat(360) * 6)
     s = (s === 100) ? 1 : (s % 100 / parseFloat(100))
     v = (v === 100) ? 1 : (v % 100 / parseFloat(100))
@@ -68,7 +68,7 @@ module.exports = function (RED) {
     return [
       Math.floor(r * 255),
       Math.floor(g * 255),
-      Math.floor(b * 255),
+      Math.floor(b * 255)
     ]
   }
 
@@ -112,7 +112,7 @@ module.exports = function (RED) {
           bright = msg.payload
         } else if (cmd === 'ct' || cmd === 'colortemp') {
           ct = msg.payload
-        } else if (cmd === 'rgb' || cmd === 'rgbcolor' ) {
+        } else if (cmd === 'rgb' || cmd === 'rgbcolor') {
           rgb = msg.payload
         } else if (cmd === 'hsb' || cmd === 'hsbcolor') {
           hsb = msg.payload
@@ -133,7 +133,7 @@ module.exports = function (RED) {
             bright = value
           } else if (cmd === 'ct' || cmd === 'colortemp') {
             ct = value
-          } else if (cmd === 'rgb' || cmd === 'rgbcolor' ) {
+          } else if (cmd === 'rgb' || cmd === 'rgbcolor') {
             rgb = value
           } else if (cmd === 'hsb' || cmd === 'hsbcolor') {
             hsb = value
