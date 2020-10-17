@@ -7,7 +7,16 @@ simpler, more consistent and more configurable.
 Sorry for the inconvenience.
 
 ### Features
- - Lots of new features for the Light node
+ - Light: input commands can be passed by topic or by a js object
+ - Light: light color can be changed in RGB, HSB, HEX or Color
+ - Light: output now always include all the relevant info, not only che changed one
+ - Light: output can be a single js object or up to 4 different output for status, ct, bright and color
+ - Light: output temps can be configured to be in Kelvin, Mired or percent
+ - Light: output color can be configured to be in HSB, RGB or Channels
+ - Light: better status label, now also include bright and ct
+ - Light: more command aliases for better compatibility with other nodes
+ - Light: all input commands are now not case sensitive
+ - Light: better documentation
  
 
 [v0.9.5](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.4...v0.9.5) (2020-10-11)
