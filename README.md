@@ -36,8 +36,8 @@ $ npm install node-red-contrib-tasmota
 
 - [Switch node](#tasmota-switch-node)
 - [Sensor node](#tasmota-sensor-node)
-- [Light node](#tasmota-light-node)
 - [Button node](#tasmota-button-node)
+- [Light node](#tasmota-light-node)
 
 
 ### Tasmota Switch node
@@ -50,8 +50,8 @@ status changes to a single output (in this case the topic is used to distinguish
 or can be configured to have N outputs (one for each channel).
 
 
-![Switch Flow1](/media/switch1.png?raw=true)
-![Switch Flow2](/media/switch2.png?raw=true)
+![Switch Flow1](media/switch1.png?raw=true)
+![Switch Flow2](media/switch2.png?raw=true)
 
 
 ### Tasmota Sensor node
@@ -63,31 +63,42 @@ Outputs can be freely configured to extract only the data you are intrested in,
 you can configure as many output as you like, giving a JSONata expression for
 each output channel. 
 
-![Sensor Flow1](/media/sensor1.png?raw=true)
-![Sensor Flow2](/media/sensor2.png?raw=true)
+![Sensor Flow1](media/sensor1.png?raw=true)
+![Sensor Flow2](media/sensor2.png?raw=true)
 
 
 ### Tasmota Button node
 
-This node receive button presses from a tasmota button device, it support all the tasmota button actions (SINGLE, DOUBLE, TRIPLE, HOLD, etc...)
-and support multi buttons devices. The action is sent as a simple string on the node output.
-The node can be configured to send all button presses to a single output (in this case the topic is used to distinguish channels) 
-or can be configured to have N outputs (one for each channel).
+This node receive button presses from a tasmota button device, it support
+all the tasmota button actions (TOGGLE, HOLD, SINGLE, DOUBLE, TRIPLE, etc...) and also multi buttons devices.
+The action is sent as a simple string on the node output.
+The node can be configured to send all press actions to a single output 
+(in this case the topic is used to distinguish channels) 
+or can be configured to have multiple outputs (one for each channel).
 
-NOTE: The inputs in the tasmota device MUST be set as `Button` not as `Switch`, see the [documentation](https://tasmota.github.io/docs/Buttons-and-Switches/)
-page for all the info. Also look at [SetOption73](https://tasmota.github.io/docs/Commands/#setoption73), [SetOption1](https://tasmota.github.io/docs/Commands/#setoption1), [SetOption13](https://tasmota.github.io/docs/Commands/#setoption13) and [SetOption32](https://tasmota.github.io/docs/Commands/#setoption32) to
-configure the tasmota device as you need.
+NOTE: Tasmota changed the Buttons/Switch functionality in firmware 9.1.0! 
+This node support both formats, but it's raccomended to update to a recent Tasmota firmware.
+
+See the detailed [Tasmota documentation](https://tasmota.github.io/docs/Buttons-and-Switches/) page for an in deep explanation. 
+Also look at: 
+[SwitchMode](https://tasmota.github.io/docs/Commands/#switchmode),
+[SetOption73](https://tasmota.github.io/docs/Commands/#setoption73),
+[SetOption114](https://tasmota.github.io/docs/Commands/#setoption114),
+[SetOption1](https://tasmota.github.io/docs/Commands/#setoption1),
+[SetOption13](https://tasmota.github.io/docs/Commands/#setoption13),
+[SetOption32](https://tasmota.github.io/docs/Commands/#setoption32)
+and setup the tasmota device to suite your needs.
 
 
-![Button Flow](/media/button1.png?raw=true)
+![Button Flow](media/button1.png?raw=true)
 
 
 ### Tasmota Light node
 Lets you control your tasmota light bulb/controller, and of course give you messagges on state changes.
 The value is also requested on startup, so the output state is always accurate and full of all the available light info.
 
-![Light Flow1](/media/light1.png?raw=true)
-![Light Config](/media/light2.png?raw=true)
+![Light Flow1](media/light1.png?raw=true)
+![Light Config](media/light2.png?raw=true)
 
 
 #### Turn on/off (simple mode)

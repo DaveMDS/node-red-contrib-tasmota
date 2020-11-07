@@ -1,4 +1,10 @@
 
+[v0.9.7](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.6...v0.9.7) (2020-11-07)
+--------------------------------------------------------------------------------------------------
+### Features
+ - Button: support for new Tasmota message format (fw >= 9.1.0)
+
+
 [v0.9.6](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.5...v0.9.6) (2020-10-17)
 --------------------------------------------------------------------------------------------------
 **!!! WARNING !!!** 

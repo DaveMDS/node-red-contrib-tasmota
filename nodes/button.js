@@ -15,22 +15,38 @@ module.exports = function (RED) {
     }
 
     onStat (mqttTopic, mqttPayloadBuf) {
-      // last part of the topic must be BUTTON or BUTTONx (ignore any others)
+      let channel = null
+      let action = null
+      let payload = null
       const lastTopic = mqttTopic.split('/').pop()
-      if (!lastTopic.startsWith('BUTTON')) {
-        return
+      try {
+        payload = JSON.parse(mqttPayloadBuf.toString())
+      } catch (e) {
+        return // ignore any non-json payload
       }
 
-      // extract channel number from topic
-      const channel = this.extractChannelNum(lastTopic)
+      /* Firmware >= 9.1.0
+         stat/topic/RESULT = {"Button<X>":{"Action":"SINGLE"}}
+         stat/topic/RESULT = {"Switch<X>":{"Action":"SINGLE"}}
+      */
+      if (lastTopic === 'RESULT') {
+        for (const [key, value] of Object.entries(payload)) {
+          if (key.startsWith('Button') || key.startsWith('Switch')) {
+            channel = this.extractChannelNum(key)
+            action = value.Action
+          }
+        }
+      /* Firmware < 9.1.0
+         stat/topic/BUTTON<X> = {"ACTION":"DOUBLE"}
+      */
+      } else if (lastTopic.startsWith('BUTTON')) {
+        channel = this.extractChannelNum(lastTopic)
+        action = payload.ACTION
+      }
 
-      // extract button action from JSON payload
-      try {
-        var data = JSON.parse(mqttPayloadBuf.toString())
-        var action = data.ACTION
-      } catch (e) {
-        this.setNodeStatus('red', 'Error parsing JSON data from device')
-        this.error(e, 'Error parsing JSON data from device')
+      // something usefull received ?
+      if (!channel || !action) {
+        return
       }
 
       // update status icon and label
