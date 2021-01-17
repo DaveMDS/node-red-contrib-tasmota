@@ -1,0 +1,12 @@
+on: push
+name: Run NPM tests
+jobs:
+  runNpmTarget:
+    name: Run NPM target
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Run NPM target
+      uses: anna-money/github-actions-npm@v2
+#      with:
+#        target: 'custom-target'  # Remove `with` section to run default target `test`
