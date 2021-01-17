@@ -9,6 +9,8 @@
 [![npm montly](https://img.shields.io/npm/dm/node-red-contrib-tasmota.svg?label=)](https://www.npmjs.com/package/node-red-contrib-tasmota)
 [![npm weekly](https://img.shields.io/npm/dw/node-red-contrib-tasmota.svg?label=)](https://www.npmjs.com/package/node-red-contrib-tasmota)
 
+![Run NPM tests](https://github.com/DaveMDS/node-red-contrib-tasmota/workflows/Run%20NPM%20tests/badge.svg)
+
 
 Tasmota devices integration for building automation inside [Node-RED](https://nodered.org/).
 
