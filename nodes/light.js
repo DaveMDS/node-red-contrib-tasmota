@@ -173,34 +173,6 @@ module.exports = function (RED) {
         }
       }
 
-      // bright: 0-100
-      if (bright !== undefined) {
-        bright = parseInt(bright)
-        if (isNaN(bright) || bright < 0 || bright > 100) {
-          this.warn('Invalid value for the \'bright\' command (should be: 0-100)')
-        } else {
-          this.MQTTPublish('cmnd', 'Dimmer', bright.toString())
-        }
-      }
-
-      // ct: 500-153, 2000-6500, 0-100 (warm to cold)
-      if (ct !== undefined) {
-        ct = parseInt(ct)
-        if (isNaN(ct)) {
-          this.warn('Invalid value for the \'ct\' command (should be: 0-100, 2000-6500 or 500-153)')
-        } else if (ct >= 153 && ct <= 500) { // ct in mired (cold to warm)
-          this.MQTTPublish('cmnd', 'CT', ct.toString())
-        } else if (ct >= 0 && ct <= 100) { // ct in percent (warm to cold)
-          ct = percent2mired(ct)
-          this.MQTTPublish('cmnd', 'CT', ct.toString())
-        } else if (ct >= 2000 && ct <= 6500) { // ct in kelvin (warm to cold)
-          ct = kelvin2mired(ct)
-          this.MQTTPublish('cmnd', 'CT', ct.toString())
-        } else {
-          this.warn('Invalid value for the \'ct\' command (should be: 0-100, 2000-6500 or 500-153)')
-        }
-      }
-
       // rgb: array[r,g,b] or string "r,g,b" (0-255, 0-255, 0-255)
       if (rgb !== undefined) {
         if (typeof rgb === 'string') {
@@ -248,6 +220,34 @@ module.exports = function (RED) {
           }
         } else {
           this.warn('Invalid type for the \'color\' command (should be a string)')
+        }
+      }
+
+      // bright: 0-100
+      if (bright !== undefined) {
+        bright = parseInt(bright)
+        if (isNaN(bright) || bright < 0 || bright > 100) {
+          this.warn('Invalid value for the \'bright\' command (should be: 0-100)')
+        } else {
+          this.MQTTPublish('cmnd', 'Dimmer', bright.toString())
+        }
+      }
+
+      // ct: 500-153, 2000-6500, 0-100 (warm to cold)
+      if (ct !== undefined) {
+        ct = parseInt(ct)
+        if (isNaN(ct)) {
+          this.warn('Invalid value for the \'ct\' command (should be: 0-100, 2000-6500 or 500-153)')
+        } else if (ct >= 153 && ct <= 500) { // ct in mired (cold to warm)
+          this.MQTTPublish('cmnd', 'CT', ct.toString())
+        } else if (ct >= 0 && ct <= 100) { // ct in percent (warm to cold)
+          ct = percent2mired(ct)
+          this.MQTTPublish('cmnd', 'CT', ct.toString())
+        } else if (ct >= 2000 && ct <= 6500) { // ct in kelvin (warm to cold)
+          ct = kelvin2mired(ct)
+          this.MQTTPublish('cmnd', 'CT', ct.toString())
+        } else {
+          this.warn('Invalid value for the \'ct\' command (should be: 0-100, 2000-6500 or 500-153)')
         }
       }
     }
