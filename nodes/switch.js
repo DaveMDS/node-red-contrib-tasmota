@@ -29,8 +29,8 @@ module.exports = function (RED) {
       const payload = msg.payload
       const topic = msg.topic || 'switch1'
 
-      var channel = topic.toLowerCase().startsWith('switch') ? this.extractChannelNum(topic) : 1
-      var command = 'POWER' + channel
+      const channel = topic.toLowerCase().startsWith('switch') ? this.extractChannelNum(topic) : 1
+      const command = 'POWER' + channel
 
       // Switch On/Off for booleans and 1/0 (int or str)
       if (payload === true || payload === 1 || payload === '1') {
@@ -71,7 +71,7 @@ module.exports = function (RED) {
 
       // check payload is valid
       const mqttPayload = mqttPayloadBuf.toString()
-      var status
+      let status
       if (mqttPayload === onValue) {
         status = 'On'
       } else if (mqttPayload === offValue) {
@@ -88,13 +88,13 @@ module.exports = function (RED) {
       this.setNodeStatus(this.cache[0] === 'On' ? 'green' : 'grey', this.cache.join(' - '))
 
       // build and send the new boolen message for topic 'switchX'
-      var msg = { topic: 'switch' + channel, payload: (status === 'On') }
+      const msg = { topic: 'switch' + channel, payload: (status === 'On') }
       if (this.config.outputs === 1 || this.config.outputs === '1') {
         // everything to the same (single) output
         this.send(msg)
       } else {
         // or send to the correct output
-        var msgList = Array(this.config.outputs).fill(null)
+        const msgList = Array(this.config.outputs).fill(null)
         msgList[channel - 1] = msg
         this.send(msgList)
       }

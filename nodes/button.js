@@ -59,7 +59,7 @@ module.exports = function (RED) {
         this.send(msg)
       } else {
         // or send to the correct output
-        var msgList = Array(this.config.outputs).fill(null)
+        const msgList = Array(this.config.outputs).fill(null)
         msgList[channel - 1] = msg
         this.send(msgList)
       }

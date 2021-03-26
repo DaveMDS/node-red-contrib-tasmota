@@ -37,14 +37,14 @@ module.exports = function (RED) {
         return
       }
 
-      var messages = []
+      const messages = []
       for (let i = 0; i < this.config.rules.length; i++) {
         const rule = this.config.rules[i]
         if (!rule || rule === 'payload') {
           messages.push({ payload: tasmotaData })
         } else {
-          var expr = RED.util.prepareJSONataExpression(rule, this)
-          var result = RED.util.evaluateJSONataExpression(expr, tasmotaData)
+          const expr = RED.util.prepareJSONataExpression(rule, this)
+          const result = RED.util.evaluateJSONataExpression(expr, tasmotaData)
           messages.push({ payload: result })
         }
       }
@@ -53,7 +53,7 @@ module.exports = function (RED) {
 
     onSensorTelemetry (topic, payload) {
       try {
-        var data = JSON.parse(payload.toString())
+        const data = JSON.parse(payload.toString())
         this.sendToOutputs(data)
       } catch (err) {
         this.setNodeStatus('red', 'Error parsing JSON data from device')
@@ -63,7 +63,7 @@ module.exports = function (RED) {
 
     onSensorStatus (topic, payload) {
       try {
-        var data = JSON.parse(payload.toString())
+        const data = JSON.parse(payload.toString())
         this.sendToOutputs(data.StatusSNS)
       } catch (e) {
         this.setNodeStatus('red', 'Error parsing JSON data from device')

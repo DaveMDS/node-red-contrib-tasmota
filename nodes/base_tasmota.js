@@ -32,7 +32,7 @@ class BaseTasmotaNode {
     this.statusLWT = LWT_OFFLINE
 
     // Merge base and child defaults
-    var defaults = Object.assign({}, TASMOTA_DEFAULTS, more_defaults)
+    const defaults = Object.assign({}, TASMOTA_DEFAULTS, more_defaults)
 
     // Merge user and default config
     this.config = {}
@@ -45,7 +45,7 @@ class BaseTasmotaNode {
     }
 
     // Establish MQTT broker connection
-    var brokerNode = RED.nodes.getNode(this.config.broker)
+    const brokerNode = RED.nodes.getNode(this.config.broker)
     this.mqttClient = new TasmotaMqttClient(this, brokerNode)
 
     // Subscribe to device availability changes  tele/<device>/LWT
@@ -105,7 +105,7 @@ class BaseTasmotaNode {
   }
 
   sendToAllOutputs (msg) {
-    var count = Number(this.config.outputs) || 1
+    const count = Number(this.config.outputs) || 1
     if (count === 1) {
       this.send(msg)
     } else {
@@ -161,7 +161,7 @@ class BaseTasmotaNode {
   }
 
   buildFullTopic (prefix, command) {
-    var full = this.config.fullTopic
+    let full = this.config.fullTopic
 
     full = full.replace('%topic%', this.config.device)
 
@@ -181,13 +181,13 @@ class BaseTasmotaNode {
   }
 
   MQTTPublish (prefix, command, payload) {
-    var fullTopic = this.buildFullTopic(prefix, command)
+    const fullTopic = this.buildFullTopic(prefix, command)
     this.mqttClient.publish(fullTopic, payload)
     // TODO  qos and retain options
   }
 
   MQTTSubscribe (prefix, command, callback) {
-    var fullTopic = this.buildFullTopic(prefix, command)
+    const fullTopic = this.buildFullTopic(prefix, command)
     this.mqttClient.subscribe(fullTopic, 2, callback)
   }
 

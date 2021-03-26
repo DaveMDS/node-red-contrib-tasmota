@@ -7,22 +7,22 @@ const mqtt = require('mqtt')
   by all nodes that use the same broker config.
     key:brokerUrl  val:MqttClient
 */
-var connections = {}
+const connections = {}
 
 // ensure we use a single connection for each configured broker
 function mqttSingleConnect (brokerUrl, options) {
   if (brokerUrl in connections) {
     // reuse client and increase refcount
-    var client = connections[brokerUrl]
+    const client = connections[brokerUrl]
     client.options.tasmotaRefCount += 1
     return client
   }
 
   // establish a new mqtt connection (reusing options from the config node)
-  var opts = Object.assign({}, options)
+  const opts = Object.assign({}, options)
   opts.clientId = 'Tasmota_' + options.clientId
   opts.tasmotaRefCount = 1
-  client = mqtt.connect(brokerUrl, opts)
+  const client = mqtt.connect(brokerUrl, opts)
   client.setMaxListeners(0)
 
   // save this new connection in the connections pool
@@ -32,7 +32,7 @@ function mqttSingleConnect (brokerUrl, options) {
 
 // ensure we close the client when refcount goes zero
 function mqttSingleDisconnect (brokerUrl, done) {
-  var client = connections[brokerUrl]
+  const client = connections[brokerUrl]
   if (!client || !client.connected) {
     done()
     return
@@ -57,14 +57,14 @@ function matchTopic (subscription, topic) {
     subscription = subscription.replace(/^\$share\/[^#+/]+\/(.*)/g, '$1')
   }
   /* eslint-disable no-useless-escape */
-  var re = new RegExp('^' + subscription.replace(/([\[\]\?\(\)\\\\$\^\*\.|])/g, '\\$1').replace(/\+/g, '[^/]+').replace(/\/#$/, '(\/.*)?') + '$')
+  const re = new RegExp('^' + subscription.replace(/([\[\]\?\(\)\\\\$\^\*\.|])/g, '\\$1').replace(/\+/g, '[^/]+').replace(/\/#$/, '(\/.*)?') + '$')
   /* eslint-enable no-useless-escape */
   return re.test(topic)
 }
 
 class TasmotaMqttClient {
   constructor (tasmotaNode, brokerNode) {
-    var self = this
+    const self = this
 
     self.node = tasmotaNode
     self.brokerUrl = brokerNode.brokerurl
@@ -86,7 +86,7 @@ class TasmotaMqttClient {
 
     // Mqtt message received, dispatch to the subscribed callbacks
     self.mqtt_client.on('message', function (topic, payload, packet) {
-      for (var i = 0; i < self.subscriptions.length; i++) {
+      for (let i = 0; i < self.subscriptions.length; i++) {
         if (matchTopic(self.subscriptions[i].topic, topic)) {
           self.subscriptions[i].callback(topic, payload, packet)
         }
@@ -95,7 +95,7 @@ class TasmotaMqttClient {
   }
 
   disconnect (done) {
-    for (var i = 0; i < this.subscriptions.length; i++) {
+    for (let i = 0; i < this.subscriptions.length; i++) {
       this.mqtt_client.unsubscribe(this.subscriptions[i].topic)
     }
     this.subscriptions = []
@@ -103,7 +103,7 @@ class TasmotaMqttClient {
   }
 
   subscribe (topic, qos, callback) {
-    var sub = {
+    const sub = {
       topic: topic,
       callback: callback
     }

@@ -55,15 +55,15 @@ module.exports = function (RED) {
     s = (s === 100) ? 1 : (s % 100 / parseFloat(100))
     v = (v === 100) ? 1 : (v % 100 / parseFloat(100))
 
-    var i = Math.floor(h)
-    var f = h - i
-    var p = v * (1 - s)
-    var q = v * (1 - f * s)
-    var t = v * (1 - (1 - f) * s)
-    var mod = i % 6
-    var r = [v, q, p, p, t, v][mod]
-    var g = [t, v, v, q, p, p][mod]
-    var b = [p, p, t, v, v, q][mod]
+    const i = Math.floor(h)
+    const f = h - i
+    const p = v * (1 - s)
+    const q = v * (1 - f * s)
+    const t = v * (1 - (1 - f) * s)
+    const mod = i % 6
+    const r = [v, q, p, p, t, v][mod]
+    const g = [t, v, v, q, p, p][mod]
+    const b = [p, p, t, v, v, q][mod]
 
     return [
       Math.floor(r * 255),
@@ -88,8 +88,8 @@ module.exports = function (RED) {
     }
 
     onNodeInput (msg) {
-      var on, bright, ct
-      var rgb, hsb, hex, color
+      let on, bright, ct
+      let rgb, hsb, hex, color
 
       // MODE 1: simple on/off/toggle (without topic)
       if (!msg.topic &&
@@ -253,8 +253,9 @@ module.exports = function (RED) {
     }
 
     onStat (mqttTopic, mqttPayloadBuf) {
+      let data
       try {
-        var data = JSON.parse(mqttPayloadBuf.toString())
+        data = JSON.parse(mqttPayloadBuf.toString())
       } catch (err) {
         this.setNodeStatus('red', 'Error parsing JSON data from device')
         this.error(err, 'Error parsing JSON data from device')
@@ -314,7 +315,7 @@ module.exports = function (RED) {
       }
 
       // update node status label
-      var status
+      let status
       if (this.cache.on !== undefined) {
         status = this.cache.on ? 'On' : 'Off'
       }
