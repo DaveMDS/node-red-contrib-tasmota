@@ -23,6 +23,7 @@
   },
   "node-red": {
     "nodes": {
+      "tasmota-mqtt-broker": "nodes/mqtt_broker.js",
       "Tasmota switch": "nodes/switch.js",
       "Tasmota sensor": "nodes/sensor.js",
       "Tasmota light": "nodes/light.js",
@@ -30,7 +31,7 @@
     }
   },
   "dependencies": {
-    "mqtt": "2.18.8"
+    "mqtt": "4.2.6"
   },
   "devDependencies": {
     "standard": "*"

@@ -4,7 +4,7 @@ RED.nodes.registerType("Tasmota Light", {
     color: "#28AFB0",
     defaults: {
         // common basic
-        broker: { type: "mqtt-broker", required: true },
+        broker: { type: "tasmota-mqtt-broker", required: true },
         device: { value: "", required: true },
         name: { value: "" },
         outputs: { value: 1 },
@@ -68,7 +68,7 @@ RED.nodes.registerType("Tasmota Light", {
     <div id="node-input-tabs-content">
         <div id="tasmota-settings-tab" style="display:none">
             <div class="form-row">
-                <label for="node-input-broker"><i class="fa fa-globe"></i> Server</label>
+                <label for="node-input-broker"><i class="fa fa-globe"></i> Broker</label>
                 <input type="text" id="node-input-broker">
             </div>
             <div class="form-row">

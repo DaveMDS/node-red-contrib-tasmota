@@ -1,7 +1,5 @@
 'use strict'
 
-const TasmotaMqttClient = require('./tasmota_mqtt_client.js')
-
 const TASMOTA_DEFAULTS = {
   // basic
   broker: '', // mandatory
@@ -25,7 +23,7 @@ class BaseTasmotaNode {
     RED.nodes.createNode(this, config)
 
     // Internals
-    this.mqttClient = null
+    this.brokerNode = null
     this.closing = false
 
     // LastWillTopic status of the device
@@ -44,9 +42,9 @@ class BaseTasmotaNode {
       }
     }
 
-    // Establish MQTT broker connection
-    const brokerNode = RED.nodes.getNode(this.config.broker)
-    this.mqttClient = new TasmotaMqttClient(this, brokerNode)
+    // Get the broker node and register this instance
+    this.brokerNode = RED.nodes.getNode(this.config.broker)
+    this.brokerNode.register(this)
 
     // Subscribe to device availability changes  tele/<device>/LWT
     this.MQTTSubscribe('tele', 'LWT', (topic, payload) => {
@@ -91,10 +89,11 @@ class BaseTasmotaNode {
       this.onNodeInput(msg)
     })
 
-    // Remove all connections when node is deleted or restarted
-    this.on('close', done => {
+    // Deregister from BrokerNode when this node is deleted or restarted
+    this.on('close', (done) => {
       this.closing = true
-      this.mqttClient.disconnect(done)
+      this.brokerNode.deregister(this)
+      done()
     })
   }
 
@@ -113,20 +112,21 @@ class BaseTasmotaNode {
     }
   }
 
+  onBrokerConnecting () {
+    // force the status, regardless the LWT
+    this.status({ fill: 'yellow', shape: 'ring', text: 'Broker connecting' })
+  }
+
   onBrokerOnline () {
     // probably this is never shown, as the LWT sould be Offline
     // at this point. But we need to update the status.
-    this.setNodeStatus('yellow', 'Broker connected', 'ring')
+    this.setNodeStatus('red', 'Broker connected', 'ring')
   }
 
   onBrokerOffline () {
     if (!this.closing) {
       // force the status, regardless the LWT
-      this.status({
-        fill: 'red',
-        shape: 'ring',
-        text: 'Broker disconnected'
-      })
+      this.status({ fill: 'red', shape: 'ring', text: 'Broker disconnected' })
       this._sendEnableUI(false)
       this.onDeviceOffline()
     }
@@ -182,13 +182,13 @@ class BaseTasmotaNode {
 
   MQTTPublish (prefix, command, payload) {
     const fullTopic = this.buildFullTopic(prefix, command)
-    this.mqttClient.publish(fullTopic, payload)
+    this.brokerNode.publish(fullTopic, payload)
     // TODO  qos and retain options
   }
 
   MQTTSubscribe (prefix, command, callback) {
     const fullTopic = this.buildFullTopic(prefix, command)
-    this.mqttClient.subscribe(fullTopic, 2, callback)
+    this.brokerNode.subscribe(this, fullTopic, 2, callback)
   }
 
   /* Return the integer number at the end of the given string,

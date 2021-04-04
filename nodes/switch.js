@@ -17,7 +17,9 @@ module.exports = function (RED) {
       this.cache = [] // switch status cache, es: [1=>'On', 2=>'Off']
 
       // Subscribes to state change of all the switch  stat/<device>/+
-      this.MQTTSubscribe('stat', '+', (t, p) => this.onStat(t, p))
+      this.MQTTSubscribe('stat', '+', (topic, payload) => {
+        this.onStat(topic, payload)
+      })
     }
 
     onDeviceOnline () {

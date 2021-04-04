@@ -1,0 +1,151 @@
+<script type="text/html" data-template-name="tasmota-mqtt-broker">
+  <div class="form-row">
+    <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</span></label>
+    <input type="text" id="node-config-input-name" placeholder="Name">
+  </div>
+  <div class="form-row node-input-broker">
+    <label for="node-config-input-broker"><i class="fa fa-globe"></i> Address</span></label>
+    <input type="text" id="node-config-input-broker" style="width:40%;" placeholder="e.g. localhost">
+    <label for="node-config-input-port" style="margin-left:20px; width:43px; "> Port</span></label>
+    <input type="text" id="node-config-input-port" placeholder="1883" style="width:55px">
+  </div>
+  <div class="form-row">
+    <input type="checkbox" id="node-config-input-usetls" style="display: inline-block; width: auto; vertical-align: top;">
+    <label for="node-config-input-usetls" style="width: auto">Enable secure (SSL/TLS) connection</label>
+    <div id="node-config-row-tls" class="hide">
+      <label style="width: auto; margin-left: 20px; margin-right: 10px;" for="node-config-input-tls">TLS Configuration</span></label>
+      <input style="width: 300px;" type="text" id="node-config-input-tls">
+    </div>
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-clientid"><i class="fa fa-tag"></i> Client ID</label>
+    <input type="text" id="node-config-input-clientid" placeholder="Leave blank for auto generated">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-user"><i class="fa fa-user"></i> Username</label>
+    <input type="text" id="node-config-input-user">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-password"><i class="fa fa-lock"></i> Password</label>
+    <input type="password" id="node-config-input-password">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-keepalive" style="width: auto"><i class="fa fa-clock-o"></i> Keep alive time (s)</label>
+    <input type="text" id="node-config-input-keepalive" style="width: 50px">
+    <input type="checkbox" id="node-config-input-cleansession" style="margin-left: 30px; height: 1em;display: inline-block; width: auto; vertical-align: middle;">
+    <label for="node-config-input-cleansession" style="width: auto;">Use clean session</label>
+  </div>
+<!--  <div class="form-row">-->
+<!--    <input type="checkbox" id="node-config-input-compatmode" style="display: inline-block; width: auto; vertical-align: top;">-->
+<!--    <label for="node-config-input-compatmode" style="width: auto;">Use legacy MQTT 3.1 support</label>-->
+<!--  </div>-->
+
+</script>
+
+<script type="text/javascript">
+  RED.nodes.registerType('tasmota-mqtt-broker',{
+    category: 'config',
+    defaults: {
+      name: {value: ""},
+      broker: {value: "", required: true},
+      port: {value: 1883, required: true, validate: RED.validators.number()},
+      tls: {type:"tls-config", required: false},
+      clientid: {value: "", validate: function(v) {
+          if ($("#node-config-input-clientid").length) {
+            // Currently editing the node
+            return $("#node-config-input-cleansession").is(":checked") || (v||"").length > 0;
+          } else {
+            return (this.cleansession===undefined || this.cleansession) || (v||"").length > 0;
+          }
+        }},
+      usetls: {value: false},
+      verifyservercert: { value: false},
+      // compatmode: { value: false},
+      keepalive: {value: 60, validate: RED.validators.number()},
+      cleansession: {value: true},
+    },
+    credentials: {
+      user: {type: "text"},
+      password: {type: "password"}
+    },
+    label: function() {
+      if (this.name) {
+        return this.name
+      }
+      let b = this.broker
+      if (!b) { b = "undefined" }
+      let lab = (this.clientid ? this.clientid+"@" : "") + b
+      if (b.indexOf("://") === -1){
+        if (!this.port){ lab = lab + ":1883" }
+        else { lab = lab + ":" + this.port }
+      }
+      return lab
+    },
+    oneditprepare: function () {
+      if (typeof this.cleansession === 'undefined') {
+        this.cleansession = true
+        $("#node-config-input-cleansession").prop("checked", true)
+      }
+      if (typeof this.usetls === 'undefined') {
+        this.usetls = false
+        $("#node-config-input-usetls").prop("checked", false)
+      }
+      if (typeof this.keepalive === 'undefined') {
+        this.keepalive = 60
+        $("#node-config-input-keepalive").val(this.keepalive)
+      }
+
+      function updateTLSOptions() {
+        if ($("#node-config-input-usetls").is(':checked')) {
+          $("#node-config-row-tls").show()
+        } else {
+          $("#node-config-row-tls").hide()
+        }
+      }
+      updateTLSOptions()
+      $("#node-config-input-usetls").on("click",function() {
+        updateTLSOptions()
+      })
+
+      function updateClientId() {
+        if ($("#node-config-input-cleansession").is(":checked")) {
+          $("#node-config-input-clientid").attr("placeholder", "Leave blank for auto generated")
+        } else {
+          $("#node-config-input-clientid").attr("placeholder", "Must be set for non-clean sessions")
+        }
+        $("#node-config-input-clientid").change()
+      }
+      setTimeout(updateClientId,0);
+      $("#node-config-input-cleansession").on("click",function() {
+        updateClientId()
+      })
+
+      // function updatePortEntry(){
+      //   var disabled = $("#node-config-input-port").prop("disabled");
+      //   if ($("#node-config-input-broker").val().indexOf("://") === -1){
+      //     if (disabled){
+      //       $("#node-config-input-port").prop("disabled", false);
+      //     }
+      //   }
+      //   else {
+      //     if (!disabled){
+      //       $("#node-config-input-port").prop("disabled", true);
+      //     }
+      //   }
+      // }
+      // $("#node-config-input-broker").on("change", function() {
+      //   updatePortEntry();
+      // });
+      // $("#node-config-input-broker").on( "keyup", function() {
+      //   updatePortEntry();
+      // });
+      // setTimeout(updatePortEntry,50);
+
+    },
+    oneditsave: function() {
+      if (!$("#node-config-input-usetls").is(':checked')) {
+        $("#node-config-input-tls").val("")
+      }
+    }
+  });
+</script>

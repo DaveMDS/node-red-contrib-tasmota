@@ -79,7 +79,9 @@ module.exports = function (RED) {
       this.colorCmnd = 'Color1' // TODO make Color1/2 configurable ?
 
       // Subscribes to state changes
-      this.MQTTSubscribe('stat', 'RESULT', (t, p) => this.onStat(t, p))
+      this.MQTTSubscribe('stat', 'RESULT', (topic, payload) => {
+        this.onStat(topic, payload)
+      })
     }
 
     onDeviceOnline () {
