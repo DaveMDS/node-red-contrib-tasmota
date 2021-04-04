@@ -1,0 +1,143 @@
+<script type="text/javascript">
+RED.nodes.registerType("Tasmota Generic", {
+    category: "tasmota",
+    color: "#28AFB0",
+    defaults: {
+        // common basic
+        broker: { type: "tasmota-mqtt-broker", required: true },
+        device: { value: "", required: true },
+        name: { value: "" },
+        outputs: { value: 1 },
+        uidisabler: { value: false },
+        // common advanced
+        fullTopic: { value: "" },
+        cmndPrefix: { value: "" },
+        statPrefix: { value: "" },
+        telePrefix: { value: "" },
+        // node specific
+        subscribeToStat: { value: false },
+        subscribeToTele: { value: false }
+    },
+    icon: "contrib-tasmota-logo.svg",
+    paletteLabel: 'generic',
+    inputs: 1,
+    outputs: 1,
+    label: function() {
+        return this.name || this.device || "Tasmota Generic";
+    },
+    labelStyle: function() {
+        return this.name ? "node_label_italic" : "";
+    },
+    oneditprepare: function () {
+        let tabs = RED.tabs.create({
+            id: "node-input-tasmota-tabs",
+            onchange: function (tab) {
+                $("#node-input-tabs-content").children().hide()
+                $("#" + tab.id).show()
+            }
+        })
+        tabs.addTab({
+            id: "tasmota-settings-tab",
+            label: "Settings"
+        })
+        tabs.addTab({
+            id: "tasmota-advanced-tab",
+            label: "Advanced"
+        })
+    }
+});
+</script>
+
+<script type="text/x-red" data-template-name="Tasmota Generic">
+    <div class="form-row">
+        <ul id="node-input-tasmota-tabs"></ul>
+    </div>
+    <div id="node-input-tabs-content">
+        <div id="tasmota-settings-tab" style="display:none">
+            <div class="form-row">
+                <label for="node-input-broker"><i class="fa fa-globe"></i> Broker</label>
+                <input type="text" id="node-input-broker">
+            </div>
+            <div class="form-row">
+                <label for="node-input-device"><i class="fa fa-dot-circle-o"></i> Device</label>
+                <input type="text" id="node-input-device" placeholder="Device id (topic)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+                <input type="text" id="node-input-name" placeholder="Name">
+            </div>
+            <hr align="middle">
+            <div class="form-row">
+                <label for="node-input-subscribeToStat" style="width:70%">
+                    <input type="checkbox" id="node-input-subscribeToStat" style="display:inline-block; width:15px; vertical-align:baseline;">
+                    Subscribe to all STAT messages
+                </label>
+            </div>
+            <div class="form-row">
+                <label for="node-input-subscribeToTele" style="width:70%">
+                    <input type="checkbox" id="node-input-subscribeToTele" style="display:inline-block; width:15px; vertical-align:baseline;">
+                    Subscribe to all TELE messages
+                </label>
+            </div>
+
+        </div>
+        <div id="tasmota-advanced-tab" style="display:none">
+            <div class="form-row">
+                <label for="node-input-fullTopic"><i class="fa fa-wrench"></i> Full topic</label>
+                <input type="text" id="node-input-fullTopic" placeholder="Full topic (Default: %prefix%/%topic%/)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-cmndPrefix"><i class="fa fa-comment"></i> cmnd</label>
+                <input type="text" id="node-input-cmndPrefix" placeholder="Command topic prefix (Default: cmnd)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-statPrefix"><i class="fa fa-comment"></i> stat</label>
+                <input type="text" id="node-input-statPrefix" placeholder="Stat topic prefix (Default: stat)">
+            </div>
+            <div class="form-row">
+                <label for="node-input-telePrefix"><i class="fa fa-comment"></i> tele</label>
+                <input type="text" id="node-input-telePrefix" placeholder="Telemetry topic prefix (Default: tele)">
+            </div>
+        </div>
+    </div>
+</script>
+
+
+<script type="text/x-red" data-help-name="Tasmota Generic">
+    <p>A generic node to control any device running the <b>Tasmota</b> firmware.</p>
+    <p>With this node you can issue any command as you can do in the Tasmota console
+       and any received messages will be forwarded to the node output.</p>
+
+    <h3>Input</h3>
+    <p>Three input formats are supported: string, list and object:</p>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string</span></dt>
+        <dd>CMD &lt;param&gt;</dd>
+        <dt>payload <span class="property-type">list</span></dt>
+        <dd>["CMD &lt;param&gt;", "CMD &lt;param&gt;", ...]</dd>
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>{"CMD": "param", "CMD": "param", ...}</dd>
+    </dl>
+    <p>CMD can be any valid tasmota command and param is specific for each command. Refer to the
+       official Tasmota <a href="https://tasmota.github.io/docs/Commands/">documentation</a> for
+       the full commands reference.</p>
+    <p>Note that the object format does not guarantee the order of delivered messagges,
+       thus if commands order is important you must use the list format.</p>
+
+    <h3>Output</h3>
+    <dl class="message-properties">
+       <dt>payload <span class="property-type">string</span></dt>
+       <dd>the MQTT payload as sent by the device</dd>
+       <dt>topic <span class="property-type">string</span></dt>
+       <dd>the MQTT topic as sent by the device</dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>This is a generic Tasmota node, can send and receive any command/message
+       to/from the Tasmota device.</p>
+    <p>By default only the RESULT messages are forwarded to the node
+       output, but you can configure it to receive all STAT messages and even
+       all TELE messages.</p>
+    <p>In the Avanced tab you can customize the topic format for special cases,
+       the default values should work for a default Tasmota installation.</p>
+</script>

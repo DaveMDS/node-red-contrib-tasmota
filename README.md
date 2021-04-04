@@ -40,6 +40,7 @@ $ npm install node-red-contrib-tasmota
 - [Sensor node](#tasmota-sensor-node)
 - [Button node](#tasmota-button-node)
 - [Light node](#tasmota-light-node)
+- [Generic node](#tasmota-generic-node)
 
 
 ### Tasmota Switch node
@@ -159,25 +160,42 @@ The light node output can be configured to suite your need, there are two main m
    First output for `on`, second for `bright`, third for `ct` and fourth for `color`.
 
 
+### Tasmota Generic node
+
+This is a generic Tasmota node, can send and receive any command/message to/from any Tasmota device.
+
+With this node you can issue any command as you can do in the Tasmota console. Any received 
+messages will be forwarded to the node output, with the topic and the payload untouched. 
+
+To issue a command just send a msg to the node 
+using one of following syntaxes:
+
+1. string payload: `CMD <param>`
+2. JSON list payload: `["CMD <param>", "CMD <param>", ...]`
+3. JSON object payload: `{"CMD": "param", "CMD": "param", ...}`
+
+`CMD` can be any valid tasmota command and `param` is specific for each command. Refer to the official 
+Tasmota [documentation](https://tasmota.github.io/docs/Commands/) for the full commands reference.
+
+Note that the object format does not guarantee the order of delivered messagges,
+thus if commands order is important you must use the list format.
+
+
 ### Send custom Tasmota commands
 
 All the nodes support an additional mode where you can send any Tasmota 
 command or a list of commands to the device. This can be used for example to change 
 device configuration or to send specific commands not supported by the node itself. 
 
-The list of all the commands supported by Tasmota is available on this
-[documentation](https://tasmota.github.io/docs/Commands/) page.
-
-Three payload formats are supported:
-1. string payload: `CMD <param>`
-2. JSON list payload: `["CMD <param>", "CMD <param>", ...]`
-3. JSON object payload: `{"CMD": "param", "CMD": "param", ...}`
-
-Note that the object format does not guarantee the order of delivered messagges,
-thus if commands order is important you must use the list format.
+The payload format is the same as explained in the Generic node above, the only difference
+is that the message topic must be set to `command` and the commands result is not catched
+(If you need the command results you must use the Generic node).
 
 Example:
-To send the command "BlinkCount 12" to a tasmota switch device, create a tasmota-swich node and set the device id(topic) to the correct value for your device. Then add an inject node and connect it. In the Inject node settings, set the topic to `command`. Set the payload type to string and the payload to `BlinkCount 3`. 
+
+To send the command `BlinkCount 12` to a tasmota switch device, create a tasmota-swich node and set the 
+device id(topic) to the correct value for your device. Then add an inject node and connect it. In the Inject node 
+settings, set the topic to `command`. Set the payload type to string and the payload to `BlinkCount 3`. 
 
 To send a list of commands set the payload type to JSON. An example of a command list syntax is:
 `["BlinkCount 12", "BlinkTime 3", "Power blink"]`

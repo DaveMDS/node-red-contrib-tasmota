@@ -61,33 +61,13 @@ class BaseTasmotaNode {
     })
 
     this.on('input', (msg, send, done) => {
-      // if topic is 'command' send any tasmota commands over MQTT
       if (msg.topic === 'command') {
-        if (typeof msg.payload === 'string') {
-          // 1. string payload: 'CMD <param>'
-          const [cmd, param] = msg.payload.split(' ', 2)
-          this.MQTTPublish('cmnd', cmd, param)
-        } else if (Array.isArray(msg.payload)) {
-          // 2. list payload: ['CMD <param>', 'CMD <param>', ...]
-          for (let i = 0; i < msg.payload.length; i++) {
-            const [cmd, param] = msg.payload[i].split(' ', 2)
-            this.MQTTPublish('cmnd', cmd, param)
-          }
-        } else if (typeof msg.payload === 'object') {
-          // 3. object payload: {'CMD': 'param', 'CMD': 'param', ...}
-          for (const cmd in msg.payload) {
-            const param = msg.payload[cmd]
-            this.MQTTPublish('cmnd', cmd, param)
-          }
-        } else {
-          this.warn('Invalid payload received for raw tasmota commands')
-        }
-        return // do not pass the raw command msg to childs
+        // if topic is 'command' send raw tasmota commands over MQTT
+        this.sendRawCommand(msg.payload)
+      } else {
+        // Or let the child class handle the msg
+        this.onNodeInput(msg)
       }
-
-      // Let the child class handle the msg
-      this.onNodeInput(msg)
-
       // Notify NodeRed we finished handling the msg
       if (done) {
         done()
@@ -114,6 +94,30 @@ class BaseTasmotaNode {
       this.send(msg)
     } else {
       this.send(new Array(count).fill(msg))
+    }
+  }
+
+  sendRawCommand (payload) {
+    if (typeof payload === 'string') {
+      // 1. string payload: 'CMD <param>'
+      const [cmd, param] = payload.split(' ', 2)
+      this.MQTTPublish('cmnd', cmd, param)
+    } else if (Array.isArray(payload)) {
+      // 2. list payload: ['CMD <param>', 'CMD <param>', ...]
+      for (let i = 0; i < payload.length; i++) {
+        const [cmd, param] = payload[i].split(' ', 2)
+        this.MQTTPublish('cmnd', cmd, param)
+      }
+    } else if (typeof payload === 'object') {
+      // 3. object payload: {'CMD': 'param', 'CMD': 'param', ...}
+      for (const cmd in payload) {
+        if (Object.prototype.hasOwnProperty.call(payload, cmd)) {
+          const param = payload[cmd]
+          this.MQTTPublish('cmnd', cmd, param)
+        }
+      }
+    } else {
+      this.warn('Invalid payload received for raw tasmota commands')
     }
   }
 

@@ -27,7 +27,8 @@
       "Tasmota switch": "nodes/switch.js",
       "Tasmota sensor": "nodes/sensor.js",
       "Tasmota light": "nodes/light.js",
-      "Tasmota button": "nodes/button.js"
+      "Tasmota button": "nodes/button.js",
+      "Tasmota generic": "nodes/generic.js"
     }
   },
   "dependencies": {
