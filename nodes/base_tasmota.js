@@ -60,7 +60,7 @@ class BaseTasmotaNode {
       }
     })
 
-    this.on('input', msg => {
+    this.on('input', (msg, send, done) => {
       // if topic is 'command' send any tasmota commands over MQTT
       if (msg.topic === 'command') {
         if (typeof msg.payload === 'string') {
@@ -87,6 +87,11 @@ class BaseTasmotaNode {
 
       // Let the child class handle the msg
       this.onNodeInput(msg)
+
+      // Notify NodeRed we finished handling the msg
+      if (done) {
+        done()
+      }
     })
 
     // Deregister from BrokerNode when this node is deleted or restarted
