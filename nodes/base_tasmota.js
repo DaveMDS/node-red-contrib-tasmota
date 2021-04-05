@@ -11,11 +11,15 @@ const TASMOTA_DEFAULTS = {
   fullTopic: '%prefix%/%topic%/',
   cmndPrefix: 'cmnd',
   statPrefix: 'stat',
-  telePrefix: 'tele'
+  telePrefix: 'tele',
+  qos: 1,
+  retain: false
 }
 
 const LWT_ONLINE = 'Online'
 const LWT_OFFLINE = 'Offline'
+
+// const DBG = console.log
 
 class BaseTasmotaNode {
   constructor (config, RED, more_defaults = {}) {
@@ -191,8 +195,11 @@ class BaseTasmotaNode {
 
   MQTTPublish (prefix, command, payload) {
     const fullTopic = this.buildFullTopic(prefix, command)
-    this.brokerNode.publish(fullTopic, payload)
-    // TODO  qos and retain options
+    const options = {
+      qos: this.config.qos,
+      retain: this.config.retain
+    }
+    this.brokerNode.publish(fullTopic, payload, options)
   }
 
   MQTTSubscribe (prefix, command, callback) {

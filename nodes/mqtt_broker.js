@@ -171,15 +171,7 @@ module.exports = function (RED) {
     }
 
     /* Publish a new msg over MQTT */
-    publish (topic, payload) {
-      // var options = {
-      //   qos: msg.qos || 0,
-      //   retain: msg.retain || false
-      // };
-      const options = {
-        qos: 0,
-        retain: false
-      }
+    publish (topic, payload, options) {
       this.client.publish(topic, payload, options)
     }
   }
