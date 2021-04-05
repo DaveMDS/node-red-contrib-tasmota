@@ -248,7 +248,7 @@
       }
     },
     oneditprepare: function () {
-      let tabs = RED.tabs.create({
+      const tabs = RED.tabs.create({
         id: "node-input-tasmota-tabs",
         onchange: function (tab) {
           $("#node-input-tabs-content").children().hide()

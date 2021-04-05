@@ -138,41 +138,41 @@
         sortable: true,
         removable: true,
         addItem: function(container, i, opt) {
-          var rule = opt.r;
-          var row = $('<div/>').appendTo(container);
-          var tinput = $('<input/>', {class:"node-input-rule-exp-value",
+          const rule = opt.r;
+          const row = $('<div/>').appendTo(container);
+          const tinput = $('<input/>', {class:"node-input-rule-exp-value",
             type:"text", style:"width:90%;"})
             .val(rule).appendTo(row)
             .typedInput({default:'jsonata', types:['jsonata']});
 
-          var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
+          const finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
           finalspan.append(' &#8594; <span class="node-input-rule-index">'+(i+1)+'</span> ');
         },
         sortItems: function(rules) {
-          var items = $("#node-input-rule-container").editableList('items');
+          const items = $("#node-input-rule-container").editableList('items');
           items.each(function(i) {
             $(this).find(".node-input-rule-index").html(i + 1);
           });
         },
         removeItem: function(opt) {
-          var items = $("#node-input-rule-container").editableList('items');
+          const items = $("#node-input-rule-container").editableList('items');
           items.each(function(i) {
             $(this).find(".node-input-rule-index").html(i + 1);
           });
         },
       });
       // populate editable list
-      for (var i = 0; i < this.rules.length; i++) {
-        var rule = this.rules[i];
+      for (let i = 0; i < this.rules.length; i++) {
+        const rule = this.rules[i];
         $("#node-input-rule-container").editableList('addItem', {r: rule, i: i});
       }
     },
     oneditsave: function() {
-      var items = $("#node-input-rule-container").editableList('items');
-      var node = this;
+      const items = $("#node-input-rule-container").editableList('items');
+      const node = this;
       node.rules = [];
       items.each(function(i) {
-        var rule = $(this).find(".node-input-rule-exp-value").typedInput('value');
+        const rule = $(this).find(".node-input-rule-exp-value").typedInput('value');
         node.rules.push(rule);
       });
       $('#node-input-outputs').val(node.rules.length || 1);
