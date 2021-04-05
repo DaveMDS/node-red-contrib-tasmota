@@ -204,7 +204,7 @@ class BaseTasmotaNode {
 
   MQTTSubscribe (prefix, command, callback) {
     const fullTopic = this.buildFullTopic(prefix, command)
-    this.brokerNode.subscribe(this, fullTopic, 2, callback)
+    this.brokerNode.subscribe(this, fullTopic, this.config.qos, callback)
   }
 
   /* Return the integer number at the end of the given string,
