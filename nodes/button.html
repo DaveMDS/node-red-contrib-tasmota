@@ -151,10 +151,10 @@
     inputs: 0,
     outputs: 1,
     label: function() {
-      return this.name || this.device || "Tasmota Button";
+      return this.name || this.device || "Tasmota Button"
     },
     labelStyle: function() {
-      return this.name ? "node_label_italic" : "";
+      return this.name ? "node_label_italic" : ""
     },
     oneditprepare: function () {
       const tabs = RED.tabs.create({
@@ -173,5 +173,5 @@
         label: "Advanced"
       })
     }
-  });
+  })
 </script>

@@ -69,9 +69,9 @@
       clientid: {value: "", validate: function(v) {
           if ($("#node-config-input-clientid").length) {
             // Currently editing the node
-            return $("#node-config-input-cleansession").is(":checked") || (v||"").length > 0;
+            return $("#node-config-input-cleansession").is(":checked") || (v||"").length > 0
           } else {
-            return (this.cleansession===undefined || this.cleansession) || (v||"").length > 0;
+            return (this.cleansession===undefined || this.cleansession) || (v||"").length > 0
           }
         }},
       usetls: {value: false},
@@ -131,31 +131,31 @@
         }
         $("#node-config-input-clientid").change()
       }
-      setTimeout(updateClientId,0);
+      setTimeout(updateClientId,0)
       $("#node-config-input-cleansession").on("click",function() {
         updateClientId()
       })
 
       // function updatePortEntry(){
-      //   var disabled = $("#node-config-input-port").prop("disabled");
+      //   var disabled = $("#node-config-input-port").prop("disabled")
       //   if ($("#node-config-input-broker").val().indexOf("://") === -1){
       //     if (disabled){
-      //       $("#node-config-input-port").prop("disabled", false);
+      //       $("#node-config-input-port").prop("disabled", false)
       //     }
       //   }
       //   else {
       //     if (!disabled){
-      //       $("#node-config-input-port").prop("disabled", true);
+      //       $("#node-config-input-port").prop("disabled", true)
       //     }
       //   }
       // }
       // $("#node-config-input-broker").on("change", function() {
-      //   updatePortEntry();
-      // });
+      //   updatePortEntry()
+      // })
       // $("#node-config-input-broker").on( "keyup", function() {
-      //   updatePortEntry();
-      // });
-      // setTimeout(updatePortEntry,50);
+      //   updatePortEntry()
+      // })
+      // setTimeout(updatePortEntry,50)
 
     },
     oneditsave: function() {
@@ -163,5 +163,5 @@
         $("#node-config-input-tls").val("")
       }
     }
-  });
+  })
 </script>

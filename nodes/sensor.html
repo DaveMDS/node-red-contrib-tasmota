@@ -115,10 +115,10 @@
     inputs: 1,
     outputs: 1,
     label: function() {
-      return this.name || this.device || "Tasmota Sensor";
+      return this.name || this.device || "Tasmota Sensor"
     },
     labelStyle: function() {
-      return this.name ? "node_label_italic" : "";
+      return this.name ? "node_label_italic" : ""
     },
     oneditprepare: function () {
       // initialize tabs
@@ -138,44 +138,43 @@
         sortable: true,
         removable: true,
         addItem: function(container, i, opt) {
-          const rule = opt.r;
-          const row = $('<div/>').appendTo(container);
+          const rule = opt.r
+          const row = $('<div/>').appendTo(container)
           const tinput = $('<input/>', {class:"node-input-rule-exp-value",
             type:"text", style:"width:90%;"})
             .val(rule).appendTo(row)
-            .typedInput({default:'jsonata', types:['jsonata']});
-
-          const finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
-          finalspan.append(' &#8594; <span class="node-input-rule-index">'+(i+1)+'</span> ');
+            .typedInput({default:'jsonata', types:['jsonata']})
+          const finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row)
+          finalspan.append(' &#8594; <span class="node-input-rule-index">'+(i+1)+'</span> ')
         },
         sortItems: function(rules) {
-          const items = $("#node-input-rule-container").editableList('items');
+          const items = $("#node-input-rule-container").editableList('items')
           items.each(function(i) {
-            $(this).find(".node-input-rule-index").html(i + 1);
-          });
+            $(this).find(".node-input-rule-index").html(i + 1)
+          })
         },
         removeItem: function(opt) {
-          const items = $("#node-input-rule-container").editableList('items');
+          const items = $("#node-input-rule-container").editableList('items')
           items.each(function(i) {
-            $(this).find(".node-input-rule-index").html(i + 1);
-          });
+            $(this).find(".node-input-rule-index").html(i + 1)
+          })
         },
-      });
+      })
       // populate editable list
       for (let i = 0; i < this.rules.length; i++) {
-        const rule = this.rules[i];
-        $("#node-input-rule-container").editableList('addItem', {r: rule, i: i});
+        const rule = this.rules[i]
+        $("#node-input-rule-container").editableList('addItem', {r: rule, i: i})
       }
     },
     oneditsave: function() {
-      const items = $("#node-input-rule-container").editableList('items');
-      const node = this;
-      node.rules = [];
+      const items = $("#node-input-rule-container").editableList('items')
+      const node = this
+      node.rules = []
       items.each(function(i) {
-        const rule = $(this).find(".node-input-rule-exp-value").typedInput('value');
-        node.rules.push(rule);
-      });
-      $('#node-input-outputs').val(node.rules.length || 1);
+        const rule = $(this).find(".node-input-rule-exp-value").typedInput('value')
+        node.rules.push(rule)
+      })
+      $('#node-input-outputs').val(node.rules.length || 1)
     }
-  });
+  })
 </script>
