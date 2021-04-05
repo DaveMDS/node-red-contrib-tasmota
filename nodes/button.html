@@ -1,52 +1,3 @@
-<script type="text/javascript">
-RED.nodes.registerType("Tasmota Button", {
-    category: "tasmota",
-    color: "#28AFB0",
-    defaults: {
-        // common basic
-        broker: { type: "tasmota-mqtt-broker", required: true },
-        device: { value: "", required: true },
-        name: { value: "" },
-        outputs: { value: 1 },
-        uidisabler: { value: false },
-        // common advanced
-        fullTopic: { value: "" },
-        cmndPrefix: { value: "" },
-        statPrefix: { value: "" },
-        telePrefix: { value: "" }
-        // node specific
-    },
-    icon: "contrib-tasmota-button.svg",
-    paletteLabel: 'button',
-    inputs: 0,
-    outputs: 1,
-    label: function() {
-        return this.name || this.device || "Tasmota Button";
-    },
-    labelStyle: function() {
-        return this.name ? "node_label_italic" : "";
-    },
-    oneditprepare: function () {
-        let tabs = RED.tabs.create({
-            id: "node-input-tasmota-tabs",
-            onchange: function (tab) {
-                $("#node-input-tabs-content").children().hide()
-                $("#" + tab.id).show()
-            }
-        })
-        tabs.addTab({
-            id: "tasmota-settings-tab",
-            label: "Settings"
-        })
-        tabs.addTab({
-            id: "tasmota-advanced-tab",
-            label: "Advanced"
-        })
-    }
-});
-</script>
-
-
 <script type="text/x-red" data-template-name="Tasmota Button">
     <div class="form-row">
         <ul id="node-input-tasmota-tabs"></ul>
@@ -150,7 +101,6 @@ RED.nodes.registerType("Tasmota Button", {
     </div>
 </script>
 
-
 <script type="text/x-red" data-help-name="Tasmota Button">
     <p>Connect a <b>Button</b> device running the <b>Tasmota</b> firmware.</p>
 
@@ -174,4 +124,52 @@ RED.nodes.registerType("Tasmota Button", {
     messages will be sent to the single output with different topics.</p>
     <p>In the Avanced tab you can customize the topic format for special cases,
     the default values should work for a default Tasmota installation.</p>
+</script>
+
+<script type="text/javascript">
+  RED.nodes.registerType("Tasmota Button", {
+    category: "tasmota",
+    color: "#28AFB0",
+    defaults: {
+      // common basic
+      broker: { type: "tasmota-mqtt-broker", required: true },
+      device: { value: "", required: true },
+      name: { value: "" },
+      outputs: { value: 1 },
+      uidisabler: { value: false },
+      // common advanced
+      fullTopic: { value: "" },
+      cmndPrefix: { value: "" },
+      statPrefix: { value: "" },
+      telePrefix: { value: "" }
+      // node specific
+    },
+    icon: "contrib-tasmota-button.svg",
+    paletteLabel: 'button',
+    inputs: 0,
+    outputs: 1,
+    label: function() {
+      return this.name || this.device || "Tasmota Button";
+    },
+    labelStyle: function() {
+      return this.name ? "node_label_italic" : "";
+    },
+    oneditprepare: function () {
+      let tabs = RED.tabs.create({
+        id: "node-input-tasmota-tabs",
+        onchange: function (tab) {
+          $("#node-input-tabs-content").children().hide()
+          $("#" + tab.id).show()
+        }
+      })
+      tabs.addTab({
+        id: "tasmota-settings-tab",
+        label: "Settings"
+      })
+      tabs.addTab({
+        id: "tasmota-advanced-tab",
+        label: "Advanced"
+      })
+    }
+  });
 </script>

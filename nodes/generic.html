@@ -1,53 +1,3 @@
-<script type="text/javascript">
-RED.nodes.registerType("Tasmota Generic", {
-    category: "tasmota",
-    color: "#28AFB0",
-    defaults: {
-        // common basic
-        broker: { type: "tasmota-mqtt-broker", required: true },
-        device: { value: "", required: true },
-        name: { value: "" },
-        outputs: { value: 1 },
-        uidisabler: { value: false },
-        // common advanced
-        fullTopic: { value: "" },
-        cmndPrefix: { value: "" },
-        statPrefix: { value: "" },
-        telePrefix: { value: "" },
-        // node specific
-        subscribeToStat: { value: false },
-        subscribeToTele: { value: false }
-    },
-    icon: "contrib-tasmota-logo.svg",
-    paletteLabel: 'generic',
-    inputs: 1,
-    outputs: 1,
-    label: function() {
-        return this.name || this.device || "Tasmota Generic";
-    },
-    labelStyle: function() {
-        return this.name ? "node_label_italic" : "";
-    },
-    oneditprepare: function () {
-        let tabs = RED.tabs.create({
-            id: "node-input-tasmota-tabs",
-            onchange: function (tab) {
-                $("#node-input-tabs-content").children().hide()
-                $("#" + tab.id).show()
-            }
-        })
-        tabs.addTab({
-            id: "tasmota-settings-tab",
-            label: "Settings"
-        })
-        tabs.addTab({
-            id: "tasmota-advanced-tab",
-            label: "Advanced"
-        })
-    }
-});
-</script>
-
 <script type="text/x-red" data-template-name="Tasmota Generic">
     <div class="form-row">
         <ul id="node-input-tasmota-tabs"></ul>
@@ -102,7 +52,6 @@ RED.nodes.registerType("Tasmota Generic", {
     </div>
 </script>
 
-
 <script type="text/x-red" data-help-name="Tasmota Generic">
     <p>A generic node to control any device running the <b>Tasmota</b> firmware.</p>
     <p>With this node you can issue any command as you can do in the Tasmota console
@@ -140,4 +89,54 @@ RED.nodes.registerType("Tasmota Generic", {
        all TELE messages.</p>
     <p>In the Avanced tab you can customize the topic format for special cases,
        the default values should work for a default Tasmota installation.</p>
+</script>
+
+<script type="text/javascript">
+  RED.nodes.registerType("Tasmota Generic", {
+    category: "tasmota",
+    color: "#28AFB0",
+    defaults: {
+      // common basic
+      broker: { type: "tasmota-mqtt-broker", required: true },
+      device: { value: "", required: true },
+      name: { value: "" },
+      outputs: { value: 1 },
+      uidisabler: { value: false },
+      // common advanced
+      fullTopic: { value: "" },
+      cmndPrefix: { value: "" },
+      statPrefix: { value: "" },
+      telePrefix: { value: "" },
+      // node specific
+      subscribeToStat: { value: false },
+      subscribeToTele: { value: false }
+    },
+    icon: "contrib-tasmota-logo.svg",
+    paletteLabel: 'generic',
+    inputs: 1,
+    outputs: 1,
+    label: function() {
+      return this.name || this.device || "Tasmota Generic";
+    },
+    labelStyle: function() {
+      return this.name ? "node_label_italic" : "";
+    },
+    oneditprepare: function () {
+      let tabs = RED.tabs.create({
+        id: "node-input-tasmota-tabs",
+        onchange: function (tab) {
+          $("#node-input-tabs-content").children().hide()
+          $("#" + tab.id).show()
+        }
+      })
+      tabs.addTab({
+        id: "tasmota-settings-tab",
+        label: "Settings"
+      })
+      tabs.addTab({
+        id: "tasmota-advanced-tab",
+        label: "Advanced"
+      })
+    }
+  });
 </script>

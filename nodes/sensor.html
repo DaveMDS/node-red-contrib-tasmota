@@ -1,94 +1,3 @@
-<script type="text/javascript">
-RED.nodes.registerType("Tasmota Sensor", {
-    category: "tasmota",
-    color: "#28AFB0",
-    defaults: {
-        // common basic
-        broker: { type: "tasmota-mqtt-broker", required: true },
-        device: { value: "", required: true },
-        name: { value: "" },
-        outputs: { value: 1 },
-        uidisabler: { value: false },
-        // common advanced
-        fullTopic: { value: "" },
-        cmndPrefix: { value: "" },
-        statPrefix: { value: "" },
-        telePrefix: { value: "" },
-        // node specific
-        rules: { value:[] },
-        outputTopic: { value: "" }
-    },
-    icon: "contrib-tasmota-sensor.svg",
-    paletteLabel: 'sensor',
-    inputs: 1,
-    outputs: 1,
-    label: function() {
-        return this.name || this.device || "Tasmota Sensor";
-    },
-    labelStyle: function() {
-        return this.name ? "node_label_italic" : "";
-    },
-    oneditprepare: function () {
-        // initialize tabs
-        let tabs = RED.tabs.create({
-            id: "node-input-tasmota-tabs",
-            onchange: function (tab) {
-                $("#node-input-tabs-content").children().hide()
-                $("#" + tab.id).show()
-            }
-        })
-        // populate tabs
-        tabs.addTab({ id: "tasmota-settings-tab", label: "Settings" })
-        tabs.addTab({ id: "tasmota-advanced-tab", label: "Advanced" })
-
-        // initialize editable list
-        $("#node-input-rule-container").css('min-height','250px').editableList({
-            sortable: true,
-            removable: true,
-            addItem: function(container, i, opt) {
-                var rule = opt.r;
-                var row = $('<div/>').appendTo(container);
-                var tinput = $('<input/>', {class:"node-input-rule-exp-value",
-                                            type:"text", style:"width:90%;"})
-                            .val(rule).appendTo(row)
-                            .typedInput({default:'jsonata', types:['jsonata']});
-
-                var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
-                finalspan.append(' &#8594; <span class="node-input-rule-index">'+(i+1)+'</span> ');
-            },
-            sortItems: function(rules) {
-                var items = $("#node-input-rule-container").editableList('items');
-                items.each(function(i) {
-                    $(this).find(".node-input-rule-index").html(i + 1);
-                });
-            },
-            removeItem: function(opt) {
-                var items = $("#node-input-rule-container").editableList('items');
-                items.each(function(i) {
-                    $(this).find(".node-input-rule-index").html(i + 1);
-                });
-            },
-        });
-        // populate editable list
-        for (var i = 0; i < this.rules.length; i++) {
-            var rule = this.rules[i];
-            $("#node-input-rule-container").editableList('addItem', {r: rule, i: i});
-        }
-    },
-    oneditsave: function() {
-        var items = $("#node-input-rule-container").editableList('items');
-        var node = this;
-        node.rules = [];
-        items.each(function(i) {
-            var rule = $(this).find(".node-input-rule-exp-value").typedInput('value');
-            node.rules.push(rule);
-        });
-        $('#node-input-outputs').val(node.rules.length || 1);
-    }
-});
-</script>
-
-
 <script type="text/x-red" data-template-name="Tasmota Sensor">
     <div class="form-row">
         <ul id="node-input-tasmota-tabs"></ul>
@@ -178,3 +87,92 @@ RED.nodes.registerType("Tasmota Sensor", {
     <p>Input messagges are NOT forwarded to the output.</p>
 </script>
 
+<script type="text/javascript">
+  RED.nodes.registerType("Tasmota Sensor", {
+    category: "tasmota",
+    color: "#28AFB0",
+    defaults: {
+      // common basic
+      broker: { type: "tasmota-mqtt-broker", required: true },
+      device: { value: "", required: true },
+      name: { value: "" },
+      outputs: { value: 1 },
+      uidisabler: { value: false },
+      // common advanced
+      fullTopic: { value: "" },
+      cmndPrefix: { value: "" },
+      statPrefix: { value: "" },
+      telePrefix: { value: "" },
+      // node specific
+      rules: { value:[] },
+      outputTopic: { value: "" }
+    },
+    icon: "contrib-tasmota-sensor.svg",
+    paletteLabel: 'sensor',
+    inputs: 1,
+    outputs: 1,
+    label: function() {
+      return this.name || this.device || "Tasmota Sensor";
+    },
+    labelStyle: function() {
+      return this.name ? "node_label_italic" : "";
+    },
+    oneditprepare: function () {
+      // initialize tabs
+      let tabs = RED.tabs.create({
+        id: "node-input-tasmota-tabs",
+        onchange: function (tab) {
+          $("#node-input-tabs-content").children().hide()
+          $("#" + tab.id).show()
+        }
+      })
+      // populate tabs
+      tabs.addTab({ id: "tasmota-settings-tab", label: "Settings" })
+      tabs.addTab({ id: "tasmota-advanced-tab", label: "Advanced" })
+
+      // initialize editable list
+      $("#node-input-rule-container").css('min-height','250px').editableList({
+        sortable: true,
+        removable: true,
+        addItem: function(container, i, opt) {
+          var rule = opt.r;
+          var row = $('<div/>').appendTo(container);
+          var tinput = $('<input/>', {class:"node-input-rule-exp-value",
+            type:"text", style:"width:90%;"})
+            .val(rule).appendTo(row)
+            .typedInput({default:'jsonata', types:['jsonata']});
+
+          var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
+          finalspan.append(' &#8594; <span class="node-input-rule-index">'+(i+1)+'</span> ');
+        },
+        sortItems: function(rules) {
+          var items = $("#node-input-rule-container").editableList('items');
+          items.each(function(i) {
+            $(this).find(".node-input-rule-index").html(i + 1);
+          });
+        },
+        removeItem: function(opt) {
+          var items = $("#node-input-rule-container").editableList('items');
+          items.each(function(i) {
+            $(this).find(".node-input-rule-index").html(i + 1);
+          });
+        },
+      });
+      // populate editable list
+      for (var i = 0; i < this.rules.length; i++) {
+        var rule = this.rules[i];
+        $("#node-input-rule-container").editableList('addItem', {r: rule, i: i});
+      }
+    },
+    oneditsave: function() {
+      var items = $("#node-input-rule-container").editableList('items');
+      var node = this;
+      node.rules = [];
+      items.each(function(i) {
+        var rule = $(this).find(".node-input-rule-exp-value").typedInput('value');
+        node.rules.push(rule);
+      });
+      $('#node-input-outputs').val(node.rules.length || 1);
+    }
+  });
+</script>
