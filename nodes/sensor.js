@@ -33,7 +33,7 @@ module.exports = function (RED) {
     }
 
     sendToOutputs (tasmotaData) {
-      let topic = this.config.outputTopic ? this.config.outputTopic : undefined
+      const topic = this.config.outputTopic ? this.config.outputTopic : undefined
 
       if (!this.config.rules || !this.config.rules.length) {
         this.send({ topic: topic, payload: tasmotaData })
