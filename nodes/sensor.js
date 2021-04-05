@@ -3,7 +3,8 @@ module.exports = function (RED) {
   const BaseTasmotaNode = require('./base_tasmota.js')
 
   const SENSOR_DEFAULTS = {
-    rules: []
+    rules: [],
+    outputTopic: ''
   }
 
   class TasmotaSensorNode extends BaseTasmotaNode {
@@ -32,8 +33,10 @@ module.exports = function (RED) {
     }
 
     sendToOutputs (tasmotaData) {
+      let topic = this.config.outputTopic ? this.config.outputTopic : undefined
+
       if (!this.config.rules || !this.config.rules.length) {
-        this.send({ payload: tasmotaData })
+        this.send({ topic: topic, payload: tasmotaData })
         return
       }
 
@@ -41,11 +44,11 @@ module.exports = function (RED) {
       for (let i = 0; i < this.config.rules.length; i++) {
         const rule = this.config.rules[i]
         if (!rule || rule === 'payload') {
-          messages.push({ payload: tasmotaData })
+          messages.push({ topic: topic, payload: tasmotaData })
         } else {
           const expr = RED.util.prepareJSONataExpression(rule, this)
           const result = RED.util.evaluateJSONataExpression(expr, tasmotaData)
-          messages.push({ payload: result })
+          messages.push({ topic: topic, payload: result })
         }
       }
       this.send(messages)
