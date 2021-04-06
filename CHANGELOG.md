@@ -1,3 +1,9 @@
+[v0.9.9](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.8...v0.9.9) (2021-04-06)
+--------------------------------------------------------------------------------------------------
+This is fast-fix release! Try to prevent any bad error while upgrading from the old
+mqtt-broker to the new one.
+Sorry for any inconvenience, but the changes was necessary, marching fast to a stable 1.0 release.
+
 
 [v0.9.8](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.7...v0.9.8) (2021-04-06)
 --------------------------------------------------------------------------------------------------
