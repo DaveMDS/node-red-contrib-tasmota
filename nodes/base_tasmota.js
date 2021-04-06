@@ -46,8 +46,15 @@ class BaseTasmotaNode {
       }
     }
 
-    // Get the broker node and register this instance
-    this.brokerNode = RED.nodes.getNode(this.config.broker)
+    // Get and check the broker node (could be wrong if updated from old release)
+    const brokerNode = RED.nodes.getNode(this.config.broker)
+    if (!brokerNode || brokerNode.type !== 'tasmota-mqtt-broker') {
+      this.warn('Broker configuration is wrong or missing, please review the node settings')
+      this.status({ fill: 'red', shape: 'dot', text: 'Wrong config' })
+      return
+    }
+    // Register ourself in the broker node
+    this.brokerNode = brokerNode
     this.brokerNode.register(this)
 
     // Subscribe to device availability changes  tele/<device>/LWT
