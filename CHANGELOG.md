@@ -1,4 +1,22 @@
 
+[v0.9.8](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.7...v0.9.8) (2021-04-06)
+--------------------------------------------------------------------------------------------------
+**!!! WARNING !!!**
+With this release you need to setup again the mqtt-broker node for all your 
+deployed nodes. As we do not use anymore the mqtt-broker-node included in NodeRed.
+
+### Features
+- A new custom mqtt broker node, no more use the standard one
+- A new Generic Node that can send and receive any command/response
+- Sensor: Add ability to choose a fixed output topic
+- Add qos and retain options, for ALL published messages
+- Button: support for 48 channels devices
+
+### Bug Fixes
+- Light: Fix setting color and dim with the same msg
+- Broker: Fixed the wrong ClientID usage (was be prefixed by "Tasmota_")
+
+
 [v0.9.7](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.6...v0.9.7) (2020-11-08)
 --------------------------------------------------------------------------------------------------
 ### Features
