@@ -1,3 +1,10 @@
+[v0.9.11](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.10...v0.9.11) (2021-11-14)
+--------------------------------------------------------------------------------------------------
+
+### Bug Fixes
+- Fix sending commands with empty values, introduced in 0.9.10  :(
+
+
 [v0.9.10](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.9...v0.9.10) (2021-11-14)
 --------------------------------------------------------------------------------------------------
 
