@@ -7,9 +7,9 @@ This project respect the standard.js format
  * run "npm test" and fix all the issues
  * Update the version in package.json
  * Add a new entry in CHANGELOG.md
- * git-commit -m 'Prepare release X.X.X'
+ * git commit -m 'Prepare release X.X.X'
  * git tag -a vX.X.X
- * git-push --follow-tags
+ * git push --follow-tags
  * npm publish
  * request a refresh on flows.nodered.org
 
