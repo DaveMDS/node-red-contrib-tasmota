@@ -172,7 +172,7 @@ module.exports = function (RED) {
 
     /* Publish a new msg over MQTT */
     publish (topic, payload, options) {
-      this.client.publish(topic, payload, options)
+      this.client.publish(topic, String(payload), options)
     }
   }
 
