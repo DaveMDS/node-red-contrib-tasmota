@@ -1,3 +1,11 @@
+[v0.9.10](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.9...v0.9.10) (2021-11-14)
+--------------------------------------------------------------------------------------------------
+
+### Bug Fixes
+- Fix sending numbers as Cmd payload
+- Raised MQTT.js version to 4.2.8 (as NodeRed itself)
+
+
 [v0.9.9](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.8...v0.9.9) (2021-04-06)
 --------------------------------------------------------------------------------------------------
 This is fast-fix release! Try to prevent any bad error while upgrading from the old
@@ -25,6 +33,7 @@ deployed nodes. As we do not use anymore the mqtt-broker-node included in NodeRe
 
 [v0.9.7](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.6...v0.9.7) (2020-11-08)
 --------------------------------------------------------------------------------------------------
+
 ### Features
  - Button: support for new Tasmota message format (fw >= 9.1.0)
 
