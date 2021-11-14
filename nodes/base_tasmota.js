@@ -206,6 +206,10 @@ class BaseTasmotaNode {
       qos: this.config.qos,
       retain: this.config.retain
     }
+    if (payload !== null && payload !== undefined) {
+      // enable sending Numbers and other types (preserving null and undef!)
+      payload = String(payload)
+    }
     this.brokerNode.publish(fullTopic, payload, options)
   }
 
