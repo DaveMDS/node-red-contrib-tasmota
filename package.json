@@ -32,7 +32,7 @@
     }
   },
   "dependencies": {
-    "mqtt": "4.2.6"
+    "mqtt": "4.2.8"
   },
   "devDependencies": {
     "standard": "*"
