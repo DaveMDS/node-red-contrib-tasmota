@@ -1,3 +1,10 @@
+[v0.9.12](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.11...v0.9.12) (2022-02-06)
+--------------------------------------------------------------------------------------------------
+
+### Bug Fixes
+- Light: don't let other nodes in the flow modify our internal cache object
+
+
 [v0.9.11](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.10...v0.9.11) (2021-11-14)
 --------------------------------------------------------------------------------------------------
 
