@@ -295,7 +295,10 @@ module.exports = function (RED) {
       // or send each value to the correct output
       if (this.config.outputs === 1 || this.config.outputs === '1') {
         // everything to the same (single) output, as a JSON dict object
-        this.send({ payload: this.cache })
+        // NOTE: we need to clone the cache object, otherwise other nodes
+        //       will modify our cache if they modify the msg object !!
+        const clone = Object.assign({}, this.cache)
+        this.send({ payload: clone })
       } else if (this.config.outputs === 2 || this.config.outputs === '2') {
         this.send([
           { payload: this.cache.on }, // Output 1: on/off status
