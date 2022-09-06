@@ -34,6 +34,22 @@ $ npm install node-red-contrib-tasmota
 # then restart node-red
 ```
 
+### Nodes configuration
+Basic config:
+ - `Broker` set here your MQTT broker connection params, you should use a single broker configuration for all your Tasmota nodes, so that a single connection is shared for all nodes.
+ - `Device` is the name of the Tasmota device, it must match the **Topic** field in your tasmota MQTT configuration.
+ - `Name` it's just a label that is shown on the node itself, you can choose any name you like or leave it blank.
+ - `Send enable/disable messages` if you connect the Tasmota nodes to a Node-Red dashboard node then you can use this flag to automatically disable the dashbord widget when the device goes offline.
+
+Advanced config:
+ - `Full topic` must match the **Full Topic** field in the Tasmota MQTT configuration, you can leave blank if you did not changed the default Tasmota value.
+ - `cmnd, stat, tele` if you changed this parametes in your Tasmota config then you also need to set them here.
+
+Example:
+
+![config](media/config.png?raw=true)
+
+
 ## Available Nodes
 
 - [Switch node](#tasmota-switch-node)
