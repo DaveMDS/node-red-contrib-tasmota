@@ -40,18 +40,26 @@ module.exports = function (RED) {
         return
       }
 
-      const messages = []
       for (let i = 0; i < this.config.rules.length; i++) {
         const rule = this.config.rules[i]
         if (!rule || rule === 'payload') {
-          messages.push({ topic: topic, payload: tasmotaData })
+          this.sendToOutputNum(i, { topic: topic, payload: tasmotaData })
         } else {
-          const expr = RED.util.prepareJSONataExpression(rule, this)
-          const result = RED.util.evaluateJSONataExpression(expr, tasmotaData)
-          messages.push({ topic: topic, payload: result })
+          try {
+            const expr = RED.util.prepareJSONataExpression(rule, this)
+            RED.util.evaluateJSONataExpression(expr, tasmotaData, (err, result) => {
+              if (err) {
+                throw new Error(err)
+              } else {
+                this.sendToOutputNum(i, { topic: topic, payload: result })
+              }
+            })
+          } catch (e) {
+            this.setNodeStatus('red', 'Error evaluating JSONata expression')
+            this.error(e, 'Error evaluating JSONata expression')
+          }
         }
       }
-      this.send(messages)
     }
 
     onSensorTelemetry (topic, payload) {

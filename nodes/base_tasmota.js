@@ -108,6 +108,13 @@ class BaseTasmotaNode {
     }
   }
 
+  sendToOutputNum (num, msg) {
+    const count = Number(this.config.outputs) || 1
+    const list = Array(count).fill(null)
+    list[num] = msg
+    this.send(list)
+  }
+
   sendRawCommand (payload) {
     if (typeof payload === 'string') {
       // 1. string payload: 'CMD <param>'
