@@ -3,7 +3,7 @@ module.exports = function (RED) {
   const BaseTasmotaNode = require('./base_tasmota.js')
 
   const BUTTON_DEFAULTS = {
-    // no specific options for this node
+    notopic: false,
   }
 
   class TasmotaButtonNode extends BaseTasmotaNode {
@@ -54,8 +54,13 @@ module.exports = function (RED) {
       // update status icon and label
       this.setNodeStatus('green', `${action} (${channel})`)
 
-      // build and send the new string message for topic 'buttonX'
-      const msg = { topic: 'button' + channel, payload: action }
+      // build the action message, with optional topic 'buttonX'
+      const msg = { payload: action }
+      if (!this.config.notopic) {
+        msg.topic = 'button' + channel
+      }
+
+      // send the message to correct output
       if (this.config.outputs === 1 || this.config.outputs === '1') {
         // everything to the same (single) output
         this.send(msg)

@@ -3,7 +3,7 @@ module.exports = function (RED) {
   const BaseTasmotaNode = require('./base_tasmota.js')
 
   const SWITCH_DEFAULTS = {
-    // no specific options for this node
+    notopic: false,
   }
 
   // values for the tasmota POWER command
@@ -89,12 +89,18 @@ module.exports = function (RED) {
       // update status icon and label
       this.setNodeStatus(this.cache[0] === 'On' ? 'green' : 'grey', this.cache.join(' - '))
 
-      // build and send the new boolen message for topic 'switchX'
-      const msg = { topic: 'switch' + channel, payload: (status === 'On') }
+      // build the boolean message, with optional topic 'switchX'
+      const msg = { payload: (status === 'On') }
+      if (!this.config.notopic) {
+        msg.topic = 'switch' + channel
+      }
+
+      // send the message to correct output
       if (this.config.outputs === 1 || this.config.outputs === '1') {
         // everything to the same (single) output
         this.send(msg)
       } else {
+        // or send to the correct output
         this.sendToOutputNum(channel - 1, msg)
       }
     }
