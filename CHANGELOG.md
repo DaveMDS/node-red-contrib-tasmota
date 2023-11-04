@@ -1,19 +1,31 @@
+[v0.9.13](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.12...v0.9.13) (2023-11-04)
+-----------------------------------------------------------------------------------------------------
+
+### Features
+- Switch/Button: new option to don't set the topic on output messages
+- NodeRed 3.1.0 compatibility: async JSONata usage to silence NodeRED errors
+- More documentation for the basic nodes configuration
+- Switch: support up to 48 channels
+- Show output names when multiple channels selected
+- Upgraded mqtt dependency to 4.3.7
+
+
 [v0.9.12](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.11...v0.9.12) (2022-02-06)
---------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
 
 ### Bug Fixes
 - Light: don't let other nodes in the flow modify our internal cache object
 
 
 [v0.9.11](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.10...v0.9.11) (2021-11-14)
---------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
 
 ### Bug Fixes
 - Fix sending commands with empty values, introduced in 0.9.10  :(
 
 
 [v0.9.10](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.9...v0.9.10) (2021-11-14)
---------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 
 ### Bug Fixes
 - Fix sending numbers as Cmd payload
@@ -30,7 +42,7 @@ Sorry for any inconvenience, but the changes was necessary, marching fast to a s
 [v0.9.8](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.7...v0.9.8) (2021-04-06)
 --------------------------------------------------------------------------------------------------
 **!!! WARNING !!!**
-With this release you need to setup again the mqtt-broker node for all your 
+With this release you need to setup again the mqtt-broker node for all your
 deployed nodes. As we do not use anymore the mqtt-broker-node included in NodeRed.
 
 ### Features
@@ -54,7 +66,7 @@ deployed nodes. As we do not use anymore the mqtt-broker-node included in NodeRe
 
 [v0.9.6](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.5...v0.9.6) (2020-10-17)
 --------------------------------------------------------------------------------------------------
-**!!! WARNING !!!** 
+**!!! WARNING !!!**
 The outpuf format of the Light node is changed in this release, to make it
 simpler, more consistent and more configurable.
 Sorry for the inconvenience.
@@ -70,7 +82,7 @@ Sorry for the inconvenience.
  - Light: more command aliases for better compatibility with other nodes
  - Light: all input commands are now not case sensitive
  - Light: better documentation
- 
+
 
 [v0.9.5](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.4...v0.9.5) (2020-10-11)
 --------------------------------------------------------------------------------------------------
@@ -111,7 +123,7 @@ Sorry for the inconvenience.
 
 [v0.9.1](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.0...v0.9.1) (2019-12-22)
 --------------------------------------------------------------------------------------------------
- 
+
 ### Features
  - Add custom full topic support
  - Multiple outputs ability for the Sensor node
