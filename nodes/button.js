@@ -3,7 +3,7 @@ module.exports = function (RED) {
   const BaseTasmotaNode = require('./base_tasmota.js')
 
   const BUTTON_DEFAULTS = {
-    notopic: false,
+    notopic: false
   }
 
   class TasmotaButtonNode extends BaseTasmotaNode {

@@ -3,7 +3,7 @@ module.exports = function (RED) {
   const BaseTasmotaNode = require('./base_tasmota.js')
 
   const SWITCH_DEFAULTS = {
-    notopic: false,
+    notopic: false
   }
 
   // values for the tasmota POWER command
