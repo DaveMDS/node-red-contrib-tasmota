@@ -12,8 +12,8 @@ const TASMOTA_DEFAULTS = {
   cmndPrefix: 'cmnd',
   statPrefix: 'stat',
   telePrefix: 'tele',
-  qos: '1',  // NOTE: always stored as string
-  retain: 'false'  // NOTE: always stored as string
+  qos: '1', // NOTE: always stored as string
+  retain: 'false' // NOTE: always stored as string
 }
 
 const LWT_ONLINE = 'Online'

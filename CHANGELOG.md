@@ -1,3 +1,11 @@
+[v1.0.0](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.13...v1.0.0) (2024-01-04)
+-----------------------------------------------------------------------------------------------------
+Finally switch to version 1, not going to break until 2.x
+
+### Bug Fixes
+- Fix usage of Qos and Retain advanced options
+
+
 [v0.9.13](https://github.com/davemds/node-red-contrib-tasmota/compare/v0.9.12...v0.9.13) (2023-11-04)
 -----------------------------------------------------------------------------------------------------
 
