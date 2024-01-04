@@ -12,8 +12,8 @@ const TASMOTA_DEFAULTS = {
   cmndPrefix: 'cmnd',
   statPrefix: 'stat',
   telePrefix: 'tele',
-  qos: 1,
-  retain: false
+  qos: '1',  // NOTE: always stored as string
+  retain: 'false'  // NOTE: always stored as string
 }
 
 const LWT_ONLINE = 'Online'
@@ -45,6 +45,10 @@ class BaseTasmotaNode {
         this.config[key] = defaults[key]
       }
     }
+
+    // Adjust qos and retain types (they are stored as string in edit dialog)
+    this.config.qos = parseInt(this.config.qos)
+    this.config.retain = this.config.retain === true || this.config.retain === 'true'
 
     // Get and check the broker node (could be wrong if updated from old release)
     const brokerNode = RED.nodes.getNode(this.config.broker)
